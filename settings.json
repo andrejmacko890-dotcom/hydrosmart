@@ -1,6 +1,6 @@
 {
   "plant": "tomato",
-  "interval": 60,
+  "interval": 1,
   "runTime": 10,
   "nutrients": 50,
   "waterLevel": 80
