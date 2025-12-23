@@ -1,8 +1,0 @@
-{
-  "plant": "tomato",
-  "interval": 60,
-  "runTime": 10,
-  "nutrients": 50,
-  "waterLevel": 80,
-  "pump": true
-}
