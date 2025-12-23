@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="sk">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>HydroSmart</title>
+  <style>
+    body {
+      font-family: 'Arial', sans-serif;
+      background: #f0f8ff;
+      color: #333;
+      margin: 0;
+      padding: 0;
+    }
+
+    .container {
+      max-width: 500px;
+      margin: 40px auto;
+      background: #fff;
+      border-radius: 12px;
+      padding: 20px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+    }
+
+    header {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    header h1 {
+      color: #2e8b57;
+      margin-bottom: 5px;
+    }
+
+    header p {
+      color: #555;
+    }
+
+    section {
+      margin-bottom: 20px;
+    }
+
+    h2 {
+      color: #2e8b57;
+      margin-bottom: 10px;
+      border-bottom: 2px solid #2e8b57;
+      padding-bottom: 5px;
+    }
+
+    input, select {
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 10px;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+      font-size: 16px;
+    }
+
+    button {
+      width: 100%;
+      padding: 12px;
+      background-color: #2e8b57;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 18px;
+      cursor: pointer;
+      transition: background 0.3s ease;
+    }
+
+    button:hover {
+      background-color: #246b45;
+    }
+
+    .status-section {
+      background-color: #e0f7e9;
+      padding: 15px;
+      border-radius: 10px;
+    }
+
+    .status-item {
+      font-size: 16px;
+      margin-bottom: 8px;
+      display: flex;
+      justify-content: space-between;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>HydroSmart</h1>
+      <p>Vyber rastlinu a pripoj sa k Wi-Fi</p>
+    </header>
+
+    <section>
+      <h2>Wi-Fi Nastavenie</h2>
+      <input type="text" id="wifiName" placeholder="Názov Wi-Fi">
+      <input type="password" id="wifiPassword" placeholder="Heslo Wi-Fi">
+      <button onclick="saveWiFi()">Uložiť Wi-Fi</button>
+    </section>
+
+    <section>
+      <h2>Rastlina</h2>
+      <select id="plantSelect">
+        <option value="">Vyber rastlinu</option>
+        <option value="salad">Šalát</option>
+        <option value="tomato">Paradajka</option>
+        <option value="cucumber">Uhorka</option>
+        <option value="pepper">Paprika</option>
+      </select>
+      <button onclick="sendPlant()">Odoslať rastlinu</button>
+    </section>
+
+    <section class="status-section">
+      <h2>Status HydroTechnology</h2>
+      <div class="status-item">Pumpa: <span id="pumpStatus">--</span></div>
+      <div class="status-item">Water Level: <span id="waterLevel">--</span></div>
+      <div class="status-item">Nutrients: <span id="nutrients">--</span></div>
+    </section>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
