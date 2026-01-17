@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="sk">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HydroSmart Dashboard</title>
+<style>
+  /* --- TVOJ DIZAJN --- */
+  body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(to right, #e0f7fa, #d0f0c0);
+    color: #333;
+    margin: 0;
+    padding: 0;
+  }
+
+  .container {
+    max-width: 650px;
+    margin: 30px auto;
+    background: #ffffffee;
+    border-radius: 20px;
+    padding: 30px;
+    box-shadow: 0 8px 25px rgba(0,0,0,0.25);
+  }
+
+  header {
+    text-align: center;
+    margin-bottom: 30px;
+  }
+
+  header h1 {
+    color: #2e7d32;
+    font-size: 2.5em;
+    margin-bottom: 5px;
+  }
+
+  header p {
+    color: #555;
+    font-size: 1.2em;
+  }
+
+  section {
+    margin-bottom: 30px;
+  }
+
+  h2 {
+    color: #2e7d32;
+    margin-bottom: 15px;
+    border-bottom: 3px solid #2e7d32;
+    padding-bottom: 5px;
+    font-size: 1.5em;
+  }
+
+  select, button {
+    width: 100%;
+    padding: 15px;
+    margin-bottom: 15px;
+    border-radius: 15px;
+    border: 1px solid #ccc;
+    font-size: 18px;
+  }
+
+  button {
+    background-color: #2e7d32;
+    color: white;
+    border: none;
+    cursor: pointer;
+    transition: background 0.3s ease;
+  }
+
+  button:hover {
+    background-color: #1b5e20;
+  }
+
+  .status-section {
+    background-color: #f1f8e9;
+    padding: 25px;
+    border-radius: 20px;
+    box-shadow: inset 0 0 10px rgba(0,0,0,0.05);
+  }
+
+  .status-item {
+    font-size: 20px;
+    margin-bottom: 15px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 15px;
+    border-radius: 15px;
+    transition: all 0.3s ease;
+  }
+
+  .status-item span {
+    font-weight: bold;
+  }
+
+  .status-pump { background-color: #c8e6c9; color: #2e7d32; }
+  .status-water { background-color: #b3e5fc; color: #0277bd; }
+  .status-nutrients { background-color: #dcedc8; color: #558b2f; }
+  .status-light { background-color: #fff9c4; color: #fbc02d; }
+  .status-temp { background-color: #ffe0b2; color: #ef6c00; }
+  .status-humidity { background-color: #f0f4c3; color: #827717; }
+
+  .status-item i {
+    margin-right: 15px;
+    font-size: 1.5em;
+  }
+
+  .mini {
+    text-align:center;
+    font-size: 14px;
+    color:#666;
+    margin-top: -10px;
+    margin-bottom: 20px;
+  }
+
+  @media(max-width: 500px){
+    .status-item { font-size: 18px; padding: 10px; }
+    header h1 { font-size: 2em; }
+    header p { font-size: 1em; }
+  }
+</style>
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+</head>
+<body>
+<div class="container">
+  <header>
+    <h1>HydroSmart Dashboard</h1>
+    <p>Vyber rastlinu a sleduj stav hydroponickej veže</p>
+  </header>
+
+  <div class="mini">Stav pripojenia: <span id="connState">Načítavam...</span></div>
+
+  <section>
+    <h2>Rastlina</h2>
+    <select id="plantSelect">
+      <option value="">🌱 Vyber rastlinu</option>
+      <option value="0">🥬 Hlávkový šalát</option>
+      <option value="1">🍅 Paradajka</option>
+      <option value="2">🥒 Uhorka</option>
+      <option value="3">🌶 Paprika</option>
+      <option value="4">🌿 Špenát</option>
+      <option value="5">🌿 Bazalka</option>
+      <option value="6">🌱 Mäta</option>
+      <option value="7">🥗 Rukola</option>
+      <option value="8">🌿 Koriander</option>
+      <option value="9">🍓 Jahody</option>
+    </select>
+    <button onclick="sendPlant()"><i class="fas fa-seedling"></i> Odoslať rastlinu</button>
+  </section>
+
+  <section class="status-section">
+    <h2>Status HydroVeže</h2>
+    <div class="status-item status-pump"><i class="fas fa-tint"></i> Pumpa: <span id="pumpStatus">--</span></div>
+    <div class="status-item status-water"><i class="fas fa-water"></i> Hladina vody: <span id="waterLevel">--</span></div>
+    <div class="status-item status-nutrients"><i class="fas fa-vial"></i> Živiny: <span id="nutrients">--</span></div>
+    <div class="status-item status-light"><i class="fas fa-lightbulb"></i> Svetlo: <span id="lightStatus">--</span></div>
+    <div class="status-item status-temp"><i class="fas fa-thermometer-half"></i> Teplota: <span id="temperature">--</span></div>
+    <div class="status-item status-humidity"><i class="fas fa-tint"></i> Vlhkosť: <span id="humidity">--</span></div>
+  </section>
+</div>
+
+<!-- Firebase SDK pre web -->
+<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+
+<!-- Tvoj JS -->
+<script src="./app.js"></script>
+</body>
+</html>
+
