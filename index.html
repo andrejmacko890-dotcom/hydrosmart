@@ -115,7 +115,6 @@
 
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
 </head>
-
 <body>
 <div class="container">
   <header>
@@ -125,72 +124,43 @@
 
   <section>
     <h2>Rastlina</h2>
+    <select id="plantSelect">
+      <option value="">🌱 Vyber rastlinu</option>
 
-    <!-- DÔLEŽITÉ: value = kľúč z Firebase /tower/plants/<key> -->
-<select id="plantSelect">
-  <option value="">🌱 Vyber rastlinu</option>
-  <option value="salad">🥬 Hlávkový šalát</option>
-  <option value="tomato">🍅 Rajčiaky cherry</option>
-  <option value="cucumber">🥒 Uhorka</option>
-  <option value="pepper">🌶 Paprika mini</option>
-  <option value="spinach">🌿 Špenát</option>
-  <option value="basil">🌿 Bazalka</option>
-  <option value="mint">🌱 Mäta</option>
-  <option value="arugula">🥗 Rukola</option>
-  <option value="coriander">🌿 Koriander</option>
-  <option value="strawberry">🍓 Jahody</option>
-</select>>
+      <!-- VALUE = presný kľúč vo Firebase + presný key, ktorý očakáva ESP32 -->
+      <option value="salad">🥬 Hlávkový šalát</option>
+      <option value="tomato">🍅 Rajčiaky cherry</option>
+      <option value="cucumber">🥒 Uhorka</option>
+      <option value="pepper">🌶 Paprika mini</option>
+      <option value="radish">🥕 Reďkovka</option>
+      <option value="spinach">🌿 Špenát</option>
+      <option value="basil">🌿 Bazalka</option>
+      <option value="mint">🌱 Mäta</option>
+      <option value="arugula">🥗 Rukola</option>
+      <option value="coriander">🌿 Koriander</option>
+      <option value="strawberry">🍓 Jahody</option>
+      <option value="chives">🧅 Pažítka</option>
+    </select>
 
     <button onclick="sendPlant()"><i class="fas fa-seedling"></i> Odoslať rastlinu</button>
   </section>
 
   <section class="status-section">
     <h2>Status HydroVeže</h2>
-
-    <div class="status-item status-pump">
-      <i class="fas fa-tint"></i> Pumpa: <span id="pumpStatus">--</span>
-    </div>
-
-    <div class="status-item status-water">
-      <i class="fas fa-water"></i> Hladina vody: <span id="waterLevel">--</span>
-    </div>
-
-    <div class="status-item status-nutrients">
-      <i class="fas fa-vial"></i> Živiny: <span id="nutrients">--</span>
-    </div>
-
-    <div class="status-item status-light">
-      <i class="fas fa-lightbulb"></i> Svetlo: <span id="lightStatus">--</span>
-    </div>
-
-    <div class="status-item status-temp">
-      <i class="fas fa-thermometer-half"></i> Teplota: <span id="temperature">--</span>
-    </div>
-
-    <div class="status-item status-humidity">
-      <i class="fas fa-tint"></i> Vlhkosť: <span id="humidity">--</span>
-    </div>
-    
-     <div class="status-item status-temp">
-    <i class="fas fa-thermometer-half"></i> Teplota vody: <span id="waterTemp">--</span>
-    </div>
-    
+    <div class="status-item status-pump"><i class="fas fa-tint"></i> Pumpa: <span id="pumpStatus">--</span></div>
+    <div class="status-item status-water"><i class="fas fa-water"></i> Hladina vody: <span id="waterLevel">--</span></div>
+    <div class="status-item status-nutrients"><i class="fas fa-vial"></i> Živiny: <span id="nutrients">--</span></div>
+    <div class="status-item status-light"><i class="fas fa-lightbulb"></i> Svetlo: <span id="lightStatus">--</span></div>
+    <div class="status-item status-temp"><i class="fas fa-thermometer-half"></i> Teplota: <span id="temperature">--</span></div>
+    <div class="status-item status-humidity"><i class="fas fa-tint"></i> Vlhkosť: <span id="humidity">--</span></div>
   </section>
-  
 </div>
 
 <!-- Firebase SDK pre web -->
 <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
-<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
 
 <!-- Tvoj JS -->
 <script src="./app.js"></script>
 </body>
 </html>
-
-
-
-
-
-
