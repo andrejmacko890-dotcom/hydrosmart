@@ -13,27 +13,10 @@ const firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 const db = firebase.database();
 
-// 0-9 z HTML -> kľúče v databáze
-const PLANT_KEY_BY_INDEX = {
-  "0": "salad",
-  "1": "tomato",
-  "2": "cucumber",
-  "3": "pepper",
-  "4": "spinach",
-  "5": "basil",
-  "6": "mint",
-  "7": "arugula",
-  "8": "coriander",
-  "9": "strawberry" // nechávame jahody
-};
-
-// Odoslanie rastliny
+// ==================== Odoslanie rastliny ====================
 function sendPlant() {
-  const index = document.getElementById('plantSelect').value;
-  if (!index) { alert('Vyber rastlinu!'); return; }
-
-  const plantKey = PLANT_KEY_BY_INDEX[index];
-  if (!plantKey) { alert('Chyba: neznáma rastlina'); return; }
+  const plantKey = document.getElementById('plantSelect').value;
+  if (!plantKey) { alert('Vyber rastlinu!'); return; }
 
   db.ref('tower/commands').update({
     plant: plantKey,
@@ -48,34 +31,22 @@ function sendPlant() {
 }
 window.sendPlant = sendPlant;
 
-// Live status
-function startListeners() {
-  db.ref('tower/status').on('value', (snap) => {
-    const s = snap.val();
-    if (!s) return;
+// ==================== Live status ====================
+db.ref('tower/status').on('value', (snap) => {
+  const s = snap.val();
+  if (!s) return;
 
-    const pump = !!s.pump;
-    const light = !!s.light;
-    const waterLow = !!s.waterLow;
-    const nutrients = (typeof s.nutrients === "number") ? s.nutrients : 0;
-    const temperature = (typeof s.temperature === "number") ? s.temperature : 0;
-    const humidity = (typeof s.humidity === "number") ? s.humidity : 0;
+  const pump = !!s.pump;
+  const light = !!s.light;
+  const waterLow = !!s.waterLow;
+  const nutrients = (typeof s.nutrients === "number") ? s.nutrients : 0;
+  const temperature = (typeof s.temperature === "number") ? s.temperature : 0;
+  const humidity = (typeof s.humidity === "number") ? s.humidity : 0;
 
-    // NOVÉ: teplota vody DS18B20
-    const waterTemp = (typeof s.waterTemp === "number") ? s.waterTemp : 0;
-
-    document.getElementById('pumpStatus').innerText = pump ? 'ON' : 'OFF';
-    document.getElementById('lightStatus').innerText = light ? 'ON' : 'OFF';
-    document.getElementById('waterLevel').innerText = waterLow ? 'MIMO NORMY' : 'V norme';
-    document.getElementById('nutrients').innerText = nutrients + ' %';
-    document.getElementById('temperature').innerText = temperature.toFixed(1) + ' °C';
-    document.getElementById('humidity').innerText = humidity.toFixed(0) + ' %';
-
-    // NOVÉ pole v HTML
-    const el = document.getElementById('waterTemp');
-    if (el) el.innerText = waterTemp.toFixed(1) + ' °C';
-  });
-}
-
-// štart
-startListeners();
+  document.getElementById('pumpStatus').innerText = pump ? 'ON' : 'OFF';
+  document.getElementById('lightStatus').innerText = light ? 'ON' : 'OFF';
+  document.getElementById('waterLevel').innerText = waterLow ? 'MIMO NORMY' : 'V norme';
+  document.getElementById('nutrients').innerText = nutrients + ' %';
+  document.getElementById('temperature').innerText = temperature.toFixed(1) + ' °C';
+  document.getElementById('humidity').innerText = humidity.toFixed(0) + ' %';
+});
