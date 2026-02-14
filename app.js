@@ -39,9 +39,11 @@ db.ref('tower/status').on('value', (snap) => {
   const pump = !!s.pump;
   const light = !!s.light;
   const waterLow = !!s.waterLow;
+
   const nutrients = (typeof s.nutrients === "number") ? s.nutrients : 0;
   const temperature = (typeof s.temperature === "number") ? s.temperature : 0;
   const humidity = (typeof s.humidity === "number") ? s.humidity : 0;
+  const waterTemp = (typeof s.waterTemp === "number") ? s.waterTemp : 0;
 
   document.getElementById('pumpStatus').innerText = pump ? 'ON' : 'OFF';
   document.getElementById('lightStatus').innerText = light ? 'ON' : 'OFF';
@@ -49,4 +51,8 @@ db.ref('tower/status').on('value', (snap) => {
   document.getElementById('nutrients').innerText = nutrients + ' %';
   document.getElementById('temperature').innerText = temperature.toFixed(1) + ' °C';
   document.getElementById('humidity').innerText = humidity.toFixed(0) + ' %';
+
+  // NEW: teplota vody
+  const wtEl = document.getElementById('waterTemp');
+  if (wtEl) wtEl.innerText = waterTemp.toFixed(1) + ' °C';
 });
