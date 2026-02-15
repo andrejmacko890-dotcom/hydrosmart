@@ -122,23 +122,34 @@
     <p>Vyber rastlinu a sleduj stav hydroponickej veže</p>
   </header>
 
-  <section>
-    <h2>Rastlina</h2>
-    <select id="plantSelect">
-      <option value="">🌱 Vyber rastlinu</option>
-      <option value="salad">🥬 Hlávkový šalát</option>
-      <option value="arugula">🥗 Rukola</option>
-      <option value="basil">🌿 Bazalka</option>
-      <option value="spinach">🌿 Špenát</option>
-      <option value="chives">🧅 Pažítka</option>
-      <option value="coriander">🌿 Koriander</option>
-      <option value="mint">🌱 Mäta</option>
-      <option value="leafsalad">🥬 Listový šalát (dubáčik / lollo)</option>
-      <option value="parsley">🌿 Petržlen vňaťový</option>
-      <option value="pakchoi">🥬 Pak choi (baby)</option>
-    </select>
-    <button onclick="sendPlant()"><i class="fas fa-seedling"></i> Odoslať rastlinu</button>
-  </section>
+ <section class="status-section">
+  <h2>Status HydroVeže</h2>
+
+  <h3 style="margin:15px 0 10px;color:#2e7d32;">💧 Voda</h3>
+  <div class="status-item status-water"><i class="fas fa-water"></i> Hladina: <span id="waterLevel">--</span></div>
+  <div class="status-item status-temp"><i class="fas fa-temperature-low"></i> Teplota vody: <span id="waterTemp">--</span></div>
+  <div class="status-item status-water"><i class="fas fa-check"></i> Kalibrácia: <span id="calibrationStatus">--</span></div>
+
+  <h3 style="margin:15px 0 10px;color:#2e7d32;">🧪 Živiny</h3>
+  <div class="status-item status-nutrients"><i class="fas fa-vial"></i> Živiny: <span id="nutrientsPct">-- %</span></div>
+  <div class="status-item status-water"><i class="fas fa-bullseye"></i> Cieľ: <span id="nutrientsTargetPct">--</span></div>
+  <div class="status-item status-water"><i class="fas fa-flask"></i> Dávkovanie: <span id="dosingText">--</span></div>
+  <div class="status-item status-water"><i class="fas fa-info-circle"></i> Odporúčanie: <span id="nutrientHint">--</span></div>
+
+  <h3 style="margin:15px 0 10px;color:#2e7d32;">💡 Svetlo</h3>
+  <div class="status-item status-light"><i class="fas fa-lightbulb"></i> Svetlo: <span id="lightStatus">--</span></div>
+  <div class="status-item status-light"><i class="fas fa-clock"></i> Režim: <span id="lightHours">--</span></div>
+
+  <h3 style="margin:15px 0 10px;color:#2e7d32;">🌡️ Vzduch</h3>
+  <div class="status-item status-temp"><i class="fas fa-thermometer-half"></i> Teplota vzduchu: <span id="temperature">--</span></div>
+  <div class="status-item status-humidity"><i class="fas fa-tint"></i> Vlhkosť: <span id="humidity">--</span></div>
+
+  <h3 style="margin:15px 0 10px;color:#2e7d32;">⚙️ Systém</h3>
+  <div class="status-item status-pump"><i class="fas fa-tint"></i> Pumpa: <span id="pumpStatus">--</span></div>
+  <div class="status-item status-water"><i class="fas fa-seedling"></i> Rastlina: <span id="plantName">--</span></div>
+  <div class="status-item status-water"><i class="fas fa-layer-group"></i> Fáza: <span id="phaseName">--</span></div>
+</section>
+
 
   <section>
     <h2>Fáza</h2>
@@ -173,3 +184,4 @@
 <script src="./app.js"></script>
 </body>
 </html>
+
