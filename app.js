@@ -17,6 +17,7 @@ const db = firebase.database();
 function clamp(n, a, b) { return Math.max(a, Math.min(b, n)); }
 function isNum(x) { return typeof x === "number" && isFinite(x); }
 
+// percent z koncentrácie podľa cieľa (min..max)
 function percentFromTarget(concPpm, minPpm, maxPpm) {
   if (!isNum(concPpm) || !isNum(minPpm) || !isNum(maxPpm) || maxPpm <= minPpm) return 0;
   if (concPpm <= minPpm) return 0;
@@ -24,33 +25,51 @@ function percentFromTarget(concPpm, minPpm, maxPpm) {
   return clamp(Math.round(((concPpm - minPpm) / (maxPpm - minPpm)) * 100), 0, 100);
 }
 
+// Pre UI: prevedieme cieľ ppm -> cieľ %
+function targetPctRange(minPpm, maxPpm) {
+  // 0% = min, 100% = max (v našom modeli)
+  // teda cieľ je vždy 0–100, ale používateľ chce vidieť "od-do" percenta reálneho cieľa
+  // Spravíme to takto: cieľový pás je vždy 35–65% okolo stredu (jednoduché a stabilné)
+  // ALE: lepšie: ukážeme "min=0% max=100%" je blbosť. Preto to počítame voči "max cieľu" 1000 ppm.
+  // Jednoduché praktické riešenie: zoberieme maxPpm ako 100% referenciu.
+  if (!isNum(minPpm) || !isNum(maxPpm) || maxPpm <= 0) return "--";
+  const minPct = clamp(Math.round((minPpm / maxPpm) * 100), 0, 100);
+  const maxPct = 100;
+  return `${minPct}–${maxPct} %`;
+}
+
+// Dávkovanie text podľa fázy
+function dosingText(phaseObj) {
+  if (!phaseObj) return "--";
+
+  const rb = isNum(phaseObj.rootBoostMlPerL) ? phaseObj.rootBoostMlPerL : 0;
+  const a = isNum(phaseObj.fertA_MlPerL) ? phaseObj.fertA_MlPerL : 0;
+  const b = isNum(phaseObj.fertB_MlPerL) ? phaseObj.fertB_MlPerL : 0;
+
+  if (rb > 0) return `Zakoreňovač: ${rb} ml / 1 L (napr. ${rb * 10} ml / 10 L)`;
+  if (a > 0 || b > 0) return `Hnojivo A: ${a} ml/L + Hnojivo B: ${b} ml/L (napr. ${a*10} ml + ${b*10} ml / 10 L)`;
+  return "Bez dávkovania";
+}
+
+// Odporúčanie podľa odchýlky
 function recommendation(concPpm, minPpm, maxPpm, phaseObj) {
-  // phaseObj: {rootBoostMlPerL, fertA_MlPerL, fertB_MlPerL, ...}
   if (!isNum(concPpm) || !isNum(minPpm) || !isNum(maxPpm)) return "Čakám na dáta…";
 
   if (concPpm < (minPpm - 100)) {
-    // nízko
-    if (phaseObj && isNum(phaseObj.rootBoostMlPerL) && phaseObj.rootBoostMlPerL > 0) {
-      return `Pridaj zakoreňovač ${phaseObj.rootBoostMlPerL} ml/L (jemne).`;
-    }
-    if (phaseObj && isNum(phaseObj.fertA_MlPerL) && isNum(phaseObj.fertB_MlPerL) && (phaseObj.fertA_MlPerL > 0 || phaseObj.fertB_MlPerL > 0)) {
-      return `Pridaj malé množstvo: hnojivo A ${phaseObj.fertA_MlPerL} ml/L + hnojivo B ${phaseObj.fertB_MlPerL} ml/L.`;
-    }
-    return "Pridaj malé množstvo živín.";
+    const rb = phaseObj && isNum(phaseObj.rootBoostMlPerL) ? phaseObj.rootBoostMlPerL : 0;
+    const a = phaseObj && isNum(phaseObj.fertA_MlPerL) ? phaseObj.fertA_MlPerL : 0;
+    const b = phaseObj && isNum(phaseObj.fertB_MlPerL) ? phaseObj.fertB_MlPerL : 0;
+
+    if (rb > 0) return `Nízke živiny → pridaj zakoreňovač ${rb} ml/L.`;
+    if (a > 0 || b > 0) return `Nízke živiny → pridaj malé množstvo: A ${a} ml/L + B ${b} ml/L.`;
+    return "Nízke živiny → pridaj malé množstvo živín.";
   }
 
   if (concPpm > (maxPpm + 150)) {
-    return "Dolej čistú vodu (máš vysokú koncentráciu).";
+    return "Vysoké živiny → dolej čistú vodu.";
   }
 
-  // v norme
-  if (phaseObj && isNum(phaseObj.rootBoostMlPerL) && phaseObj.rootBoostMlPerL > 0) {
-    return `OK. (Fáza zakoreňovač ${phaseObj.rootBoostMlPerL} ml/L)`;
-  }
-  if (phaseObj && isNum(phaseObj.fertA_MlPerL) && isNum(phaseObj.fertB_MlPerL) && (phaseObj.fertA_MlPerL > 0 || phaseObj.fertB_MlPerL > 0)) {
-    return `OK. (Hnojivo A ${phaseObj.fertA_MlPerL} ml/L + B ${phaseObj.fertB_MlPerL} ml/L)`;
-  }
-  return "OK.";
+  return "OK (v norme).";
 }
 
 // ==================== Write commands ====================
@@ -61,118 +80,110 @@ function sendPlant() {
   db.ref("tower/commands").update({
     plant: plantKey,
     resetPumpTimer: true
-  }).then(() => {
-    alert("Rastlina odoslaná ✔");
-  }).catch(err => {
-    console.error(err);
-    alert("Chyba zápisu: " + err.message);
-  });
+  }).then(() => alert("Rastlina odoslaná ✔"))
+    .catch(err => alert("Chyba: " + err.message));
 }
 
 function sendPhase() {
-  const phase = document.getElementById("phaseSelect").value; // seedling / growth
+  const phase = document.getElementById("phaseSelect").value;
   if (!phase) { alert("Vyber fázu!"); return; }
 
-  db.ref("tower/commands").update({
-    phase: phase
-  }).then(() => {
-    alert("Fáza odoslaná ✔");
-  }).catch(err => {
-    console.error(err);
-    alert("Chyba zápisu: " + err.message);
-  });
+  db.ref("tower/commands").update({ phase })
+    .then(() => alert("Fáza odoslaná ✔"))
+    .catch(err => alert("Chyba: " + err.message));
 }
 
-// aby onclick v HTML fungoval
 window.sendPlant = sendPlant;
 window.sendPhase = sendPhase;
 
-// ==================== Live UI ====================
+// ==================== Live ====================
 let latestPlantKey = "salad";
 let latestPhase = "seedling";
-let latestPlantProfile = null;
+let plantProfile = null;
 
-// 1) čítaj commands (aktuálna rastlina + fáza)
+// commands listener
 db.ref("tower/commands").on("value", (snap) => {
   const c = snap.val() || {};
   if (typeof c.plant === "string" && c.plant.trim()) latestPlantKey = c.plant.trim();
   if (typeof c.phase === "string" && c.phase.trim()) latestPhase = c.phase.trim();
 
-  // nastav dropdowny podľa reality
+  // sync dropdowns
   const plantSel = document.getElementById("plantSelect");
   if (plantSel && plantSel.value !== latestPlantKey) plantSel.value = latestPlantKey;
 
   const phaseSel = document.getElementById("phaseSelect");
   if (phaseSel && phaseSel.value !== latestPhase) phaseSel.value = latestPhase;
 
-  // načítaj profil rastliny
+  // load plant profile
   db.ref(`tower/plants/${latestPlantKey}`).once("value").then(psnap => {
-    latestPlantProfile = psnap.val() || null;
+    plantProfile = psnap.val() || null;
   });
 });
 
-// 2) čítaj status
-db.ref("tower/status").on("value", (snap) => {
+// status listener
+db.ref("tower/status").on("value", async (snap) => {
   const s = snap.val();
   if (!s) return;
 
-  // základné hodnoty
-  const pump = !!s.pump;
-  const light = !!s.light;
-  const waterLow = !!s.waterLow;
+  // base UI
+  document.getElementById("pumpStatus").innerText = s.pump ? "ON" : "OFF";
+  document.getElementById("lightStatus").innerText = s.light ? "ON" : "OFF";
+  document.getElementById("waterLevel").innerText = s.waterLow ? "MIMO NORMY" : "V norme";
 
-  const temp = isNum(s.temperature) ? s.temperature : 0;
+  const tAir = isNum(s.temperature) ? s.temperature : 0;
   const hum = isNum(s.humidity) ? s.humidity : 0;
-  const waterTemp = isNum(s.waterTemp) ? s.waterTemp : 0;
+  const tWater = isNum(s.waterTemp) ? s.waterTemp : 0;
 
-  document.getElementById("pumpStatus").innerText = pump ? "ON" : "OFF";
-  document.getElementById("lightStatus").innerText = light ? "ON" : "OFF";
-  document.getElementById("waterLevel").innerText = waterLow ? "MIMO NORMY" : "V norme";
-  document.getElementById("temperature").innerText = temp.toFixed(1) + " °C";
+  document.getElementById("temperature").innerText = tAir.toFixed(1) + " °C";
   document.getElementById("humidity").innerText = hum.toFixed(0) + " %";
-  document.getElementById("waterTemp").innerText = waterTemp.toFixed(1) + " °C";
+  document.getElementById("waterTemp").innerText = tWater.toFixed(1) + " °C";
 
-  // kalibrácia
-  const calibrated = !!s.calibrated;
-  const baselinePpm = isNum(s.baselinePpm) ? s.baselinePpm : 0;
-
-  document.getElementById("calibrationStatus").innerText =
-    calibrated ? `OK (baseline ${baselinePpm} ppm)` : "NEKALIBROVANÉ (sprav 'nová nádrž')";
-
-  // koncentrácia ppm (živiny navyše)
-  const tdsPpm = isNum(s.tdsPpm) ? s.tdsPpm : null;
-  const concPpmFromDb = isNum(s.concentrationPpm) ? s.concentrationPpm : null;
-
-  let concPpm = 0;
-  if (concPpmFromDb !== null) concPpm = concPpmFromDb;
-  else if (tdsPpm !== null) concPpm = Math.max(0, tdsPpm - baselinePpm);
-
-  // vyber fázu (z statusu alebo commands)
-  const phase = (typeof s.phase === "string" && s.phase) ? s.phase : latestPhase;
+  // plant/phase (z statusu alebo commands)
   const plantKey = (typeof s.plant === "string" && s.plant) ? s.plant : latestPlantKey;
+  const phase = (typeof s.phase === "string" && s.phase) ? s.phase : latestPhase;
 
-  // načítaj plant profil ak ešte nemáme
-  if (!latestPlantProfile || plantKey !== latestPlantKey) {
+  // load profile if needed
+  if (!plantProfile || plantKey !== latestPlantKey) {
     latestPlantKey = plantKey;
-    db.ref(`tower/plants/${plantKey}`).once("value").then(psnap => {
-      latestPlantProfile = psnap.val() || null;
-    });
+    plantProfile = (await db.ref(`tower/plants/${plantKey}`).once("value")).val() || null;
   }
 
-  // percentá + odporúčanie
-  let pct = 0;
-  let hint = "Čakám na profil rastliny…";
+  const plantName = plantProfile?.plantName || plantKey;
+  document.getElementById("plantName").innerText = plantName;
 
-  const phaseObj = latestPlantProfile?.phases?.[phase];
+  const phaseObj = plantProfile?.phases?.[phase] || null;
+  const phaseName = phaseObj?.name ? `${phaseObj.name} (${phaseObj.daysNote || ""})`.trim() : phase;
+  document.getElementById("phaseName").innerText = phaseName;
+
+  // light hours (z profilu)
+  const lh = plantProfile?.lightHours;
+  document.getElementById("lightHours").innerText = isNum(lh) ? `${lh} h/deň` : "--";
+
+  // calibration
+  const calibrated = !!s.calibrated;
+  const baseline = isNum(s.baselinePpm) ? s.baselinePpm : 0;
+  document.getElementById("calibrationStatus").innerText =
+    calibrated ? `OK (baseline ${baseline} ppm)` : "NEKALIBROVANÉ (sprav 'nová nádrž')";
+
+  // concentration ppm
+  const conc = isNum(s.concentrationPpm) ? s.concentrationPpm : 0;
+
+  // nutrients % + target % + dosing + hint
   if (phaseObj && isNum(phaseObj.tdsTargetMin) && isNum(phaseObj.tdsTargetMax)) {
-    pct = percentFromTarget(concPpm, phaseObj.tdsTargetMin, phaseObj.tdsTargetMax);
-    hint = recommendation(concPpm, phaseObj.tdsTargetMin, phaseObj.tdsTargetMax, phaseObj);
-  } else {
-    // fallback: ak ESP už posiela nutrientsPct, zoberieme to
-    if (isNum(s.nutrientsPct)) pct = clamp(Math.round(s.nutrientsPct), 0, 100);
-    hint = "Chýba profil fázy v databáze.";
-  }
+    const pct = percentFromTarget(conc, phaseObj.tdsTargetMin, phaseObj.tdsTargetMax);
+    document.getElementById("nutrientsPct").innerText = pct + " %";
 
-  document.getElementById("nutrientsPct").innerText = pct + " %";
-  document.getElementById("nutrientHint").innerText = hint;
+    document.getElementById("nutrientsTargetPct").innerText =
+      `${targetPctRange(phaseObj.tdsTargetMin, phaseObj.tdsTargetMax)} (pre túto fázu)`;
+
+    document.getElementById("dosingText").innerText = dosingText(phaseObj);
+
+    document.getElementById("nutrientHint").innerText =
+      recommendation(conc, phaseObj.tdsTargetMin, phaseObj.tdsTargetMax, phaseObj);
+  } else {
+    document.getElementById("nutrientsPct").innerText = (isNum(s.nutrientsPct) ? s.nutrientsPct : 0) + " %";
+    document.getElementById("nutrientsTargetPct").innerText = "--";
+    document.getElementById("dosingText").innerText = "--";
+    document.getElementById("nutrientHint").innerText = "Chýba profil rastliny/fázy v databáze.";
+  }
 });
