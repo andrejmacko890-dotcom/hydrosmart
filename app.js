@@ -13,317 +13,486 @@ const firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 const db = firebase.database();
 
-// ==================== Helpers ====================
-function isNum(x){ return typeof x === "number" && isFinite(x); }
-function clamp(n,a,b){ return Math.max(a, Math.min(b,n)); }
-function unixNow(){ return Math.floor(Date.now()/1000); }
-function fmtTime(ts){
-  if (!isNum(ts) || ts <= 0) return "—";
-  const d = new Date(ts * 1000);
-  return d.toLocaleString("sk-SK");
-}
-function setText(id, txt){
-  const el = document.getElementById(id);
-  if (el) el.innerText = txt;
-}
+// ==================== Nastavenia ====================
+// percenty chceme z koncentrácie po baseline.
+// Jednoduchá referenčná škála: 0..1000 ppm = 0..100%
+const REF_MAX_PPM = 1000;
 
-function pill(id, kind, text){
-  const el = document.getElementById(id);
-  if (!el) return;
-  el.classList.remove("pill-ok","pill-warn","pill-bad");
-  if (kind === "ok") el.classList.add("pill-ok");
-  if (kind === "warn") el.classList.add("pill-warn");
-  if (kind === "bad") el.classList.add("pill-bad");
-  el.innerText = text;
-}
-
-// ==================== Plant & Phase model (lokálne, stabilné) ====================
-// 3 fázy: seedling (iba voda), rooting (zakoreňovač), grow (hnojivo A+B)
-
+// ==================== Rastliny (len tie nové) ====================
 const PLANTS = {
-  salad_head: {
-    name:"Hlávkový šalát",
-    times:{ germ:[2,4], root:[7,10], harvest:[30,40] },
-    tds:{ seedling:[0,150], rooting:[250,350], grow:[600,750] },
-    light:[14,16],
-    dosing:{
-      seedling:"Iba čistá voda (bez dávkovania).",
-      rooting:"Zakoreňovač: 0.5 ml/L (napr. 5 ml do 10 L) na 7 dní.",
-      grow:"Hnojivo A: 2 ml/L + Hnojivo B: 2 ml/L (napr. 20 ml + 20 ml do 10 L)."
+  "lettuce_head": {
+    name: "🥬 Hlávkový šalát",
+    light: "14–16 h/deň",
+    germ: { min: 2, max: 4 },
+    root: { min: 7, max: 10 },
+    harvest: { min: 30, max: 40 },
+    tds: {
+      seedling: { min: 0,   max: 150, dose: "Iba voda (bez dávkovania)" },
+      rooting:  { min: 250, max: 350, dose: "Zakoreňovač: 0.5 ml/L (napr. 5 ml / 10 L)" },
+      growth:   { min: 600, max: 750, dose: "Hnojivo A: 2 ml/L + Hnojivo B: 2 ml/L (napr. 20 ml + 20 ml / 10 L)" }
     }
   },
-  arugula: {
-    name:"Rukola",
-    times:{ germ:[2,3], root:[5,7], harvest:[20,30] },
-    tds:{ seedling:[0,150], rooting:[250,350], grow:[600,800] },
-    light:[14,16],
-    dosing:{
-      seedling:"Iba čistá voda.",
-      rooting:"Zakoreňovač: 0.5 ml/L na 5–7 dní.",
-      grow:"Hnojivo A 2 ml/L + B 2 ml/L."
+  "arugula": {
+    name: "🥗 Rukola",
+    light: "14–16 h/deň",
+    germ: { min: 2, max: 3 },
+    root: { min: 5, max: 7 },
+    harvest: { min: 20, max: 30 },
+    tds: {
+      seedling: { min: 0,   max: 150, dose: "Iba voda (bez dávkovania)" },
+      rooting:  { min: 250, max: 350, dose: "Zakoreňovač: 0.5 ml/L (napr. 5 ml / 10 L)" },
+      growth:   { min: 600, max: 800, dose: "Hnojivo A: 2 ml/L + Hnojivo B: 2 ml/L (napr. 20 ml + 20 ml / 10 L)" }
     }
   },
-  basil: {
-    name:"Bazalka",
-    times:{ germ:[4,7], root:[10,14], harvest:[35,50] },
-    tds:{ seedling:[0,150], rooting:[300,400], grow:[700,900] },
-    light:[16,16],
-    dosing:{
-      seedling:"Iba čistá voda.",
-      rooting:"Zakoreňovač: 0.5 ml/L na 7–10 dní.",
-      grow:"Hnojivo A 2 ml/L + B 2 ml/L."
+  "basil": {
+    name: "🌿 Bazalka",
+    light: "16 h/deň",
+    germ: { min: 4, max: 7 },
+    root: { min: 10, max: 14 },
+    harvest: { min: 35, max: 50 },
+    tds: {
+      seedling: { min: 0,   max: 150, dose: "Iba voda (bez dávkovania)" },
+      rooting:  { min: 300, max: 400, dose: "Zakoreňovač: 0.5 ml/L (napr. 5 ml / 10 L)" },
+      growth:   { min: 700, max: 900, dose: "Hnojivo A: 2 ml/L + Hnojivo B: 2 ml/L (napr. 20 ml + 20 ml / 10 L)" }
     }
   },
-  spinach: {
-    name:"Špenát",
-    times:{ germ:[4,8], root:[7,10], harvest:[30,45] },
-    tds:{ seedling:[0,150], rooting:[250,350], grow:[600,800] },
-    light:[12,14],
-    dosing:{
-      seedling:"Iba čistá voda.",
-      rooting:"Zakoreňovač: 0.5 ml/L na 7 dní.",
-      grow:"Hnojivo A 2 ml/L + B 2 ml/L."
+  "spinach": {
+    name: "🌿 Špenát",
+    light: "12–14 h/deň",
+    germ: { min: 4, max: 8 },
+    root: { min: 7, max: 10 },
+    harvest: { min: 30, max: 45 },
+    tds: {
+      seedling: { min: 0,   max: 150, dose: "Iba voda (bez dávkovania)" },
+      rooting:  { min: 250, max: 350, dose: "Zakoreňovač: 0.5 ml/L (napr. 5 ml / 10 L)" },
+      growth:   { min: 600, max: 800, dose: "Hnojivo A: 2 ml/L + Hnojivo B: 2 ml/L (napr. 20 ml + 20 ml / 10 L)" }
     }
   },
-  chives: {
-    name:"Pažítka",
-    times:{ germ:[7,14], root:[10,14], harvest:[45,60] },
-    tds:{ seedling:[0,150], rooting:[300,400], grow:[700,900] },
-    light:[14,16],
-    dosing:{
-      seedling:"Iba čistá voda.",
-      rooting:"Zakoreňovač: 0.5 ml/L na 7–10 dní.",
-      grow:"Hnojivo A 2 ml/L + B 2 ml/L."
+  "chives": {
+    name: "🧅 Pažítka",
+    light: "14–16 h/deň",
+    germ: { min: 7, max: 14 },
+    root: { min: 10, max: 14 },
+    harvest: { min: 45, max: 60 },
+    tds: {
+      seedling: { min: 0,   max: 150, dose: "Iba voda (bez dávkovania)" },
+      rooting:  { min: 300, max: 400, dose: "Zakoreňovač: 0.5 ml/L (napr. 5 ml / 10 L)" },
+      growth:   { min: 700, max: 900, dose: "Hnojivo A: 2 ml/L + Hnojivo B: 2 ml/L (napr. 20 ml + 20 ml / 10 L)" }
     }
   },
-  coriander: {
-    name:"Koriander",
-    times:{ germ:[5,10], root:[7,10], harvest:[30,45] },
-    tds:{ seedling:[0,150], rooting:[250,350], grow:[600,800] },
-    light:[12,14],
-    dosing:{
-      seedling:"Iba čistá voda.",
-      rooting:"Zakoreňovač: 0.5 ml/L na 7–10 dní.",
-      grow:"Hnojivo A 2 ml/L + B 2 ml/L."
+  "coriander": {
+    name: "🌿 Koriander",
+    light: "12–14 h/deň",
+    germ: { min: 5, max: 10 },
+    root: { min: 7, max: 10 },
+    harvest: { min: 30, max: 45 },
+    tds: {
+      seedling: { min: 0,   max: 150, dose: "Iba voda (bez dávkovania)" },
+      rooting:  { min: 250, max: 350, dose: "Zakoreňovač: 0.5 ml/L (napr. 5 ml / 10 L)" },
+      growth:   { min: 600, max: 800, dose: "Hnojivo A: 2 ml/L + Hnojivo B: 2 ml/L (napr. 20 ml + 20 ml / 10 L)" }
     }
   },
-  mint: {
-    name:"Mäta",
-    times:{ germ:[8,15], root:[10,14], harvest:[40,60] },
-    tds:{ seedling:[0,150], rooting:[250,350], grow:[650,850] },
-    light:[14,16],
-    dosing:{
-      seedling:"Iba čistá voda.",
-      rooting:"Zakoreňovač: 0.5 ml/L na 7 dní.",
-      grow:"Hnojivo A 2 ml/L + B 2 ml/L."
+  "mint": {
+    name: "🌱 Mäta",
+    light: "14–16 h/deň",
+    germ: { min: 8, max: 15 },
+    root: { min: 10, max: 14 },
+    harvest: { min: 40, max: 60 },
+    tds: {
+      seedling: { min: 0,   max: 150, dose: "Iba voda (bez dávkovania)" },
+      rooting:  { min: 250, max: 350, dose: "Zakoreňovač: 0.5 ml/L (napr. 5 ml / 10 L)" },
+      growth:   { min: 650, max: 850, dose: "Hnojivo A: 2 ml/L + Hnojivo B: 2 ml/L (napr. 20 ml + 20 ml / 10 L)" }
     }
   },
-  salad_leaf: {
-    name:"Listový šalát (lollo/dubáčik)",
-    times:{ germ:[2,4], root:[7,10], harvest:[25,35] },
-    tds:{ seedling:[0,150], rooting:[250,350], grow:[600,750] },
-    light:[14,16],
-    dosing:{
-      seedling:"Iba čistá voda.",
-      rooting:"Zakoreňovač: 0.5 ml/L na 7 dní.",
-      grow:"Hnojivo A 2 ml/L + B 2 ml/L."
+  "lettuce_leaf": {
+    name: "🥬 Listový šalát (lollo/dubáčik)",
+    light: "14–16 h/deň",
+    germ: { min: 2, max: 4 },
+    root: { min: 7, max: 10 },
+    harvest: { min: 25, max: 35 },
+    tds: {
+      seedling: { min: 0,   max: 150, dose: "Iba voda (bez dávkovania)" },
+      rooting:  { min: 250, max: 350, dose: "Zakoreňovač: 0.5 ml/L (napr. 5 ml / 10 L)" },
+      growth:   { min: 600, max: 750, dose: "Hnojivo A: 2 ml/L + Hnojivo B: 2 ml/L (napr. 20 ml + 20 ml / 10 L)" }
     }
   },
-  parsley: {
-    name:"Petržlen vňaťový",
-    times:{ germ:[10,20], root:[10,14], harvest:[50,70] },
-    tds:{ seedling:[0,150], rooting:[300,400], grow:[700,900] },
-    light:[14,16],
-    dosing:{
-      seedling:"Iba čistá voda.",
-      rooting:"Zakoreňovač: 0.5 ml/L na 7–10 dní.",
-      grow:"Hnojivo A 2 ml/L + B 2 ml/L."
+  "parsley": {
+    name: "🌿 Petržlen vňaťový",
+    light: "14–16 h/deň",
+    germ: { min: 10, max: 20 },
+    root: { min: 10, max: 14 },
+    harvest: { min: 50, max: 70 },
+    tds: {
+      seedling: { min: 0,   max: 150, dose: "Iba voda (bez dávkovania)" },
+      rooting:  { min: 300, max: 400, dose: "Zakoreňovač: 0.5 ml/L (napr. 5 ml / 10 L)" },
+      growth:   { min: 700, max: 900, dose: "Hnojivo A: 2 ml/L + Hnojivo B: 2 ml/L (napr. 20 ml + 20 ml / 10 L)" }
     }
   },
-  pakchoi: {
-    name:"Pak choi (baby)",
-    times:{ germ:[2,3], root:[5,7], harvest:[25,35] },
-    tds:{ seedling:[0,150], rooting:[250,350], grow:[650,850] },
-    light:[14,16],
-    dosing:{
-      seedling:"Iba čistá voda.",
-      rooting:"Zakoreňovač: 0.5 ml/L na 7 dní.",
-      grow:"Hnojivo A 2 ml/L + B 2 ml/L."
+  "pakchoi": {
+    name: "🥬 Pak choi (baby)",
+    light: "14–16 h/deň",
+    germ: { min: 2, max: 3 },
+    root: { min: 5, max: 7 },
+    harvest: { min: 25, max: 35 },
+    tds: {
+      seedling: { min: 0,   max: 150, dose: "Iba voda (bez dávkovania)" },
+      rooting:  { min: 250, max: 350, dose: "Zakoreňovač: 0.5 ml/L (napr. 5 ml / 10 L)" },
+      growth:   { min: 650, max: 850, dose: "Hnojivo A: 2 ml/L + Hnojivo B: 2 ml/L (napr. 20 ml + 20 ml / 10 L)" }
     }
   }
 };
 
-// fáza podľa počtu dní od výsevu
-function phaseFromSow(plantKey, sowUnix){
-  const p = PLANTS[plantKey];
-  if (!p || !isNum(sowUnix) || sowUnix <= 0) return "seedling";
+// ==================== DOM helpers ====================
+function $(id){ return document.getElementById(id); }
+function isNum(x){ return typeof x === "number" && isFinite(x); }
+function clamp(n,a,b){ return Math.max(a, Math.min(b, n)); }
 
-  const days = Math.floor((unixNow() - sowUnix) / 86400);
-  const germMax = p.times.germ[1];
-  const rootMax = p.times.root[1];
-
-  // seedling = do konca klíčenia (germMax)
-  if (days <= germMax) return "seedling";
-  // rooting = do konca koreňovania (germMax + rootMax)
-  if (days <= germMax + rootMax) return "rooting";
-  return "grow";
+function ppmToPct(ppm){
+  if (!isNum(ppm)) return 0;
+  return clamp(Math.round((ppm / REF_MAX_PPM) * 100), 0, 100);
 }
 
-function phaseName(phase){
-  if (phase === "seedling") return "Klíčenie (iba voda)";
-  if (phase === "rooting") return "Zakoreňovanie (zakoreňovač)";
-  if (phase === "grow") return "Rast (hnojivo A+B)";
+// phase z dní
+function computePhase(days, plant){
+  // pravidlo: do konca klíčenia (max) = seedling
+  // potom do konca zakoreňovania (klíčenie max + koreňovanie max) = rooting
+  // potom growth
+  const endSeed = plant.germ.max;
+  const endRoot = plant.germ.max + plant.root.max;
+  if (days <= endSeed) return "seedling";
+  if (days <= endRoot) return "rooting";
+  return "growth";
+}
+
+function phaseLabel(phase){
+  if (phase === "seedling") return "🌱 Klíčenie (iba voda)";
+  if (phase === "rooting") return "🌿 Zakoreňovanie (zakoreňovač)";
+  return "🌱 Rast (hnojivo A+B)";
+}
+
+function daysBetween(isoDate){
+  if (!isoDate) return null;
+  const d0 = new Date(isoDate + "T00:00:00");
+  if (isNaN(d0.getTime())) return null;
+  const now = new Date();
+  const dn = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+  const diff = Math.floor((dn - d0) / (1000*60*60*24));
+  return diff >= 0 ? diff : 0;
+}
+
+// ==================== Populate plant dropdown ====================
+function populatePlants(){
+  const sel = $("plantSelect");
+  sel.innerHTML = "";
+  const opt0 = document.createElement("option");
+  opt0.value = "";
+  opt0.textContent = "🌱 Vyber rastlinu";
+  sel.appendChild(opt0);
+
+  Object.entries(PLANTS).forEach(([key, p])=>{
+    const o = document.createElement("option");
+    o.value = key;
+    o.textContent = p.name;
+    sel.appendChild(o);
+  });
+}
+
+// ==================== Writes ====================
+function sendPlant(){
+  const plantKey = $("plantSelect").value;
+  if (!plantKey) { alert("Vyber rastlinu!"); return; }
+
+  db.ref("tower/commands").update({
+    plant: plantKey,
+    resetPumpTimer: true
+  }).then(()=> alert("Rastlina odoslaná ✔"))
+    .catch(err => alert("Chyba: " + err.message));
+}
+window.sendPlant = sendPlant;
+
+function saveSowDate(){
+  const d = $("sowDate").value; // YYYY-MM-DD
+  const plantKey = $("plantSelect").value;
+  if (!plantKey) { alert("Najprv vyber rastlinu."); return; }
+  if (!d) { alert("Zadaj dátum výsevu."); return; }
+
+  db.ref("tower/meta").update({
+    sowDate: d,
+    sowPlant: plantKey
+  }).then(()=> alert("Dátum uložený ✔"))
+    .catch(err => alert("Chyba: " + err.message));
+}
+window.saveSowDate = saveSowDate;
+
+function clearSowDate(){
+  db.ref("tower/meta").update({
+    sowDate: null,
+    sowPlant: null
+  }).then(()=> alert("Dátum zmazaný ✔"))
+    .catch(err => alert("Chyba: " + err.message));
+}
+window.clearSowDate = clearSowDate;
+
+// ==================== UI render ====================
+function setSummary(plantKey, phase, sowDate){
+  const p = PLANTS[plantKey];
+  if (!p){
+    $("selectionSummary").innerHTML = "Vyber rastlinu.";
+    return;
+  }
+  const sowTxt = sowDate ? sowDate.split("-").reverse().join(". ") : "nezadaný";
+
+  $("selectionSummary").innerHTML = `
+    <b>Vybraná rastlina:</b> ${p.name}<br>
+    <b>Aktuálna fáza:</b> ${phaseLabel(phase)}<br>
+    <b>Svetlo:</b> ${p.light}<br>
+    <b>Dátum výsevu:</b> ${sowTxt}
+  `;
+}
+
+function setCalibrationBox(calibrated){
+  if (calibrated){
+    $("calibrationBox").innerHTML = `
+      <span class="pill-ok">OK (nakalibrované)</span><br><br>
+      <b>Ak vymeníš celú nádrž (čistá voda):</b><br>
+      2× dotkni tlačidlo (nová nádrž).<br><br>
+      <b>Ak iba doleješ vodu:</b><br>
+      3× dotkni tlačidlo (dolievanie).
+    `;
+  } else {
+    $("calibrationBox").innerHTML = `
+      <span class="pill-bad">NEKALIBROVANÉ</span><br><br>
+      Nalej <b>čistú vodu</b> a sprav kalibráciu:<br>
+      <b>2× dotkni tlačidlo</b> (nová nádrž).<br><br>
+      Potom appka začne ukazovať živiny správne.
+    `;
+  }
+}
+
+function makeNextAction({ waterLow, calibrated, phase, doseText, nutrientsStateText }){
+  // najvyššia priorita: voda low
+  if (waterLow){
+    return {
+      title: "Dolej vodu",
+      desc: "Hladina vody je nízka. Dolej vodu do nádrže. Po dolievaní urob 3× dotyk tlačidla (dolievanie).",
+      tone: "bad"
+    };
+  }
+
+  // kalibrácia
+  if (!calibrated){
+    return {
+      title: "Sprav kalibráciu (prvýkrát)",
+      desc: "Nalej čistú vodu do nádrže a sprav 2× dotyk tlačidla (nová nádrž). Potom bude meranie živín správne.",
+      tone: "warn"
+    };
+  }
+
+  // fáza a dávkovanie
+  if (phase === "seedling"){
+    return {
+      title: "Nechaj iba čistú vodu",
+      desc: "Si vo fáze klíčenia. Teraz nepridávaj žiadne živiny. Sleduj teplotu a hladinu vody.",
+      tone: "ok"
+    };
+  }
+
+  if (phase === "rooting"){
+    return {
+      title: "Zakoreňovač podľa dávkovania",
+      desc: `Aktuálne je zakoreňovanie. ${doseText}  •  Stav živín: ${nutrientsStateText}`,
+      tone: "ok"
+    };
+  }
+
+  return {
+    title: "Hnojivo A + B podľa dávkovania",
+    desc: `Aktuálne je rast. ${doseText}  •  Stav živín: ${nutrientsStateText}`,
+    tone: "ok"
+  };
+}
+
+function renderNextAction(box){
+  const el = $("nextActionBox");
+  const cls = box.tone === "bad" ? "pill-bad" : box.tone === "warn" ? "pill-warn" : "pill-ok";
+  el.innerHTML = `
+    <div class="title"><span class="${cls}">${box.title}</span></div>
+    <div class="desc">${box.desc}</div>
+  `;
+}
+
+// ==================== Nutrient advice ====================
+function nutrientState(concPpm, target){
+  // tolerancia jednoduchá: pod min-100 = nízke, nad max+150 = vysoké
+  if (!isNum(concPpm)) return { label: "Čakám na dáta…", tone: "warn" };
+  if (concPpm < (target.min - 100)) return { label: "NÍZKE", tone: "warn" };
+  if (concPpm > (target.max + 150)) return { label: "VYSOKÉ", tone: "bad" };
+  return { label: "OK", tone: "ok" };
+}
+
+function setNutrientAdvice({ phase, plant, concPpm }){
+  const t = plant.tds[phase];
+  const state = nutrientState(concPpm, t);
+
+  const concPct = ppmToPct(concPpm);
+  const minPct = ppmToPct(t.min);
+  const maxPct = ppmToPct(t.max);
+
+  let stateText = "";
+  if (state.tone === "ok") stateText = `<span class="pill-ok">OK (v norme)</span>`;
+  if (state.tone === "warn") stateText = `<span class="pill-warn">Pozor (nízke živiny)</span>`;
+  if (state.tone === "bad") stateText = `<span class="pill-bad">Pozor (vysoké živiny)</span>`;
+
+  let rec = "";
+  if (state.tone === "warn"){
+    rec = (phase === "rooting")
+      ? "Pridaj trochu zakoreňovača podľa dávkovania."
+      : (phase === "growth" ? "Pridaj malé množstvo hnojiva A+B." : "Zatiaľ nič nepridávaj.");
+  } else if (state.tone === "bad"){
+    rec = "Dolej čistú vodu (riedenie). Potom sprav 3× dotyk tlačidla (dolievanie).";
+  } else {
+    rec = "Všetko je v poriadku. Len kontroluj vodu a teplotu.";
+  }
+
+  $("nutrientAdviceBox").innerHTML = `
+    <b>Dávkovanie:</b> ${t.dose}<br>
+    <b>Stav živín:</b> ${stateText}<br>
+    <b>Tvoj stav:</b> ${concPct} %<br>
+    <b>Cieľ pre túto fázu:</b> ${minPct}–${maxPct} %<br><br>
+    <b>Odporúčanie:</b> ${rec}
+  `;
+
+  // do statusu: živiny %
+  $("nutrientsPct").innerText = concPct + " %";
+}
+
+// ==================== Timeline ====================
+function setTimeline(plant, sowDate){
+  const days = daysBetween(sowDate);
+  if (days === null){
+    $("timelineBox").innerHTML = `
+      Zadaj <b>dátum výsevu</b> a systém ti bude automaticky hovoriť fázy a ďalší krok.
+    `;
+    return;
+  }
+
+  const germ = `${plant.germ.min}–${plant.germ.max} dní`;
+  const root = `${plant.root.min}–${plant.root.max} dní`;
+  const harv = `${plant.harvest.min}–${plant.harvest.max} dní`;
+
+  $("timelineBox").innerHTML = `
+    <b>Dní od výsevu:</b> ${days} dní<br>
+    🌱 <b>Klíčenie:</b> ${germ}<br>
+    🌿 <b>Zakoreňovanie:</b> ${root}<br>
+    🧺 <b>Zber:</b> ${harv}<br>
+  `;
+}
+
+// ==================== Auto-phase (z dátumu) ====================
+async function autoPhaseUpdate(plantKey, sowDate){
+  const plant = PLANTS[plantKey];
+  if (!plant) return null;
+
+  const days = daysBetween(sowDate);
+  if (days === null) return "seedling"; // keď nie je dátum, nech je bezpečne seedling
+
+  const phase = computePhase(days, plant);
+
+  // zapíš phase do commands (pre budúcnosť; aj keď ESP to zatiaľ nerieši)
+  try {
+    await db.ref("tower/commands").update({ phase });
+  } catch (e) {
+    // nevadí, UI aj tak funguje
+  }
   return phase;
 }
 
-// percentá živín – počítame z koncentrácie voči cieľovému pásmu
-function nutrientsPct(concPpm, minPpm, maxPpm){
-  if (!isNum(concPpm) || !isNum(minPpm) || !isNum(maxPpm) || maxPpm <= minPpm) return 0;
-  if (concPpm <= minPpm) return 0;
-  if (concPpm >= maxPpm) return 100;
-  return clamp(Math.round(((concPpm - minPpm)/(maxPpm - minPpm))*100),0,100);
-}
+// ==================== Main listeners ====================
+populatePlants();
 
-function recommendation(concPpm, minPpm, maxPpm, dosingText){
-  if (!isNum(concPpm)) return "Čakám na dáta…";
-  if (concPpm < (minPpm - 100)) return `Pridaj živiny. ${dosingText}`;
-  if (concPpm > (maxPpm + 150)) return "Dolej čistú vodu (živiny sú vysoké).";
-  return "Všetko je v norme. Nič nemusíš robiť.";
-}
+let latestPlantKey = "";
+let sowDate = "";
+let computedPhase = "seedling";
 
-// ==================== Setup: uloženie rastliny + výsevu ====================
-async function saveSetup(){
-  const plantKey = document.getElementById("plantSelect").value;
-  const dateStr = document.getElementById("sowDate").value;
-
-  if (!plantKey) { alert("Vyber rastlinu."); return; }
-  if (!dateStr) { alert("Vyber dátum výsevu."); return; }
-
-  // date -> unix (00:00 lokálne)
-  const d = new Date(dateStr + "T00:00:00");
-  const sowUnix = Math.floor(d.getTime()/1000);
-
-  try{
-    await db.ref("tower/config").update({ plant: plantKey, sowDate: sowUnix });
-    setText("setupStatus", "✅ Uložené. Systém si fázy bude rátať sám.");
-  }catch(err){
-    alert("Chyba: " + err.message);
-  }
-}
-window.saveSetup = saveSetup;
-
-// ==================== Live listeners ====================
-let latestConfig = { plant:"salad_head", sowDate:0 };
-let latestStatus = null;
-
-db.ref("tower/config").on("value", (snap)=>{
+db.ref("tower/commands").on("value", (snap)=>{
   const c = snap.val() || {};
-  if (typeof c.plant === "string" && c.plant) latestConfig.plant = c.plant;
-  if (isNum(c.sowDate)) latestConfig.sowDate = c.sowDate;
-
-  // sync UI
-  const plantSel = document.getElementById("plantSelect");
-  if (plantSel && plantSel.value !== latestConfig.plant) plantSel.value = latestConfig.plant;
-
-  const sowInput = document.getElementById("sowDate");
-  if (sowInput && latestConfig.sowDate){
-    const d = new Date(latestConfig.sowDate*1000);
-    const yyyy = d.getFullYear();
-    const mm = String(d.getMonth()+1).padStart(2,"0");
-    const dd = String(d.getDate()).padStart(2,"0");
-    sowInput.value = `${yyyy}-${mm}-${dd}`;
+  if (typeof c.plant === "string" && c.plant.trim()) {
+    latestPlantKey = c.plant.trim();
+    if ($("plantSelect").value !== latestPlantKey) $("plantSelect").value = latestPlantKey;
   }
 });
 
-db.ref("tower/status").on("value", (snap)=>{
-  const s = snap.val();
-  if (!s) return;
-  latestStatus = s;
-  render();
+db.ref("tower/meta").on("value", async (snap)=>{
+  const m = snap.val() || {};
+  if (typeof m.sowDate === "string" && m.sowDate) sowDate = m.sowDate;
+  else sowDate = "";
+
+  if ($("sowDate").value !== sowDate) $("sowDate").value = sowDate;
+
+  // ak má meta aj sowPlant a líši sa, synchronizuj
+  if (typeof m.sowPlant === "string" && m.sowPlant && m.sowPlant !== latestPlantKey) {
+    latestPlantKey = m.sowPlant;
+    $("plantSelect").value = latestPlantKey;
+    db.ref("tower/commands").update({ plant: latestPlantKey, resetPumpTimer: true }).catch(()=>{});
+  }
+
+  // auto phase
+  if (latestPlantKey && PLANTS[latestPlantKey]) {
+    computedPhase = await autoPhaseUpdate(latestPlantKey, sowDate);
+    setSummary(latestPlantKey, computedPhase, sowDate);
+    setTimeline(PLANTS[latestPlantKey], sowDate);
+  } else {
+    $("selectionSummary").innerHTML = "Vyber rastlinu.";
+    $("timelineBox").innerHTML = "Zadaj rastlinu a dátum výsevu.";
+  }
 });
 
-function render(){
-  const s = latestStatus || {};
-  const plantKey = (typeof s.plant === "string" && s.plant) ? s.plant : latestConfig.plant;
-  const plant = PLANTS[plantKey] || PLANTS.salad_head;
+// status listener
+db.ref("tower/status").on("value", (snap)=>{
+  const s = snap.val() || {};
 
-  // Status
-  setText("pumpStatus", s.pump ? "ON" : "OFF");
-  setText("lightStatus", s.light ? "ON" : "OFF");
-  setText("waterLevel", s.waterLow ? "MIMO NORMY" : "V norme");
+  // status
+  $("pumpStatus").innerText = s.pump ? "ON" : "OFF";
+  $("lightStatus").innerText = s.light ? "ON" : "OFF";
+  $("waterLevel").innerText = s.waterLow ? "MIMO NORMY" : "V norme";
 
   const tAir = isNum(s.temperature) ? s.temperature : 0;
   const hum = isNum(s.humidity) ? s.humidity : 0;
   const tWater = isNum(s.waterTemp) ? s.waterTemp : 0;
 
-  setText("temperature", tAir.toFixed(1) + " °C");
-  setText("humidity", hum.toFixed(0) + " %");
-  setText("waterTemp", tWater.toFixed(1) + " °C");
+  $("temperature").innerText = tAir.toFixed(1) + " °C";
+  $("humidity").innerText = hum.toFixed(0) + " %";
+  $("waterTemp").innerText = tWater.toFixed(1) + " °C";
 
-  // Calibration (POZOR: názvy z ESP32)
+  // kalibrácia (ESP posiela baselineCalibrated)
   const calibrated = !!s.baselineCalibrated;
-  const baseline = isNum(s.tdsBaselinePpm) ? s.tdsBaselinePpm : (isNum(s.baselinePpm) ? s.baselinePpm : 0);
-  const conc = isNum(s.concentrationPpm) ? s.concentrationPpm : 0;
+  setCalibrationBox(calibrated);
 
-  setText("baselinePpm", String(baseline));
-  setText("concPpm", String(conc));
-  setText("calibrationStatus", calibrated ? "OK" : "NEKALIBROVANÉ");
+  // koncentrácia ppm (po baseline)
+  let concPpm = 0;
+  if (isNum(s.concentrationPpm)) concPpm = s.concentrationPpm;
+  else if (isNum(s.tdsPpm) && isNum(s.tdsBaselinePpm)) concPpm = Math.max(0, s.tdsPpm - s.tdsBaselinePpm);
 
-  // Fáza z výsevu (apka vedie človeka, ESP nemusí nič posielať)
-  const phase = phaseFromSow(plantKey, latestConfig.sowDate || 0);
-  setText("plantName", plant.name);
-  setText("phaseName", phaseName(phase));
+  // plant/phase (phase rieši app)
+  const plantKey = latestPlantKey && PLANTS[latestPlantKey] ? latestPlantKey : "arugula";
+  const plant = PLANTS[plantKey] || PLANTS["arugula"];
+  const phase = computedPhase || "seedling";
 
-  // Ciele pre živiny podľa fázy
-  const [minP, maxP] = plant.tds[phase];
-  const pct = nutrientsPct(conc, minP, maxP);
-  setText("nutrientsPct", pct + " %");
+  // živiny + odporúčania
+  setNutrientAdvice({ phase, plant, concPpm });
 
-  // Odporúčanie + dávkovanie
-  const doseTxt = plant.dosing[phase] || "—";
-  setText("dosingText", doseTxt);
-  setText("recommendationText", recommendation(conc, minP, maxP, doseTxt));
+  const t = plant.tds[phase];
+  const state = nutrientState(concPpm, t);
+  const nutrientsStateText = (state.label === "OK") ? "OK" : (state.label === "NÍZKE" ? "Nízke" : "Vysoké");
+  const action = makeNextAction({
+    waterLow: !!s.waterLow,
+    calibrated,
+    phase,
+    doseText: t.dose,
+    nutrientsStateText
+  });
+  renderNextAction(action);
 
-  // “ČO TERAZ?” – najdôležitejšie hore
-  // priority: voda low -> nekalibrované -> živiny mimo -> ok
-  const lastUp = isNum(s.lastUpdate) ? s.lastUpdate : 0;
-  setText("lastUpdateText", "Posledná aktualizácia: " + fmtTime(lastUp));
-
-  if (s.waterLow){
-    setText("todoTitle", "Dolej vodu do nádrže");
-    pill("todoPill","bad","VODA");
-    setText("todoText", "Hladina vody je nízka. Dolej vodu. Pumpa je kvôli bezpečnosti blokovaná.");
-    setText("todoSub","Keď doplníš vodu: sprav 3 dotyky (DOLIEVANIE). Baseline sa nezmení.");
-    return;
-  }
-
-  if (!calibrated){
-    setText("todoTitle", "Sprav NOVÁ NÁDRŽ (kalibrácia)");
-    pill("todoPill","warn","KALIBRÁCIA");
-    setText("todoText", "Systém potrebuje vedieť baseline (čistú vodu). Nalej čistú vodu a sprav 2 dotyky.");
-    setText("todoSub","2 dotyky = Nová nádrž → uloží baseline. Potom sa živiny budú počítať správne.");
-    return;
-  }
-
-  // živiny mimo?
-  if (conc < (minP - 100)){
-    setText("todoTitle", "Pridaj živiny");
-    pill("todoPill","warn","ŽIVINY");
-    setText("todoText", "Živiny sú nízke. Pridaj odporúčanú dávku (nižšie). Potom chvíľu počkaj a sleduj %.");
-    setText("todoSub", doseTxt);
-    return;
-  }
-  if (conc > (maxP + 150)){
-    setText("todoTitle", "Dolej čistú vodu");
-    pill("todoPill","warn","ŽIVINY");
-    setText("todoText", "Živiny sú vysoké. Dolej čistú vodu (zriedenie). Baseline sa nemení.");
-    setText("todoSub","Po dolievaní môžeš spraviť 3 dotyky (DOLIEVANIE) – len log, baseline ostáva.");
-    return;
-  }
-
-  // OK
-  setText("todoTitle", "Všetko je OK");
-  pill("todoPill","ok","OK");
-  setText("todoText", "Systém beží sám. Skontroluj raz za čas vodu a živiny. Inak nič nerieš.");
-  setText("todoSub","Tip: ak meníš celú vodu → 2 dotyky (NOVÁ NÁDRŽ).");
-}
+  // ak ešte nebol summary (napr. plant nepríde hneď), dobehni
+  setSummary(plantKey, phase, sowDate);
+});
