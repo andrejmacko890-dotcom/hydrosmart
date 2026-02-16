@@ -52,13 +52,14 @@
     font-size: 1.5em;
   }
 
-  select, button {
+  select, button, input[type="date"] {
     width: 100%;
     padding: 15px;
     margin-bottom: 15px;
     border-radius: 15px;
     border: 1px solid #ccc;
     font-size: 18px;
+    box-sizing: border-box;
   }
 
   button {
@@ -94,6 +95,8 @@
   .status-item span {
     font-weight: bold;
     margin-left: 12px;
+    text-align: right;
+    word-break: break-word;
   }
 
   .status-pump { background-color: #c8e6c9; color: #2e7d32; }
@@ -102,6 +105,7 @@
   .status-light { background-color: #fff9c4; color: #fbc02d; }
   .status-temp { background-color: #ffe0b2; color: #ef6c00; }
   .status-humidity { background-color: #f0f4c3; color: #827717; }
+  .status-alert { background-color: #ffebee; color: #c62828; }
 
   .status-item i {
     margin-right: 15px;
@@ -114,6 +118,23 @@
     color: #2e7d32;
     font-size: 1.1em;
     font-weight: 700;
+  }
+
+  .hint {
+    font-size: 14px;
+    color: #555;
+    margin-top: -8px;
+    margin-bottom: 10px;
+  }
+
+  .grid2 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+  }
+
+  @media(max-width: 600px){
+    .grid2 { grid-template-columns: 1fr; }
   }
 
   @media(max-width: 500px){
@@ -150,6 +171,24 @@
       <option value="pakchoi">🥬 Pak choi (baby)</option>
     </select>
     <button onclick="sendPlant()"><i class="fas fa-seedling"></i> Odoslať rastlinu</button>
+    <div class="hint">Tip: rastlina sa uloží do Firebase a ESP32 si ju má stiahnuť z <b>/tower/commands</b>.</div>
+  </section>
+
+  <!-- ================== Výsev / dátum ================== -->
+  <section>
+    <h2>Výsev</h2>
+    <div class="grid2">
+      <div>
+        <label for="sowDate" style="font-weight:700;color:#2e7d32;">Dátum výsevu / zasadenia</label>
+        <input id="sowDate" type="date" />
+        <div class="hint">Použije sa na automatické prepínanie fáz a upozornenie na zber.</div>
+      </div>
+      <div>
+        <label style="font-weight:700;color:#2e7d32;">Akcie</label>
+        <button onclick="saveSowDate()"><i class="fas fa-calendar-check"></i> Uložiť dátum</button>
+        <button onclick="clearSowDate()" style="background:#607d8b;"><i class="fas fa-eraser"></i> Vymazať dátum</button>
+      </div>
+    </div>
   </section>
 
   <!-- ================== Fáza ================== -->
@@ -157,10 +196,46 @@
     <h2>Fáza</h2>
     <select id="phaseSelect">
       <option value="">🧩 Vyber fázu</option>
-      <option value="seedling">🌱 Po vyklíčení (zakoreňovač)</option>
-      <option value="growth">🌿 Rast (hnojivo A + B)</option>
+      <option value="germination">🌱 Klíčenie (iba voda)</option>
+      <option value="seedling">🌿 Zakoreňovanie (zakoreňovač)</option>
+      <option value="growth">🍃 Rast (hnojivo A + B)</option>
     </select>
     <button onclick="sendPhase()"><i class="fas fa-layer-group"></i> Odoslať fázu</button>
+    <div class="hint">Ak máš nastavený dátum výsevu, appka môže fázu prepínať automaticky (app.js).</div>
+  </section>
+
+  <!-- ================== Časová os ================== -->
+  <section class="status-section">
+    <h2>Časová os</h2>
+
+    <div class="status-item status-water">
+      <i class="fas fa-hourglass-start"></i> Dni od výsevu:
+      <span id="daysFromSow">--</span>
+    </div>
+
+    <div class="status-item status-water">
+      <i class="fas fa-leaf"></i> Klíčenie:
+      <span id="germinationRange">--</span>
+    </div>
+
+    <div class="status-item status-water">
+      <i class="fas fa-seedling"></i> Zakoreňovanie:
+      <span id="rootingRange">--</span>
+    </div>
+
+    <div class="status-item status-water">
+      <i class="fas fa-scissors"></i> Zber:
+      <span id="harvestRange">--</span>
+    </div>
+
+    <div class="status-item status-alert">
+      <i class="fas fa-bell"></i> Ďalší krok:
+      <span id="nextAction">--</span>
+    </div>
+
+    <div class="hint" style="margin-top:8px;">
+      Poznámka: rozsahy sa menia podľa vybratej rastliny. (Toto riadi app.js podľa tvojich tabuliek.)
+    </div>
   </section>
 
   <!-- ================== Status ================== -->
@@ -170,17 +245,26 @@
     <div class="subhead">💧 Voda</div>
     <div class="status-item status-water"><i class="fas fa-water"></i> Hladina: <span id="waterLevel">--</span></div>
     <div class="status-item status-temp"><i class="fas fa-temperature-low"></i> Teplota vody: <span id="waterTemp">--</span></div>
-    <div class="status-item status-water"><i class="fas fa-check"></i> Kalibrácia: <span id="calibrationStatus">--</span></div>
+
+    <div class="status-item status-water">
+      <i class="fas fa-check"></i> Kalibrácia:
+      <span id="calibrationStatus">--</span>
+    </div>
+
+    <div class="status-item status-water">
+      <i class="fas fa-ruler"></i> Baseline (ppm):
+      <span id="baselinePpm">--</span>
+    </div>
 
     <div class="subhead">🧪 Živiny</div>
-    <div class="status-item status-nutrients"><i class="fas fa-vial"></i> Živiny: <span id="nutrientsPct">-- %</span></div>
-    <div class="status-item status-water"><i class="fas fa-bullseye"></i> Cieľ: <span id="nutrientsTargetPct">--</span></div>
+    <div class="status-item status-nutrients"><i class="fas fa-vial"></i> Živiny (koncentrácia): <span id="nutrientsPct">-- %</span></div>
+    <div class="status-item status-water"><i class="fas fa-bullseye"></i> Cieľ (v %): <span id="nutrientsTargetPct">--</span></div>
     <div class="status-item status-water"><i class="fas fa-flask"></i> Dávkovanie: <span id="dosingText">--</span></div>
     <div class="status-item status-water"><i class="fas fa-info-circle"></i> Odporúčanie: <span id="nutrientHint">--</span></div>
 
     <div class="subhead">💡 Svetlo</div>
     <div class="status-item status-light"><i class="fas fa-lightbulb"></i> Svetlo: <span id="lightStatus">--</span></div>
-    <div class="status-item status-light"><i class="fas fa-clock"></i> Režim: <span id="lightHours">--</span></div>
+    <div class="status-item status-light"><i class="fas fa-clock"></i> Režim (h/deň): <span id="lightHours">--</span></div>
 
     <div class="subhead">🌡️ Vzduch</div>
     <div class="status-item status-temp"><i class="fas fa-thermometer-half"></i> Teplota vzduchu: <span id="temperature">--</span></div>
@@ -196,10 +280,6 @@
 <!-- Firebase SDK pre web (v8) -->
 <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
-
-<!-- Dôležité: auth len ak ho používaš v app.js
-<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
--->
 
 <!-- Tvoj JS -->
 <script src="./app.js"></script>
