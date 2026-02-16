@@ -1,12 +1,11 @@
 <!DOCTYPE html>
 <html lang="sk">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>HydroSmart Dashboard</title>
 
 <style>
-  /* --- TVOJ DIZAJN --- */
   body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     background: linear-gradient(to right, #e0f7fa, #d0f0c0);
@@ -16,7 +15,7 @@
   }
 
   .container {
-    max-width: 650px;
+    max-width: 720px;
     margin: 30px auto;
     background: #ffffffee;
     border-radius: 20px;
@@ -24,38 +23,24 @@
     box-shadow: 0 8px 25px rgba(0,0,0,0.25);
   }
 
-  header {
-    text-align: center;
-    margin-bottom: 30px;
-  }
+  header { text-align: center; margin-bottom: 30px; }
+  header h1 { color: #2e7d32; font-size: 2.5em; margin-bottom: 5px; }
+  header p { color: #555; font-size: 1.2em; }
 
-  header h1 {
-    color: #2e7d32;
-    font-size: 2.5em;
-    margin-bottom: 5px;
-  }
-
-  header p {
-    color: #555;
-    font-size: 1.2em;
-  }
-
-  section {
-    margin-bottom: 30px;
-  }
+  section { margin-bottom: 26px; }
 
   h2 {
     color: #2e7d32;
     margin-bottom: 15px;
     border-bottom: 3px solid #2e7d32;
     padding-bottom: 5px;
-    font-size: 1.5em;
+    font-size: 1.45em;
   }
 
   select, button, input[type="date"] {
     width: 100%;
     padding: 15px;
-    margin-bottom: 15px;
+    margin-bottom: 12px;
     border-radius: 15px;
     border: 1px solid #ccc;
     font-size: 18px;
@@ -69,35 +54,32 @@
     cursor: pointer;
     transition: background 0.3s ease;
   }
+  button:hover { background-color: #1b5e20; }
 
-  button:hover {
-    background-color: #1b5e20;
+  .grid2 {
+    display: grid;
+    gap: 12px;
+    grid-template-columns: 1fr 1fr;
   }
+  @media(max-width: 650px) { .grid2 { grid-template-columns: 1fr; } }
 
   .status-section {
     background-color: #f1f8e9;
-    padding: 25px;
+    padding: 22px;
     border-radius: 20px;
     box-shadow: inset 0 0 10px rgba(0,0,0,0.05);
   }
 
   .status-item {
-    font-size: 20px;
-    margin-bottom: 15px;
+    font-size: 18px;
+    margin-bottom: 12px;
     display: flex;
     align-items: center;
     justify-content: space-between;
     padding: 12px 15px;
     border-radius: 15px;
-    transition: all 0.3s ease;
   }
-
-  .status-item span {
-    font-weight: bold;
-    margin-left: 12px;
-    text-align: right;
-    word-break: break-word;
-  }
+  .status-item span { font-weight: bold; }
 
   .status-pump { background-color: #c8e6c9; color: #2e7d32; }
   .status-water { background-color: #b3e5fc; color: #0277bd; }
@@ -105,58 +87,38 @@
   .status-light { background-color: #fff9c4; color: #fbc02d; }
   .status-temp { background-color: #ffe0b2; color: #ef6c00; }
   .status-humidity { background-color: #f0f4c3; color: #827717; }
-  .status-alert { background-color: #ffebee; color: #c62828; }
+  .status-water-temp { background-color: #e1bee7; color: #6a1b9a; }
 
-  .status-item i {
-    margin-right: 15px;
-    font-size: 1.3em;
-    min-width: 24px;
+  .status-item i { margin-right: 12px; font-size: 1.3em; }
+
+  .card {
+    background: #ffffffcc;
+    border-radius: 18px;
+    padding: 16px;
+    box-shadow: 0 4px 14px rgba(0,0,0,0.12);
   }
 
-  .subhead {
-    margin: 15px 0 10px;
-    color: #2e7d32;
-    font-size: 1.1em;
-    font-weight: 700;
-  }
-
-  .hint {
-    font-size: 14px;
-    color: #555;
-    margin-top: -8px;
-    margin-bottom: 10px;
-  }
-
-  .grid2 {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 12px;
-  }
-
-  @media(max-width: 600px){
-    .grid2 { grid-template-columns: 1fr; }
-  }
-
-  @media(max-width: 500px){
-    .status-item { font-size: 18px; padding: 10px; }
-    header h1 { font-size: 2em; }
-    header p { font-size: 1em; }
-  }
+  .small { font-size: 14px; color: #666; }
+  .hint { margin-top: 10px; padding: 12px; border-radius: 14px; background: #fff; border: 1px dashed #bbb; }
+  .ok { color: #1b5e20; font-weight: 700; }
+  .bad { color: #b71c1c; font-weight: 700; }
 </style>
 
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
-</head>
 
+</head>
 <body>
 <div class="container">
   <header>
     <h1>HydroSmart Dashboard</h1>
-    <p>Vyber rastlinu a sleduj stav hydroponickej veže</p>
+    <p>Vyber rastlinu, fázu a sleduj stav hydroponickej veže</p>
   </header>
 
-  <!-- ================== Rastlina ================== -->
-  <section>
-    <h2>Rastlina</h2>
+  <!-- OVLÁDANIE -->
+  <section class="card">
+    <h2><i class="fas fa-sliders"></i> Ovládanie</h2>
+
+    <label class="small">Rastlina</label>
     <select id="plantSelect">
       <option value="">🌱 Vyber rastlinu</option>
       <option value="salad">🥬 Hlávkový šalát</option>
@@ -171,115 +133,99 @@
       <option value="pakchoi">🥬 Pak choi (baby)</option>
     </select>
     <button onclick="sendPlant()"><i class="fas fa-seedling"></i> Odoslať rastlinu</button>
-    <div class="hint">Tip: rastlina sa uloží do Firebase a ESP32 si ju má stiahnuť z <b>/tower/commands</b>.</div>
-  </section>
 
-  <!-- ================== Výsev / dátum ================== -->
-  <section>
-    <h2>Výsev</h2>
-    <div class="grid2">
-      <div>
-        <label for="sowDate" style="font-weight:700;color:#2e7d32;">Dátum výsevu / zasadenia</label>
-        <input id="sowDate" type="date" />
-        <div class="hint">Použije sa na automatické prepínanie fáz a upozornenie na zber.</div>
-      </div>
-      <div>
-        <label style="font-weight:700;color:#2e7d32;">Akcie</label>
-        <button onclick="saveSowDate()"><i class="fas fa-calendar-check"></i> Uložiť dátum</button>
-        <button onclick="clearSowDate()" style="background:#607d8b;"><i class="fas fa-eraser"></i> Vymazať dátum</button>
-      </div>
-    </div>
-  </section>
-
-  <!-- ================== Fáza ================== -->
-  <section>
-    <h2>Fáza</h2>
+    <label class="small">Fáza</label>
     <select id="phaseSelect">
-      <option value="">🧩 Vyber fázu</option>
+      <option value="">🧭 Vyber fázu</option>
       <option value="germination">🌱 Klíčenie (iba voda)</option>
       <option value="seedling">🌿 Zakoreňovanie (zakoreňovač)</option>
-      <option value="growth">🍃 Rast (hnojivo A + B)</option>
+      <option value="growth">🌾 Rast (hnojivo A+B)</option>
     </select>
-    <button onclick="sendPhase()"><i class="fas fa-layer-group"></i> Odoslať fázu</button>
-    <div class="hint">Ak máš nastavený dátum výsevu, appka môže fázu prepínať automaticky (app.js).</div>
-  </section>
+    <button onclick="sendPhase()"><i class="fas fa-paper-plane"></i> Odoslať fázu</button>
 
-  <!-- ================== Časová os ================== -->
-  <section class="status-section">
-    <h2>Časová os</h2>
-
-    <div class="status-item status-water">
-      <i class="fas fa-hourglass-start"></i> Dni od výsevu:
-      <span id="daysFromSow">--</span>
+    <div class="grid2">
+      <div>
+        <label class="small">Dátum výsevu</label>
+        <input id="sowDate" type="date" />
+      </div>
+      <div style="display:flex; gap:10px; align-items:end;">
+        <button style="flex:1;" onclick="saveSowDate()"><i class="fas fa-save"></i> Uložiť</button>
+        <button style="flex:1; background:#b71c1c;" onclick="clearSowDate()"><i class="fas fa-trash"></i> Zmazať</button>
+      </div>
     </div>
 
-    <div class="status-item status-water">
-      <i class="fas fa-leaf"></i> Klíčenie:
-      <span id="germinationRange">--</span>
-    </div>
-
-    <div class="status-item status-water">
-      <i class="fas fa-seedling"></i> Zakoreňovanie:
-      <span id="rootingRange">--</span>
-    </div>
-
-    <div class="status-item status-water">
-      <i class="fas fa-scissors"></i> Zber:
-      <span id="harvestRange">--</span>
-    </div>
-
-    <div class="status-item status-alert">
-      <i class="fas fa-bell"></i> Ďalší krok:
-      <span id="nextAction">--</span>
-    </div>
-
-    <div class="hint" style="margin-top:8px;">
-      Poznámka: rozsahy sa menia podľa vybratej rastliny. (Toto riadi app.js podľa tvojich tabuliek.)
+    <div class="hint">
+      <div><b>Vybraná rastlina:</b> <span id="plantName">--</span></div>
+      <div><b>Aktuálna fáza:</b> <span id="phaseName">--</span></div>
+      <div><b>Svetlo:</b> <span id="lightHours">--</span></div>
     </div>
   </section>
 
-  <!-- ================== Status ================== -->
+  <!-- STATUS -->
   <section class="status-section">
-    <h2>Status HydroVeže</h2>
+    <h2><i class="fas fa-tower-observation"></i> Status HydroVeže</h2>
 
-    <div class="subhead">💧 Voda</div>
-    <div class="status-item status-water"><i class="fas fa-water"></i> Hladina: <span id="waterLevel">--</span></div>
-    <div class="status-item status-temp"><i class="fas fa-temperature-low"></i> Teplota vody: <span id="waterTemp">--</span></div>
-
-    <div class="status-item status-water">
-      <i class="fas fa-check"></i> Kalibrácia:
-      <span id="calibrationStatus">--</span>
-    </div>
-
-    <div class="status-item status-water">
-      <i class="fas fa-ruler"></i> Baseline (ppm):
-      <span id="baselinePpm">--</span>
-    </div>
-
-    <div class="subhead">🧪 Živiny</div>
-    <div class="status-item status-nutrients"><i class="fas fa-vial"></i> Živiny (koncentrácia): <span id="nutrientsPct">-- %</span></div>
-    <div class="status-item status-water"><i class="fas fa-bullseye"></i> Cieľ (v %): <span id="nutrientsTargetPct">--</span></div>
-    <div class="status-item status-water"><i class="fas fa-flask"></i> Dávkovanie: <span id="dosingText">--</span></div>
-    <div class="status-item status-water"><i class="fas fa-info-circle"></i> Odporúčanie: <span id="nutrientHint">--</span></div>
-
-    <div class="subhead">💡 Svetlo</div>
+    <div class="status-item status-pump"><i class="fas fa-tint"></i> Pumpa: <span id="pumpStatus">--</span></div>
+    <div class="status-item status-water"><i class="fas fa-water"></i> Hladina vody: <span id="waterLevel">--</span></div>
+    <div class="status-item status-nutrients"><i class="fas fa-vial"></i> Živiny: <span id="nutrientsPct">--</span></div>
     <div class="status-item status-light"><i class="fas fa-lightbulb"></i> Svetlo: <span id="lightStatus">--</span></div>
-    <div class="status-item status-light"><i class="fas fa-clock"></i> Režim (h/deň): <span id="lightHours">--</span></div>
-
-    <div class="subhead">🌡️ Vzduch</div>
     <div class="status-item status-temp"><i class="fas fa-thermometer-half"></i> Teplota vzduchu: <span id="temperature">--</span></div>
     <div class="status-item status-humidity"><i class="fas fa-tint"></i> Vlhkosť: <span id="humidity">--</span></div>
-
-    <div class="subhead">⚙️ Systém</div>
-    <div class="status-item status-pump"><i class="fas fa-tint"></i> Pumpa: <span id="pumpStatus">--</span></div>
-    <div class="status-item status-water"><i class="fas fa-seedling"></i> Rastlina: <span id="plantName">--</span></div>
-    <div class="status-item status-water"><i class="fas fa-layer-group"></i> Fáza: <span id="phaseName">--</span></div>
+    <div class="status-item status-water-temp"><i class="fas fa-temperature-high"></i> Teplota vody: <span id="waterTemp">--</span></div>
   </section>
+
+  <!-- KALIBRÁCIA -->
+  <section class="card">
+    <h2><i class="fas fa-scale-balanced"></i> Kalibrácia vody (TDS baseline)</h2>
+    <div class="grid2">
+      <div class="hint">
+        <div><b>Stav:</b> <span id="calibrationStatus">--</span></div>
+        <div class="small">Baseline: <span id="baselinePpm">--</span></div>
+      </div>
+      <div class="hint">
+        <div><b>Cieľ pre fázu:</b> <span id="nutrientsTargetPct">--</span></div>
+        <div class="small">Pozn.: % je vypočítané z <b>koncentrácie</b> (TDS - baseline)</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ODPORÚČANIA -->
+  <section class="card">
+    <h2><i class="fas fa-leaf"></i> Odporúčania (živiny)</h2>
+    <div class="hint">
+      <div><b>Dávkovanie:</b> <span id="dosingText">--</span></div>
+      <div style="margin-top:8px;"><b>Odporúčanie:</b> <span id="nutrientHint">--</span></div>
+    </div>
+  </section>
+
+  <!-- ČASOVÁ OSA -->
+  <section class="card">
+    <h2><i class="fas fa-calendar-alt"></i> Časová os rastu</h2>
+
+    <div class="hint">
+      <div><b>Dní od výsevu:</b> <span id="daysFromSow">--</span></div>
+      <div style="margin-top:8px;" class="grid2">
+        <div>🌱 Klíčenie: <b><span id="germinationRange">--</span></b></div>
+        <div>🌿 Zakoreňovanie: <b><span id="rootingRange">--</span></b></div>
+      </div>
+      <div style="margin-top:8px;">🧺 Zber: <b><span id="harvestRange">--</span></b></div>
+      <div style="margin-top:10px;"><b>Ďalší krok:</b> <span id="nextAction">--</span></div>
+    </div>
+  </section>
+
+  <p class="small" style="text-align:center;">
+    HydroSmart © <span id="year"></span>
+  </p>
 </div>
 
-<!-- Firebase SDK pre web (v8) -->
+<!-- Firebase SDK (v8) + AUTH -->
 <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
+
+<script>
+  document.getElementById("year").innerText = new Date().getFullYear();
+</script>
 
 <!-- Tvoj JS -->
 <script src="./app.js"></script>
