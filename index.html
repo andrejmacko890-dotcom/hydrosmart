@@ -6,24 +6,41 @@
   <title>HydroSmart Dashboard</title>
 
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+
   <style>
     body {
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
       background: linear-gradient(to right, #e0f7fa, #d0f0c0);
       color: #333;
-      margin: 0; padding: 0;
+      margin: 0;
+      padding: 0;
     }
+
     .container {
-      max-width: 650px;
+      max-width: 760px;
       margin: 30px auto;
       background: #ffffffee;
       border-radius: 20px;
       padding: 30px;
       box-shadow: 0 8px 25px rgba(0,0,0,0.25);
     }
-    header { text-align:center; margin-bottom: 25px; }
-    header h1 { color:#2e7d32; font-size:2.5em; margin:0 0 6px 0; }
-    header p { color:#555; font-size:1.1em; margin:0; }
+
+    header {
+      text-align: center;
+      margin-bottom: 24px;
+    }
+
+    header h1 {
+      color: #2e7d32;
+      font-size: 2.5em;
+      margin-bottom: 6px;
+    }
+
+    header p {
+      color: #555;
+      font-size: 1.1em;
+      margin: 0;
+    }
 
     .card {
       background: #ffffff;
@@ -32,16 +49,19 @@
       margin-bottom: 18px;
       box-shadow: 0 4px 16px rgba(0,0,0,0.08);
     }
+
     .card h2 {
       color:#2e7d32;
       margin:0 0 12px 0;
       border-bottom: 3px solid #2e7d32;
       padding-bottom: 6px;
       font-size: 1.35em;
-      display:flex; align-items:center; gap:10px;
+      display:flex;
+      align-items:center;
+      gap:10px;
     }
 
-    select, input[type="date"], button {
+    select, input[type="date"], button, input[type="password"] {
       width: 100%;
       padding: 14px;
       margin-bottom: 12px;
@@ -59,16 +79,33 @@
       transition: background 0.25s ease;
       font-weight: 600;
     }
+
     .btn:hover { background-color:#1b5e20; }
 
-    .btn-row { display:flex; gap:10px; }
-    .btn-row button { width: 100%; }
+    .btn-row {
+      display:flex;
+      gap:10px;
+    }
+
+    .btn-row button {
+      width:100%;
+    }
+
     .btn-secondary {
       background:#1565c0;
     }
-    .btn-secondary:hover { background:#0d47a1; }
-    .btn-danger { background:#b71c1c; }
-    .btn-danger:hover { background:#7f0000; }
+
+    .btn-secondary:hover {
+      background:#0d47a1;
+    }
+
+    .btn-danger {
+      background:#b71c1c;
+    }
+
+    .btn-danger:hover {
+      background:#7f0000;
+    }
 
     .mini-box {
       background:#f6f8f6;
@@ -77,6 +114,7 @@
       border-radius: 14px;
       font-size: 14px;
       color:#444;
+      line-height: 1.45;
     }
 
     .status-section {
@@ -85,6 +123,7 @@
       border-radius: 18px;
       box-shadow: inset 0 0 10px rgba(0,0,0,0.05);
     }
+
     .status-item {
       font-size: 16px;
       margin-bottom: 10px;
@@ -94,8 +133,17 @@
       padding: 12px 14px;
       border-radius: 14px;
     }
-    .status-item .left { display:flex; align-items:center; gap:12px; }
-    .status-item span.value { font-weight:700; }
+
+    .status-item .left {
+      display:flex;
+      align-items:center;
+      gap:12px;
+    }
+
+    .status-item span.value {
+      font-weight:700;
+      text-align:right;
+    }
 
     .status-pump { background:#c8e6c9; color:#2e7d32; }
     .status-water { background:#b3e5fc; color:#0277bd; }
@@ -104,6 +152,7 @@
     .status-temp { background:#ffe0b2; color:#ef6c00; }
     .status-humidity { background:#f0f4c3; color:#827717; }
     .status-waterTemp { background:#e1f5fe; color:#01579b; }
+    .status-system { background:#ede7f6; color:#5e35b1; }
 
     .big-action {
       background: #e8f5e9;
@@ -112,12 +161,47 @@
       padding: 14px;
       margin-bottom: 12px;
     }
-    .big-action .title { font-weight:800; color:#1b5e20; margin-bottom:6px; }
-    .big-action .desc { color:#2f3b2f; font-size: 14px; line-height: 1.35; }
+
+    .big-action .title {
+      font-weight:800;
+      color:#1b5e20;
+      margin-bottom:6px;
+      font-size: 19px;
+    }
+
+    .big-action .desc {
+      color:#2f3b2f;
+      font-size: 14px;
+      line-height: 1.45;
+    }
 
     .pill-ok { color:#1b5e20; font-weight:800; }
     .pill-bad { color:#b71c1c; font-weight:800; }
     .pill-warn { color:#ef6c00; font-weight:800; }
+
+    .small-muted {
+      font-size: 13px;
+      color:#666;
+      line-height: 1.5;
+    }
+
+    .ok-line {
+      display:flex;
+      align-items:center;
+      gap:8px;
+      margin-bottom:8px;
+      font-size:15px;
+    }
+
+    .ok-line.good { color:#1b5e20; }
+    .ok-line.warn { color:#ef6c00; }
+    .ok-line.bad { color:#b71c1c; }
+
+    .grid2 {
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap:12px;
+    }
 
     .footer {
       text-align:center;
@@ -126,19 +210,73 @@
       margin-top: 8px;
     }
 
-    @media(max-width: 520px){
-      .container{ margin: 12px; padding: 18px; }
-      header h1{ font-size: 2.0em; }
+    /* ACCESS LOCK */
+    .lock-screen {
+      position: fixed;
+      inset: 0;
+      background: rgba(12, 35, 15, 0.92);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 9999;
+    }
+
+    .lock-box {
+      width: min(92vw, 420px);
+      background: #fff;
+      border-radius: 18px;
+      padding: 24px;
+      box-shadow: 0 12px 30px rgba(0,0,0,0.35);
+    }
+
+    .lock-box h2 {
+      margin-top: 0;
+      color:#2e7d32;
+      border-bottom: 3px solid #2e7d32;
+      padding-bottom: 6px;
+    }
+
+    .hidden {
+      display:none !important;
+    }
+
+    @media(max-width: 620px){
+      .grid2 { grid-template-columns: 1fr; }
       .btn-row { flex-direction: column; }
+    }
+
+    @media(max-width: 520px){
+      .container{
+        margin: 12px;
+        padding: 18px;
+      }
+      header h1{
+        font-size: 2.0em;
+      }
     }
   </style>
 </head>
 
 <body>
-  <div class="container">
+
+  <!-- PRÍSTUPOVÝ KÓD -->
+  <div id="lockScreen" class="lock-screen">
+    <div class="lock-box">
+      <h2><i class="fa-solid fa-lock"></i> Testovací prístup</h2>
+      <p>Zadaj prístupový kód pre otvorenie aplikácie.</p>
+      <input id="accessCodeInput" type="password" placeholder="Prístupový kód" />
+      <button class="btn" onclick="unlockApp()"><i class="fa-solid fa-key"></i> Odomknúť</button>
+      <div id="lockError" class="small-muted" style="color:#b71c1c;"></div>
+      <div class="small-muted" style="margin-top:10px;">
+        Toto je testovací zámok v aplikácii. Na ostrú verziu sa spraví plné Firebase prihlásenie.
+      </div>
+    </div>
+  </div>
+
+  <div class="container hidden" id="appRoot">
     <header>
       <h1>HydroSmart Dashboard</h1>
-      <p>Jednoducho: vyber rastlinu, zadaj dátum výsevu a systém ťa povedie.</p>
+      <p>Systém sa riadi sám. Ty len spravíš to, čo si vypýta.</p>
     </header>
 
     <!-- OVLÁDANIE -->
@@ -149,31 +287,55 @@
       <select id="plantSelect"></select>
       <button class="btn" onclick="sendPlant()"><i class="fa-solid fa-seedling"></i> Odoslať rastlinu</button>
 
-      <label><b>Dátum výsevu</b> (kedy si zasadil semienka)</label>
+      <label><b>Dátum výsevu</b></label>
       <input id="sowDate" type="date" />
       <div class="btn-row">
         <button class="btn btn-secondary" onclick="saveSowDate()"><i class="fa-solid fa-floppy-disk"></i> Uložiť</button>
         <button class="btn btn-danger" onclick="clearSowDate()"><i class="fa-solid fa-trash"></i> Zmazať</button>
       </div>
 
-      <div class="mini-box" id="selectionSummary">
-        Načítavam…
+      <div class="mini-box" id="selectionSummary">Načítavam…</div>
+    </div>
+
+    <!-- NÁVOD NA WIFI -->
+    <div class="card">
+      <h2><i class="fa-solid fa-wifi"></i> Ako pripojiť systém na Wi-Fi</h2>
+      <div class="mini-box">
+        <b>1.</b> Zapni HydroSmart vežu.<br>
+        <b>2.</b> Pripoj sa mobilom alebo notebookom na Wi-Fi sieť <b>ESP32_AP</b>.<br>
+        <b>3.</b> Otvor adresu <b>192.168.4.1</b>.<br>
+        <b>4.</b> Zadaj názov a heslo tvojej domácej Wi-Fi.<br>
+        <b>5.</b> Po uložení sa zariadenie reštartuje a pripojí sa na tvoju Wi-Fi.<br><br>
+        <b>Ak chceš Wi-Fi vymazať a nastaviť znova:</b><br>
+        podrž dotykové tlačidlo približne <b>10 sekúnd</b>.
       </div>
     </div>
 
-    <!-- ČO MÁŠ UROBIŤ TERAZ -->
+    <!-- ČO TERAZ -->
     <div class="card">
       <h2><i class="fa-solid fa-compass"></i> Čo máš urobiť teraz</h2>
       <div class="big-action" id="nextActionBox">
-        <div class="title">Načítavam…</div>
-        <div class="desc">Čakám na dáta z veže.</div>
+        <div class="title">Načítavam stav…</div>
+        <div class="desc">Čakám na údaje zo systému.</div>
       </div>
+      <div class="small-muted" id="lastUpdateText">—</div>
     </div>
 
     <!-- STATUS -->
     <div class="card">
       <h2><i class="fa-solid fa-tower-observation"></i> Status HydroVeže</h2>
+
       <div class="status-section">
+        <div class="status-item status-system">
+          <div class="left"><i class="fa-solid fa-link"></i> Záhon / zariadenie</div>
+          <span class="value" id="deviceStatus">--</span>
+        </div>
+
+        <div class="status-item status-system">
+          <div class="left"><i class="fa-solid fa-wifi"></i> Wi-Fi</div>
+          <span class="value" id="wifiStatus">--</span>
+        </div>
+
         <div class="status-item status-pump">
           <div class="left"><i class="fa-solid fa-droplet"></i> Pumpa</div>
           <span class="value" id="pumpStatus">--</span>
@@ -217,7 +379,13 @@
       <div class="mini-box" id="calibrationBox">Načítavam…</div>
     </div>
 
-    <!-- ODPORÚČANIA ŽIVÍN -->
+    <!-- PARAMETRE V PORIADKU -->
+    <div class="card">
+      <h2><i class="fa-solid fa-list-check"></i> Kontrola parametrov</h2>
+      <div class="mini-box" id="parameterChecksBox">Načítavam…</div>
+    </div>
+
+    <!-- ODPORÚČANIA -->
     <div class="card">
       <h2><i class="fa-solid fa-clipboard-list"></i> Odporúčania (živiny)</h2>
       <div class="mini-box" id="nutrientAdviceBox">Načítavam…</div>
@@ -232,10 +400,8 @@
     <div class="footer">HydroSmart © 2026</div>
   </div>
 
-  <!-- Firebase SDK (v8) -->
   <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
   <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
-
   <script src="./app.js"></script>
 </body>
 </html>
