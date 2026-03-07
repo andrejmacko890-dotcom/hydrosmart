@@ -197,12 +197,6 @@
     .ok-line.warn { color:#ef6c00; }
     .ok-line.bad { color:#b71c1c; }
 
-    .grid2 {
-      display:grid;
-      grid-template-columns: 1fr 1fr;
-      gap:12px;
-    }
-
     .footer {
       text-align:center;
       color:#6b6b6b;
@@ -210,7 +204,6 @@
       margin-top: 8px;
     }
 
-    /* ACCESS LOCK */
     .lock-screen {
       position: fixed;
       inset: 0;
@@ -241,7 +234,6 @@
     }
 
     @media(max-width: 620px){
-      .grid2 { grid-template-columns: 1fr; }
       .btn-row { flex-direction: column; }
     }
 
@@ -259,16 +251,15 @@
 
 <body>
 
-  <!-- PRÍSTUPOVÝ KÓD -->
   <div id="lockScreen" class="lock-screen">
     <div class="lock-box">
       <h2><i class="fa-solid fa-lock"></i> Testovací prístup</h2>
       <p>Zadaj prístupový kód pre otvorenie aplikácie.</p>
       <input id="accessCodeInput" type="password" placeholder="Prístupový kód" />
-      <button class="btn" onclick="unlockApp()"><i class="fa-solid fa-key"></i> Odomknúť</button>
+      <button id="unlockBtn" class="btn" type="button"><i class="fa-solid fa-key"></i> Odomknúť</button>
       <div id="lockError" class="small-muted" style="color:#b71c1c;"></div>
       <div class="small-muted" style="margin-top:10px;">
-        Toto je testovací zámok v aplikácii. Na ostrú verziu sa spraví plné Firebase prihlásenie.
+        Toto je testovací zámok v aplikácii.
       </div>
     </div>
   </div>
@@ -279,7 +270,6 @@
       <p>Systém sa riadi sám. Ty len spravíš to, čo si vypýta.</p>
     </header>
 
-    <!-- OVLÁDANIE -->
     <div class="card">
       <h2><i class="fa-solid fa-sliders"></i> Ovládanie</h2>
 
@@ -297,7 +287,6 @@
       <div class="mini-box" id="selectionSummary">Načítavam…</div>
     </div>
 
-    <!-- NÁVOD NA WIFI -->
     <div class="card">
       <h2><i class="fa-solid fa-wifi"></i> Ako pripojiť systém na Wi-Fi</h2>
       <div class="mini-box">
@@ -311,7 +300,6 @@
       </div>
     </div>
 
-    <!-- ČO TERAZ -->
     <div class="card">
       <h2><i class="fa-solid fa-compass"></i> Čo máš urobiť teraz</h2>
       <div class="big-action" id="nextActionBox">
@@ -321,7 +309,6 @@
       <div class="small-muted" id="lastUpdateText">—</div>
     </div>
 
-    <!-- STATUS -->
     <div class="card">
       <h2><i class="fa-solid fa-tower-observation"></i> Status HydroVeže</h2>
 
@@ -373,25 +360,21 @@
       </div>
     </div>
 
-    <!-- KALIBRÁCIA -->
     <div class="card">
       <h2><i class="fa-solid fa-check-double"></i> Kalibrácia vody</h2>
       <div class="mini-box" id="calibrationBox">Načítavam…</div>
     </div>
 
-    <!-- PARAMETRE V PORIADKU -->
     <div class="card">
       <h2><i class="fa-solid fa-list-check"></i> Kontrola parametrov</h2>
       <div class="mini-box" id="parameterChecksBox">Načítavam…</div>
     </div>
 
-    <!-- ODPORÚČANIA -->
     <div class="card">
       <h2><i class="fa-solid fa-clipboard-list"></i> Odporúčania (živiny)</h2>
       <div class="mini-box" id="nutrientAdviceBox">Načítavam…</div>
     </div>
 
-    <!-- ČASOVÁ OS -->
     <div class="card">
       <h2><i class="fa-solid fa-calendar-days"></i> Časová os rastu</h2>
       <div class="mini-box" id="timelineBox">Načítavam…</div>
@@ -399,6 +382,74 @@
 
     <div class="footer">HydroSmart © 2026</div>
   </div>
+
+  <script>
+    (function () {
+      const ACCESS_CODE = "hydro2026";
+
+      function doUnlock() {
+        const input = document.getElementById("accessCodeInput");
+        const error = document.getElementById("lockError");
+        const lock = document.getElementById("lockScreen");
+        const app = document.getElementById("appRoot");
+
+        if (!input || !error || !lock || !app) {
+          alert("Chýba časť stránky pre odomykanie.");
+          return;
+        }
+
+        const value = (input.value || "").trim();
+
+        if (value === ACCESS_CODE) {
+          try {
+            localStorage.setItem("hydro_access_ok", "1");
+          } catch (e) {}
+          lock.classList.add("hidden");
+          app.classList.remove("hidden");
+          error.innerText = "";
+        } else {
+          error.innerText = "Nesprávny prístupový kód.";
+        }
+      }
+
+      function initLock() {
+        const lock = document.getElementById("lockScreen");
+        const app = document.getElementById("appRoot");
+        const btn = document.getElementById("unlockBtn");
+        const input = document.getElementById("accessCodeInput");
+
+        if (!lock || !app) return;
+
+        let unlocked = false;
+        try {
+          unlocked = localStorage.getItem("hydro_access_ok") === "1";
+        } catch (e) {}
+
+        if (unlocked) {
+          lock.classList.add("hidden");
+          app.classList.remove("hidden");
+        } else {
+          lock.classList.remove("hidden");
+          app.classList.add("hidden");
+        }
+
+        if (btn) btn.addEventListener("click", doUnlock);
+        if (input) {
+          input.addEventListener("keydown", function (e) {
+            if (e.key === "Enter") doUnlock();
+          });
+        }
+
+        window.unlockApp = doUnlock;
+      }
+
+      if (document.readyState === "loading") {
+        document.addEventListener("DOMContentLoaded", initLock);
+      } else {
+        initLock();
+      }
+    })();
+  </script>
 
   <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
   <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
