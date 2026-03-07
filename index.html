@@ -185,18 +185,6 @@
       line-height: 1.5;
     }
 
-    .ok-line {
-      display:flex;
-      align-items:center;
-      gap:8px;
-      margin-bottom:8px;
-      font-size:15px;
-    }
-
-    .ok-line.good { color:#1b5e20; }
-    .ok-line.warn { color:#ef6c00; }
-    .ok-line.bad { color:#b71c1c; }
-
     .footer {
       text-align:center;
       color:#6b6b6b;
@@ -291,7 +279,7 @@
       <h2><i class="fa-solid fa-wifi"></i> Ako pripojiť systém na Wi-Fi</h2>
       <div class="mini-box">
         <b>1.</b> Zapni HydroSmart vežu.<br>
-        <b>2.</b> Pripoj sa mobilom alebo notebookom na Wi-Fi sieť <b>ESP32_AP</b>.<br>
+        <b>2.</b> Pripoj sa mobilom alebo notebookom na Wi-Fi sieť <b>HydroSmart Connect</b>.<br>
         <b>3.</b> Otvor adresu <b>192.168.4.1</b>.<br>
         <b>4.</b> Zadaj názov a heslo tvojej domácej Wi-Fi.<br>
         <b>5.</b> Po uložení sa zariadenie reštartuje a pripojí sa na tvoju Wi-Fi.<br><br>
@@ -357,17 +345,17 @@
           <div class="left"><i class="fa-solid fa-thermometer"></i> Teplota vody</div>
           <span class="value" id="waterTemp">--</span>
         </div>
+
+        <div class="status-item status-system">
+          <div class="left"><i class="fa-solid fa-check-double"></i> Kalibrácia vody</div>
+          <span class="value" id="calibrationShort">--</span>
+        </div>
       </div>
     </div>
 
     <div class="card">
       <h2><i class="fa-solid fa-check-double"></i> Kalibrácia vody</h2>
       <div class="mini-box" id="calibrationBox">Načítavam…</div>
-    </div>
-
-    <div class="card">
-      <h2><i class="fa-solid fa-list-check"></i> Kontrola parametrov</h2>
-      <div class="mini-box" id="parameterChecksBox">Načítavam…</div>
     </div>
 
     <div class="card">
@@ -393,10 +381,7 @@
         const lock = document.getElementById("lockScreen");
         const app = document.getElementById("appRoot");
 
-        if (!input || !error || !lock || !app) {
-          alert("Chýba časť stránky pre odomykanie.");
-          return;
-        }
+        if (!input || !error || !lock || !app) return;
 
         const value = (input.value || "").trim();
 
@@ -418,8 +403,6 @@
         const btn = document.getElementById("unlockBtn");
         const input = document.getElementById("accessCodeInput");
 
-        if (!lock || !app) return;
-
         let unlocked = false;
         try {
           unlocked = localStorage.getItem("hydro_access_ok") === "1";
@@ -439,8 +422,6 @@
             if (e.key === "Enter") doUnlock();
           });
         }
-
-        window.unlockApp = doUnlock;
       }
 
       if (document.readyState === "loading") {
