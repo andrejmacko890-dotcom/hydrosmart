@@ -8,188 +8,591 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
 
   <style>
+    :root{
+      --bg-1:#0f172a;
+      --bg-2:#12263a;
+      --panel:#ffffff;
+      --panel-soft:rgba(255,255,255,0.9);
+      --text:#102027;
+      --muted:#5f6b76;
+      --green:#2e7d32;
+      --green-2:#43a047;
+      --green-soft:#e8f5e9;
+      --blue:#1565c0;
+      --blue-soft:#e3f2fd;
+      --amber:#ef6c00;
+      --amber-soft:#fff3e0;
+      --red:#c62828;
+      --red-soft:#ffebee;
+      --shadow:0 18px 50px rgba(0,0,0,0.16);
+      --radius:24px;
+    }
+
+    * { box-sizing: border-box; }
+
     body {
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background: linear-gradient(to right, #e0f7fa, #d0f0c0);
-      color: #333;
       margin: 0;
-      padding: 0;
+      font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(circle at top left, rgba(76,175,80,0.18), transparent 30%),
+        radial-gradient(circle at top right, rgba(33,150,243,0.14), transparent 28%),
+        linear-gradient(135deg, #effaf3 0%, #f5fbff 50%, #eef8ef 100%);
+      min-height: 100vh;
     }
 
-    .container {
-      max-width: 760px;
-      margin: 30px auto;
-      background: #ffffffee;
-      border-radius: 20px;
-      padding: 30px;
-      box-shadow: 0 8px 25px rgba(0,0,0,0.25);
+    .app-shell {
+      width: min(1240px, calc(100vw - 24px));
+      margin: 18px auto 40px;
     }
 
-    header {
-      text-align: center;
-      margin-bottom: 24px;
-    }
-
-    header h1 {
-      color: #2e7d32;
-      font-size: 2.5em;
-      margin-bottom: 6px;
-    }
-
-    header p {
-      color: #555;
-      font-size: 1.1em;
-      margin: 0;
-    }
-
-    .card {
-      background: #ffffff;
-      border-radius: 18px;
-      padding: 18px;
+    .hero {
+      display: grid;
+      grid-template-columns: 1.35fr 0.95fr;
+      gap: 18px;
       margin-bottom: 18px;
-      box-shadow: 0 4px 16px rgba(0,0,0,0.08);
     }
 
-    .card h2 {
-      color:#2e7d32;
-      margin:0 0 12px 0;
-      border-bottom: 3px solid #2e7d32;
-      padding-bottom: 6px;
-      font-size: 1.35em;
+    .hero-left, .hero-right, .card {
+      background: var(--panel-soft);
+      backdrop-filter: blur(8px);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+    }
+
+    .hero-left {
+      padding: 28px;
+      position: relative;
+      overflow: hidden;
+      background:
+        linear-gradient(135deg, rgba(46,125,50,0.96), rgba(102,187,106,0.94)),
+        #2e7d32;
+      color: #fff;
+      min-height: 330px;
+    }
+
+    .hero-left::after {
+      content: "";
+      position: absolute;
+      inset: auto -80px -80px auto;
+      width: 240px;
+      height: 240px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.08);
+    }
+
+    .brand-row {
       display:flex;
       align-items:center;
-      gap:10px;
+      justify-content:space-between;
+      gap:12px;
+      margin-bottom: 18px;
+      position: relative;
+      z-index: 2;
     }
 
-    select, input[type="date"], button, input[type="password"] {
-      width: 100%;
-      padding: 14px;
-      margin-bottom: 12px;
-      border-radius: 14px;
-      border: 1px solid #ccc;
-      font-size: 16px;
-      box-sizing: border-box;
-    }
-
-    .btn {
-      background-color:#2e7d32;
-      color:white;
-      border:none;
-      cursor:pointer;
-      transition: background 0.25s ease;
-      font-weight: 600;
-    }
-
-    .btn:hover { background-color:#1b5e20; }
-
-    .btn-row {
-      display:flex;
-      gap:10px;
-    }
-
-    .btn-row button {
-      width:100%;
-    }
-
-    .btn-secondary {
-      background:#1565c0;
-    }
-
-    .btn-secondary:hover {
-      background:#0d47a1;
-    }
-
-    .btn-danger {
-      background:#b71c1c;
-    }
-
-    .btn-danger:hover {
-      background:#7f0000;
-    }
-
-    .mini-box {
-      background:#f6f8f6;
-      border:1px dashed #cfd8dc;
-      padding: 12px;
-      border-radius: 14px;
-      font-size: 14px;
-      color:#444;
-      line-height: 1.45;
-    }
-
-    .status-section {
-      background-color:#f1f8e9;
-      padding: 16px;
-      border-radius: 18px;
-      box-shadow: inset 0 0 10px rgba(0,0,0,0.05);
-    }
-
-    .status-item {
-      font-size: 16px;
-      margin-bottom: 10px;
-      display:flex;
-      align-items:center;
-      justify-content: space-between;
-      padding: 12px 14px;
-      border-radius: 14px;
-    }
-
-    .status-item .left {
+    .brand {
       display:flex;
       align-items:center;
       gap:12px;
     }
 
-    .status-item span.value {
+    .brand-icon {
+      width: 52px;
+      height: 52px;
+      border-radius: 18px;
+      background: rgba(255,255,255,0.18);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      font-size: 22px;
+    }
+
+    .brand h1 {
+      margin:0;
+      font-size: clamp(1.7rem, 4vw, 2.35rem);
+      line-height: 1.05;
+    }
+
+    .brand p {
+      margin:4px 0 0 0;
+      opacity: 0.9;
+      font-size: 0.98rem;
+    }
+
+    .status-badge {
+      padding: 10px 14px;
+      border-radius: 999px;
+      font-weight: 800;
+      font-size: 0.95rem;
+      background: rgba(255,255,255,0.18);
+      color: #fff;
+      white-space: nowrap;
+    }
+
+    .hero-main {
+      display:grid;
+      grid-template-columns: 1fr 260px;
+      gap: 18px;
+      align-items: stretch;
+      position: relative;
+      z-index: 2;
+    }
+
+    .hero-copy {
+      display:flex;
+      flex-direction:column;
+      justify-content:space-between;
+      gap:16px;
+    }
+
+    .hero-copy h2 {
+      margin:0;
+      font-size: clamp(1.5rem, 3vw, 2.4rem);
+      line-height: 1.08;
+      max-width: 540px;
+    }
+
+    .hero-copy .sub {
+      margin:0;
+      font-size: 1rem;
+      line-height: 1.55;
+      opacity: 0.94;
+      max-width: 580px;
+    }
+
+    .hero-metrics {
+      display:grid;
+      grid-template-columns: repeat(2, minmax(120px, 1fr));
+      gap: 12px;
+    }
+
+    .hero-metric {
+      background: rgba(255,255,255,0.14);
+      border: 1px solid rgba(255,255,255,0.14);
+      border-radius: 18px;
+      padding: 14px;
+    }
+
+    .hero-metric .label {
+      opacity: 0.9;
+      font-size: 0.84rem;
+      margin-bottom: 6px;
+    }
+
+    .hero-metric .value {
+      font-size: 1.18rem;
+      font-weight: 800;
+      line-height: 1.2;
+    }
+
+    .hero-right {
+      padding: 18px;
+      min-height: 330px;
+      display:flex;
+      flex-direction:column;
+      justify-content:space-between;
+    }
+
+    .tower-card-title {
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+      margin-bottom: 10px;
+    }
+
+    .tower-card-title h3 {
+      margin:0;
+      color: var(--green);
+      font-size: 1.1rem;
+    }
+
+    .tower-card-title .mini {
+      font-size: 0.85rem;
+      color: var(--muted);
+      font-weight: 700;
+    }
+
+    .tower-wrap {
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      min-height: 250px;
+      position: relative;
+    }
+
+    .tower {
+      position: relative;
+      width: 180px;
+      height: 245px;
+    }
+
+    .tower-top {
+      position:absolute;
+      top:0;
+      left:50%;
+      transform:translateX(-50%);
+      width:120px;
+      height:24px;
+      border-radius: 999px;
+      background: linear-gradient(180deg, #fafafa, #d8dde2);
+      box-shadow: inset 0 2px 4px rgba(255,255,255,0.9), 0 8px 18px rgba(0,0,0,0.12);
+      z-index: 3;
+    }
+
+    .tower-body {
+      position:absolute;
+      top:18px;
+      left:50%;
+      transform:translateX(-50%);
+      width:86px;
+      height:170px;
+      border-radius: 40px;
+      background: linear-gradient(180deg, #ffffff, #eef4f7);
+      border: 2px solid #dbe3e8;
+      box-shadow: inset 0 0 0 4px rgba(240,245,247,0.9);
+      overflow:hidden;
+    }
+
+    .water-fill {
+      position:absolute;
+      left:0;
+      bottom:0;
+      width:100%;
+      height:38%;
+      background: linear-gradient(180deg, rgba(33,150,243,0.45), rgba(33,150,243,0.18));
+      animation: waveMove 3.2s ease-in-out infinite;
+    }
+
+    .water-fill::before {
+      content:"";
+      position:absolute;
+      top:-10px;
+      left:-10%;
+      width:120%;
+      height:18px;
+      background: rgba(255,255,255,0.35);
+      border-radius: 50%;
+      filter: blur(2px);
+    }
+
+    .tower-base {
+      position:absolute;
+      bottom:0;
+      left:50%;
+      transform:translateX(-50%);
+      width:132px;
+      height:52px;
+      border-radius: 26px 26px 18px 18px;
+      background: linear-gradient(180deg, #37474f, #1f2b31);
+      box-shadow: inset 0 4px 10px rgba(255,255,255,0.08), 0 10px 20px rgba(0,0,0,0.15);
+    }
+
+    .tower-light {
+      position:absolute;
+      top:8px;
+      left:50%;
+      transform:translateX(-50%);
+      width:102px;
+      height:102px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(255,245,157,0.48), rgba(255,245,157,0.1), transparent 72%);
+      animation: glowPulse 2.4s ease-in-out infinite;
+      z-index: 1;
+    }
+
+    .plant-pocket {
+      position:absolute;
+      width:34px;
+      height:24px;
+      border-radius: 0 0 14px 14px;
+      background: #f7f9fb;
+      border: 1px solid #d8e1e6;
+    }
+
+    .plant-pocket::before {
+      content:"";
+      position:absolute;
+      top:-10px;
+      left:50%;
+      transform:translateX(-50%);
+      width:18px;
+      height:14px;
+      background: linear-gradient(180deg, #66bb6a, #2e7d32);
+      border-radius: 50% 50% 40% 40%;
+      box-shadow:
+        -8px 2px 0 -2px #5dbb63,
+         8px 2px 0 -2px #5dbb63;
+      animation: leafBreath 3.8s ease-in-out infinite;
+      transform-origin: center bottom;
+    }
+
+    .p1 { top:34px; left:14px; }
+    .p2 { top:58px; right:14px; }
+    .p3 { top:88px; left:14px; }
+    .p4 { top:112px; right:14px; }
+    .p5 { top:142px; left:14px; }
+
+    .tower-indicators {
+      display:grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap:10px;
+      margin-top: 12px;
+    }
+
+    .tiny-stat {
+      border-radius: 16px;
+      padding: 12px;
+      background: #f8fbfc;
+      border: 1px solid #e8eef1;
+    }
+
+    .tiny-stat .k {
+      font-size: 0.78rem;
+      color: var(--muted);
+      margin-bottom: 6px;
+    }
+
+    .tiny-stat .v {
+      font-weight: 800;
+      font-size: 1rem;
+    }
+
+    .dashboard-grid {
+      display:grid;
+      grid-template-columns: 1.1fr 0.9fr;
+      gap: 18px;
+      margin-bottom: 18px;
+    }
+
+    .col {
+      display:flex;
+      flex-direction:column;
+      gap:18px;
+    }
+
+    .card {
+      padding: 22px;
+    }
+
+    .card h2 {
+      margin:0 0 16px 0;
+      color: var(--green);
+      font-size: 1.18rem;
+      display:flex;
+      align-items:center;
+      gap:10px;
+    }
+
+    .action-card {
+      background: linear-gradient(180deg, #fffdf5, #fff7e8);
+      border: 1px solid #ffe0b2;
+    }
+
+    .action-box {
+      border-radius: 22px;
+      padding: 20px;
+      background: #ffffff;
+      border: 1px solid #f4ead8;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.8);
+    }
+
+    .action-tag {
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      border-radius:999px;
+      padding:8px 12px;
+      background: var(--green-soft);
+      color: var(--green);
+      font-weight:800;
+      margin-bottom:12px;
+    }
+
+    .action-title {
+      font-size: 1.5rem;
+      font-weight: 900;
+      margin-bottom: 8px;
+      line-height: 1.12;
+    }
+
+    .action-desc {
+      color: #40505a;
+      line-height: 1.6;
+      font-size: 1rem;
+    }
+
+    .small-muted {
+      font-size: 0.93rem;
+      color: var(--muted);
+      line-height: 1.55;
+    }
+
+    .kpi-grid {
+      display:grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 14px;
+    }
+
+    .kpi {
+      border-radius: 22px;
+      padding: 18px;
+      background: #fff;
+      border: 1px solid #edf2f4;
+      box-shadow: 0 8px 18px rgba(0,0,0,0.04);
+    }
+
+    .kpi-top {
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+      margin-bottom: 10px;
+      font-size: 0.92rem;
+      color: var(--muted);
       font-weight:700;
+    }
+
+    .kpi-value {
+      font-size: 1.4rem;
+      font-weight: 900;
+      margin-bottom: 8px;
+    }
+
+    .kpi-bar {
+      height: 10px;
+      width: 100%;
+      background: #edf2f4;
+      border-radius: 999px;
+      overflow: hidden;
+    }
+
+    .kpi-bar > span {
+      display:block;
+      height:100%;
+      border-radius:999px;
+      width:0%;
+      transition: width 0.4s ease;
+      background: linear-gradient(90deg, #66bb6a, #2e7d32);
+    }
+
+    .status-list {
+      display:grid;
+      gap: 12px;
+    }
+
+    .status-row {
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+      padding: 14px 16px;
+      border-radius: 18px;
+      background: #f8fbfc;
+      border: 1px solid #edf2f4;
+    }
+
+    .status-left {
+      display:flex;
+      align-items:center;
+      gap:12px;
+      font-weight:700;
+    }
+
+    .status-value {
+      font-weight: 900;
       text-align:right;
     }
 
-    .status-pump { background:#c8e6c9; color:#2e7d32; }
-    .status-water { background:#b3e5fc; color:#0277bd; }
-    .status-nutrients { background:#dcedc8; color:#558b2f; }
-    .status-light { background:#fff9c4; color:#f57f17; }
-    .status-temp { background:#ffe0b2; color:#ef6c00; }
-    .status-humidity { background:#f0f4c3; color:#827717; }
-    .status-waterTemp { background:#e1f5fe; color:#01579b; }
-    .status-system { background:#ede7f6; color:#5e35b1; }
+    .status-row.good { background: #f1f8e9; }
+    .status-row.warn { background: #fff8e1; }
+    .status-row.bad  { background: #ffebee; }
 
-    .big-action {
-      background: #e8f5e9;
-      border: 1px solid #c8e6c9;
+    .control-grid {
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+    }
+
+    label {
+      display:block;
+      font-weight: 800;
+      margin-bottom: 8px;
+      color:#1f2b31;
+    }
+
+    select, input[type="date"], button, input[type="password"] {
+      width:100%;
+      border-radius: 16px;
+      border: 1px solid #d9e3e7;
+      padding: 14px 15px;
+      font-size: 1rem;
+      outline: none;
+    }
+
+    select:focus, input[type="date"]:focus, input[type="password"]:focus {
+      border-color: #66bb6a;
+      box-shadow: 0 0 0 4px rgba(102,187,106,0.12);
+    }
+
+    .btn {
+      border:none;
+      cursor:pointer;
+      font-weight: 800;
+      transition: transform 0.18s ease, box-shadow 0.2s ease, background 0.2s ease;
+    }
+
+    .btn:hover {
+      transform: translateY(-1px);
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, #2e7d32, #43a047);
+      color:#fff;
+      box-shadow: 0 12px 24px rgba(67,160,71,0.22);
+    }
+
+    .btn-secondary {
+      background: linear-gradient(135deg, #1565c0, #1e88e5);
+      color:#fff;
+    }
+
+    .btn-danger {
+      background: linear-gradient(135deg, #b71c1c, #d32f2f);
+      color:#fff;
+    }
+
+    .btn-row {
+      display:flex;
+      gap:12px;
+      margin-top: 6px;
+    }
+
+    .mini-box {
+      background:#f8fbfc;
+      border:1px solid #edf2f4;
       border-radius: 18px;
-      padding: 14px;
-      margin-bottom: 12px;
+      padding: 16px;
+      line-height:1.6;
+      color:#37474f;
     }
 
-    .big-action .title {
-      font-weight:800;
-      color:#1b5e20;
-      margin-bottom:6px;
-      font-size: 19px;
+    .subgrid-2 {
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap:18px;
     }
 
-    .big-action .desc {
-      color:#2f3b2f;
-      font-size: 14px;
-      line-height: 1.45;
-    }
-
-    .pill-ok { color:#1b5e20; font-weight:800; }
-    .pill-bad { color:#b71c1c; font-weight:800; }
-    .pill-warn { color:#ef6c00; font-weight:800; }
-
-    .small-muted {
-      font-size: 13px;
-      color:#666;
-      line-height: 1.5;
-    }
+    .pill-ok { color:var(--green); font-weight:900; }
+    .pill-bad { color:var(--red); font-weight:900; }
+    .pill-warn { color:var(--amber); font-weight:900; }
 
     .footer {
       text-align:center;
-      color:#6b6b6b;
-      font-size: 12px;
-      margin-top: 8px;
+      color:#66757f;
+      font-size: 0.86rem;
+      margin-top: 12px;
     }
 
     .lock-screen {
@@ -200,43 +603,82 @@
       align-items: center;
       justify-content: center;
       z-index: 9999;
+      padding: 16px;
     }
 
     .lock-box {
-      width: min(92vw, 420px);
+      width: min(92vw, 430px);
       background: #fff;
-      border-radius: 18px;
+      border-radius: 24px;
       padding: 24px;
-      box-shadow: 0 12px 30px rgba(0,0,0,0.35);
+      box-shadow: 0 20px 45px rgba(0,0,0,0.35);
     }
 
     .lock-box h2 {
       margin-top: 0;
       color:#2e7d32;
-      border-bottom: 3px solid #2e7d32;
-      padding-bottom: 6px;
     }
 
     .hidden {
       display:none !important;
     }
 
-    @media(max-width: 620px){
-      .btn-row { flex-direction: column; }
+    @keyframes glowPulse {
+      0%,100% { opacity: 0.7; transform: translateX(-50%) scale(1); }
+      50% { opacity: 1; transform: translateX(-50%) scale(1.06); }
     }
 
-    @media(max-width: 520px){
-      .container{
-        margin: 12px;
-        padding: 18px;
+    @keyframes leafBreath {
+      0%,100% { transform: translateX(-50%) scale(1); }
+      50% { transform: translateX(-50%) scale(1.07); }
+    }
+
+    @keyframes waveMove {
+      0%,100% { height: 38%; }
+      50% { height: 40.5%; }
+    }
+
+    @media (max-width: 1080px){
+      .hero, .dashboard-grid {
+        grid-template-columns: 1fr;
       }
-      header h1{
-        font-size: 2.0em;
+
+      .hero-main {
+        grid-template-columns: 1fr;
+      }
+
+      .hero-right {
+        min-height: auto;
+      }
+    }
+
+    @media (max-width: 760px){
+      .app-shell {
+        width: min(100vw - 14px, 100%);
+      }
+
+      .card, .hero-left, .hero-right {
+        border-radius: 20px;
+      }
+
+      .control-grid, .subgrid-2, .kpi-grid, .hero-metrics {
+        grid-template-columns: 1fr;
+      }
+
+      .btn-row {
+        flex-direction: column;
+      }
+
+      .hero-left {
+        padding: 22px;
+      }
+
+      .hero-copy h2 {
+        font-size: 1.7rem;
       }
     }
   </style>
 </head>
-
 <body>
 
   <div id="lockScreen" class="lock-screen">
@@ -244,129 +686,253 @@
       <h2><i class="fa-solid fa-lock"></i> Testovací prístup</h2>
       <p>Zadaj prístupový kód pre otvorenie aplikácie.</p>
       <input id="accessCodeInput" type="password" placeholder="Prístupový kód" />
-      <button id="unlockBtn" class="btn" type="button"><i class="fa-solid fa-key"></i> Odomknúť</button>
-      <div id="lockError" class="small-muted" style="color:#b71c1c;"></div>
+      <button id="unlockBtn" class="btn btn-primary" type="button"><i class="fa-solid fa-key"></i> Odomknúť</button>
+      <div id="lockError" class="small-muted" style="color:#b71c1c; margin-top:10px;"></div>
       <div class="small-muted" style="margin-top:10px;">
         Toto je testovací zámok v aplikácii.
       </div>
     </div>
   </div>
 
-  <div class="container hidden" id="appRoot">
-    <header>
-      <h1>HydroSmart Dashboard</h1>
-      <p>Systém sa riadi sám. Ty len spravíš to, čo si vypýta.</p>
-    </header>
-
-    <div class="card">
-      <h2><i class="fa-solid fa-sliders"></i> Ovládanie</h2>
-
-      <label><b>Rastlina</b></label>
-      <select id="plantSelect"></select>
-      <button class="btn" onclick="sendPlant()"><i class="fa-solid fa-seedling"></i> Odoslať rastlinu</button>
-
-      <label><b>Dátum výsevu</b></label>
-      <input id="sowDate" type="date" />
-      <div class="btn-row">
-        <button class="btn btn-secondary" onclick="saveSowDate()"><i class="fa-solid fa-floppy-disk"></i> Uložiť</button>
-        <button class="btn btn-danger" onclick="clearSowDate()"><i class="fa-solid fa-trash"></i> Zmazať</button>
-      </div>
-
-      <div class="mini-box" id="selectionSummary">Načítavam…</div>
-    </div>
-
-    <div class="card">
-      <h2><i class="fa-solid fa-wifi"></i> Ako pripojiť systém na Wi-Fi</h2>
-      <div class="mini-box">
-        <b>1.</b> Zapni HydroSmart vežu.<br>
-        <b>2.</b> Pripoj sa mobilom alebo notebookom na Wi-Fi sieť <b>HydroSmart Connect</b>.<br>
-        <b>3.</b> Otvor adresu <b>192.168.4.1</b>.<br>
-        <b>4.</b> Zadaj názov a heslo tvojej domácej Wi-Fi.<br>
-        <b>5.</b> Po uložení sa zariadenie reštartuje a pripojí sa na tvoju Wi-Fi.<br><br>
-        <b>Ak chceš Wi-Fi vymazať a nastaviť znova:</b><br>
-        podrž dotykové tlačidlo približne <b>10 sekúnd</b>.
-      </div>
-    </div>
-
-    <div class="card">
-      <h2><i class="fa-solid fa-compass"></i> Čo máš urobiť teraz</h2>
-      <div class="big-action" id="nextActionBox">
-        <div class="title">Načítavam stav…</div>
-        <div class="desc">Čakám na údaje zo systému.</div>
-      </div>
-      <div class="small-muted" id="lastUpdateText">—</div>
-    </div>
-
-    <div class="card">
-      <h2><i class="fa-solid fa-tower-observation"></i> Status HydroVeže</h2>
-
-      <div class="status-section">
-        <div class="status-item status-system">
-          <div class="left"><i class="fa-solid fa-link"></i> Záhon / zariadenie</div>
-          <span class="value" id="deviceStatus">--</span>
+  <div class="app-shell hidden" id="appRoot">
+    <section class="hero">
+      <div class="hero-left">
+        <div class="brand-row">
+          <div class="brand">
+            <div class="brand-icon"><i class="fa-solid fa-leaf"></i></div>
+            <div>
+              <h1>HydroSmart</h1>
+              <p>Inteligentné riadenie hydroponickej veže</p>
+            </div>
+          </div>
+          <div class="status-badge" id="overallStateBadge">Načítavam stav…</div>
         </div>
 
-        <div class="status-item status-system">
-          <div class="left"><i class="fa-solid fa-wifi"></i> Wi-Fi</div>
-          <span class="value" id="wifiStatus">--</span>
-        </div>
+        <div class="hero-main">
+          <div class="hero-copy">
+            <div>
+              <h2 id="heroHeadline">Systém sleduje rastlinu, vodu, živiny a povie ti, čo spraviť.</h2>
+              <p class="sub" id="heroSubtext">
+                Po načítaní údajov sa tu zobrazí rastlina, deň rastu a presný ďalší krok pre používateľa.
+              </p>
+            </div>
 
-        <div class="status-item status-pump">
-          <div class="left"><i class="fa-solid fa-droplet"></i> Pumpa</div>
-          <span class="value" id="pumpStatus">--</span>
-        </div>
+            <div class="hero-metrics">
+              <div class="hero-metric">
+                <div class="label">Rastlina</div>
+                <div class="value" id="plantNameHero">—</div>
+              </div>
+              <div class="hero-metric">
+                <div class="label">Deň rastu</div>
+                <div class="value" id="growthDayHero">—</div>
+              </div>
+              <div class="hero-metric">
+                <div class="label">Fáza</div>
+                <div class="value" id="phaseHero">—</div>
+              </div>
+              <div class="hero-metric">
+                <div class="label">Dátum výsevu</div>
+                <div class="value" id="sowDateHero">—</div>
+              </div>
+            </div>
+          </div>
 
-        <div class="status-item status-water">
-          <div class="left"><i class="fa-solid fa-water"></i> Hladina vody</div>
-          <span class="value" id="waterLevel">--</span>
-        </div>
+          <div class="hero-right">
+            <div>
+              <div class="tower-card-title">
+                <h3><i class="fa-solid fa-tower-observation"></i> Live veža</h3>
+                <div class="mini" id="deviceStatusMini">—</div>
+              </div>
 
-        <div class="status-item status-nutrients">
-          <div class="left"><i class="fa-solid fa-vial"></i> Živiny</div>
-          <span class="value" id="nutrientsPct">--</span>
-        </div>
+              <div class="tower-wrap">
+                <div class="tower">
+                  <div class="tower-light"></div>
+                  <div class="tower-top"></div>
+                  <div class="tower-body">
+                    <div class="water-fill" id="waterFillAnim"></div>
+                    <div class="plant-pocket p1"></div>
+                    <div class="plant-pocket p2"></div>
+                    <div class="plant-pocket p3"></div>
+                    <div class="plant-pocket p4"></div>
+                    <div class="plant-pocket p5"></div>
+                  </div>
+                  <div class="tower-base"></div>
+                </div>
+              </div>
+            </div>
 
-        <div class="status-item status-light">
-          <div class="left"><i class="fa-solid fa-lightbulb"></i> Svetlo</div>
-          <span class="value" id="lightStatus">--</span>
-        </div>
-
-        <div class="status-item status-temp">
-          <div class="left"><i class="fa-solid fa-temperature-half"></i> Teplota vzduchu</div>
-          <span class="value" id="temperature">--</span>
-        </div>
-
-        <div class="status-item status-humidity">
-          <div class="left"><i class="fa-solid fa-tint"></i> Vlhkosť</div>
-          <span class="value" id="humidity">--</span>
-        </div>
-
-        <div class="status-item status-waterTemp">
-          <div class="left"><i class="fa-solid fa-thermometer"></i> Teplota vody</div>
-          <span class="value" id="waterTemp">--</span>
-        </div>
-
-        <div class="status-item status-system">
-          <div class="left"><i class="fa-solid fa-check-double"></i> Kalibrácia vody</div>
-          <span class="value" id="calibrationShort">--</span>
+            <div class="tower-indicators">
+              <div class="tiny-stat">
+                <div class="k">Pumpa</div>
+                <div class="v" id="pumpStatusMini">—</div>
+              </div>
+              <div class="tiny-stat">
+                <div class="k">Svetlo</div>
+                <div class="v" id="lightStatusMini">—</div>
+              </div>
+              <div class="tiny-stat">
+                <div class="k">Wi-Fi</div>
+                <div class="v" id="wifiStatusMini">—</div>
+              </div>
+              <div class="tiny-stat">
+                <div class="k">Voda</div>
+                <div class="v" id="waterLevelMini">—</div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
-    </div>
 
-    <div class="card">
-      <h2><i class="fa-solid fa-check-double"></i> Kalibrácia vody</h2>
-      <div class="mini-box" id="calibrationBox">Načítavam…</div>
-    </div>
+      <div class="card action-card">
+        <h2><i class="fa-solid fa-compass"></i> Čo urobiť teraz</h2>
+        <div class="action-box" id="nextActionBox">
+          <div class="action-tag"><i class="fa-solid fa-circle-info"></i> Smart odporúčanie</div>
+          <div class="action-title">Načítavam stav…</div>
+          <div class="action-desc">Čakám na údaje zo systému.</div>
+        </div>
+        <div class="small-muted" id="lastUpdateText" style="margin-top:12px;">—</div>
+      </div>
+    </section>
 
-    <div class="card">
-      <h2><i class="fa-solid fa-clipboard-list"></i> Odporúčania (živiny)</h2>
-      <div class="mini-box" id="nutrientAdviceBox">Načítavam…</div>
-    </div>
+    <section class="dashboard-grid">
+      <div class="col">
+        <div class="card">
+          <h2><i class="fa-solid fa-chart-simple"></i> Hlavné ukazovatele</h2>
+          <div class="kpi-grid">
+            <div class="kpi">
+              <div class="kpi-top">
+                <span><i class="fa-solid fa-water"></i> Hladina vody</span>
+                <span id="waterLevel">—</span>
+              </div>
+              <div class="kpi-value" id="waterLevelDetail">—</div>
+              <div class="kpi-bar"><span id="waterBar"></span></div>
+            </div>
 
-    <div class="card">
-      <h2><i class="fa-solid fa-calendar-days"></i> Časová os rastu</h2>
-      <div class="mini-box" id="timelineBox">Načítavam…</div>
-    </div>
+            <div class="kpi">
+              <div class="kpi-top">
+                <span><i class="fa-solid fa-vial"></i> Živiny</span>
+                <span id="nutrientsPct">—</span>
+              </div>
+              <div class="kpi-value" id="nutrientsDetail">—</div>
+              <div class="kpi-bar"><span id="nutrientBar"></span></div>
+            </div>
+
+            <div class="kpi">
+              <div class="kpi-top">
+                <span><i class="fa-solid fa-temperature-half"></i> Teplota vzduchu</span>
+                <span id="temperature">—</span>
+              </div>
+              <div class="kpi-value" id="temperatureDetail">—</div>
+              <div class="kpi-bar"><span id="tempBar"></span></div>
+            </div>
+
+            <div class="kpi">
+              <div class="kpi-top">
+                <span><i class="fa-solid fa-thermometer"></i> Teplota vody</span>
+                <span id="waterTemp">—</span>
+              </div>
+              <div class="kpi-value" id="waterTempDetail">—</div>
+              <div class="kpi-bar"><span id="waterTempBar"></span></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <h2><i class="fa-solid fa-sliders"></i> Nastavenie rastliny</h2>
+
+          <div class="control-grid">
+            <div>
+              <label for="plantSelect">Rastlina</label>
+              <select id="plantSelect"></select>
+            </div>
+            <div>
+              <label for="sowDate">Dátum výsevu</label>
+              <input id="sowDate" type="date" />
+            </div>
+          </div>
+
+          <div class="btn-row">
+            <button class="btn btn-primary" onclick="sendPlant()">
+              <i class="fa-solid fa-seedling"></i> Použiť rastlinu
+            </button>
+            <button class="btn btn-secondary" onclick="saveSowDate()">
+              <i class="fa-solid fa-floppy-disk"></i> Uložiť výsev
+            </button>
+            <button class="btn btn-danger" onclick="clearSowDate()">
+              <i class="fa-solid fa-trash"></i> Vymazať výsev
+            </button>
+          </div>
+
+          <div class="mini-box" id="selectionSummary" style="margin-top:14px;">Načítavam…</div>
+        </div>
+
+        <div class="subgrid-2">
+          <div class="card">
+            <h2><i class="fa-solid fa-clipboard-list"></i> Odporúčanie k živinám</h2>
+            <div class="mini-box" id="nutrientAdviceBox">Načítavam…</div>
+          </div>
+
+          <div class="card">
+            <h2><i class="fa-solid fa-calendar-days"></i> Rastová časová os</h2>
+            <div class="mini-box" id="timelineBox">Načítavam…</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="col">
+        <div class="card">
+          <h2><i class="fa-solid fa-satellite-dish"></i> Stav systému</h2>
+          <div class="status-list">
+            <div class="status-row" id="rowDevice">
+              <div class="status-left"><i class="fa-solid fa-link"></i> Zariadenie</div>
+              <div class="status-value" id="deviceStatus">—</div>
+            </div>
+
+            <div class="status-row" id="rowWifi">
+              <div class="status-left"><i class="fa-solid fa-wifi"></i> Wi-Fi</div>
+              <div class="status-value" id="wifiStatus">—</div>
+            </div>
+
+            <div class="status-row" id="rowPump">
+              <div class="status-left"><i class="fa-solid fa-droplet"></i> Pumpa</div>
+              <div class="status-value" id="pumpStatus">—</div>
+            </div>
+
+            <div class="status-row" id="rowLight">
+              <div class="status-left"><i class="fa-solid fa-lightbulb"></i> Svetlo</div>
+              <div class="status-value" id="lightStatus">—</div>
+            </div>
+
+            <div class="status-row" id="rowHumidity">
+              <div class="status-left"><i class="fa-solid fa-cloud"></i> Vlhkosť</div>
+              <div class="status-value" id="humidity">—</div>
+            </div>
+
+            <div class="status-row" id="rowCalibration">
+              <div class="status-left"><i class="fa-solid fa-check-double"></i> Kalibrácia</div>
+              <div class="status-value" id="calibrationShort">—</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <h2><i class="fa-solid fa-check-double"></i> Kalibrácia vody</h2>
+          <div class="mini-box" id="calibrationBox">Načítavam…</div>
+        </div>
+
+        <div class="card">
+          <h2><i class="fa-solid fa-wifi"></i> Pripojenie na Wi-Fi</h2>
+          <div class="mini-box">
+            <b>1.</b> Zapni HydroSmart vežu.<br>
+            <b>2.</b> Pripoj sa na sieť <b>HydroSmart Connect</b>.<br>
+            <b>3.</b> Otvor adresu <b>192.168.4.1</b>.<br>
+            <b>4.</b> Zadaj názov a heslo tvojej Wi-Fi.<br>
+            <b>5.</b> Po uložení sa zariadenie reštartuje.<br><br>
+            <b>Reset Wi-Fi:</b> podrž dotykové tlačidlo približne <b>10 sekúnd</b>.
+          </div>
+        </div>
+      </div>
+    </section>
 
     <div class="footer">HydroSmart © 2026</div>
   </div>
