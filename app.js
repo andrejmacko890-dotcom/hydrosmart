@@ -1,4 +1,4 @@
- const firebaseConfig = {
+const firebaseConfig = {
   apiKey: "AIzaSyCYTB63Wikgf8wA4rh1UK68a5nOshrtuoQ",
   authDomain: "hydrosmart-3aa0e.firebaseapp.com",
   databaseURL: "https://hydrosmart-3aa0e-default-rtdb.europe-west1.firebasedatabase.app",
@@ -62,7 +62,7 @@ const PLANTS = {
     tds: {
       seedling: { min: 0, max: 150, dose: "Iba voda (bez dávkovania)" },
       rooting: { min: 250, max: 350, dose: "Zakoreňovač: 0.5 ml/L (napr. 5 ml / 10 L)" },
-      growth: { min: 600, max: 800, dose: "Hnojivo A: 2 ml/L + Hnojivo B: 2 ml/L (napr. 20 ml + 20 ml / 10 L)" }
+      growth: { min: 600, max: 800, dose: "Hnojivo A: 2 ml/L + Hnojivo B: 2 ml / L (napr. 20 ml + 20 ml / 10 L)" }
     },
     temps: { airMin: 16, airMax: 22, waterMin: 18, waterMax: 20 }
   },
@@ -192,6 +192,26 @@ function formatCalibrationShort(calibrated){
   return calibrated ? "OK ✅" : "Treba nastaviť ⚠️";
 }
 
+function formatDateSK(isoDate){
+  if (!isoDate) return "Nezadaný";
+  const d = new Date(isoDate + "T00:00:00");
+  if (isNaN(d.getTime())) return "Nezadaný";
+  return d.toLocaleDateString("sk-SK");
+}
+
+function setBar(id, pct){
+  const el = $(id);
+  if (!el) return;
+  el.style.width = `${clamp(pct || 0, 0, 100)}%`;
+}
+
+function setRowTone(id, tone){
+  const row = $(id);
+  if (!row) return;
+  row.classList.remove("good", "warn", "bad");
+  row.classList.add(tone);
+}
+
 function setPlantDropdown(){
   const sel = $("plantSelect");
   sel.innerHTML = `<option value="">🌱 Vyber rastlinu</option>`;
@@ -209,14 +229,31 @@ function setSummary(plantKey, phase, sowDate){
     $("selectionSummary").innerHTML = "Vyber rastlinu.";
     return;
   }
-  const sowTxt = sowDate ? sowDate.split("-").reverse().join(". ") : "nezadaný";
 
   $("selectionSummary").innerHTML = `
     <b>Vybraná rastlina:</b> ${p.name}<br>
     <b>Aktuálna fáza:</b> ${phaseLabel(phase)}<br>
     <b>Svetlo:</b> ${p.light}<br>
-    <b>Dátum výsevu:</b> ${sowTxt}
+    <b>Dátum výsevu:</b> ${formatDateSK(sowDate)}
   `;
+}
+
+function setHero(plantKey, phase, sowDate){
+  const p = PLANTS[plantKey];
+  const days = daysBetween(sowDate);
+
+  $("plantNameHero").innerText = p ? p.name : "—";
+  $("growthDayHero").innerText = days === null ? "—" : `${days}`;
+  $("phaseHero").innerText = p ? phaseLabel(phase) : "—";
+  $("sowDateHero").innerText = formatDateSK(sowDate);
+
+  $("heroHeadline").innerText = p
+    ? `${p.name} je aktuálne vo fáze „${phaseLabel(phase)}“.`
+    : "Systém sleduje rastlinu, vodu, živiny a povie ti, čo spraviť.";
+
+  $("heroSubtext").innerText = p
+    ? `HydroSmart sleduje vodu, živiny, teplotu a kalibráciu. Používateľ vždy vidí len ďalší potrebný krok.`
+    : "Po načítaní údajov sa tu zobrazí rastlina, deň rastu a presný ďalší krok pre používateľa.";
 }
 
 function renderCalibration(calibrated){
@@ -243,19 +280,17 @@ function renderTimeline(plant, sowDate, phase){
   const days = daysBetween(sowDate);
 
   if (days === null){
-    $("timelineBox").innerHTML = `
-      Zadaj dátum výsevu a aplikácia ti bude sama posielať ďalší krok.
-    `;
+    $("timelineBox").innerHTML = `Zadaj dátum výsevu a aplikácia ti sama vypočíta deň rastu aj ďalší krok.`;
     return;
   }
 
   let nextStep = "Systém čaká na ďalšiu fázu.";
   if (phase === "seedling"){
-    nextStep = `Po ${plant.germ.max}. dni začne zakoreňovanie a appka ťa upozorní na zakoreňovač.`;
+    nextStep = `Po ${plant.germ.max}. dni začne zakoreňovanie a aplikácia upozorní na zakoreňovač.`;
   } else if (phase === "rooting"){
-    nextStep = `Po zakoreňovaní prejde systém do rastu a appka ťa upozorní na hnojivo A+B.`;
+    nextStep = `Po zakoreňovaní prejde systém do rastu a upozorní na hnojivo A + B.`;
   } else {
-    nextStep = `Rastová fáza beží. Sleduj stav vody a živín.`;
+    nextStep = `Rastová fáza beží. Sleduj hladinu vody a živiny.`;
   }
 
   $("timelineBox").innerHTML = `
@@ -287,11 +322,11 @@ function renderNutrientAdvice(plant, phase, concPpm){
 
   let rec = "Všetko je v poriadku.";
   if (state.tone === "warn"){
-    if (phase === "seedling") rec = "Zatiaľ nič nepridávaj, v tejto fáze má byť iba voda.";
+    if (phase === "seedling") rec = "Zatiaľ nič nepridávaj. V tejto fáze má byť iba voda.";
     else if (phase === "rooting") rec = "Pridaj zakoreňovač podľa dávkovania.";
     else rec = "Pridaj menšie množstvo hnojiva A + B podľa dávkovania.";
   } else if (state.tone === "bad"){
-    rec = "Dolej čistú vodu, živiny sú príliš vysoké.";
+    rec = "Dolej čistú vodu. Živiny sú príliš vysoké.";
   }
 
   $("nutrientAdviceBox").innerHTML = `
@@ -309,34 +344,67 @@ function renderNextAction(obj){
 
   let title = "Všetko je v poriadku";
   let desc = "Systém beží správne. Zatiaľ nič nemusíš robiť.";
+  let tag = "Smart odporúčanie";
 
   if (!obj.deviceConnected){
     title = "Skontroluj napájanie záhonu";
-    desc = "Záhon neposlal údaje už dlhšie. Skontroluj napájanie, Wi-Fi alebo reštart zariadenia.";
+    desc = "Záhon neposlal údaje dlhšie než 30 sekúnd. Skontroluj napájanie, Wi-Fi alebo reštart zariadenia.";
+    tag = "Potrebný zásah";
   } else if (!obj.wifiConnected){
     title = "Pripoj zariadenie na Wi-Fi";
-    desc = "Zariadenie momentálne nie je pripojené na Wi-Fi. Pozri návod vyššie a nastav pripojenie.";
+    desc = "Zariadenie momentálne nie je pripojené na Wi-Fi. V spodnej časti aplikácie je návod na pripojenie.";
+    tag = "Potrebný zásah";
   } else if (obj.waterLow){
     title = "Dolej vodu";
     desc = "Hladina vody je nízka. Dolej vodu do nádrže. Po dolievaní stlač dotykové tlačidlo 3×.";
+    tag = "Priorita";
   } else if (!obj.calibrated){
     title = "Sprav prvú kalibráciu";
     desc = "Nalej čistú vodu a stlač dotykové tlačidlo 2×. Až potom bude meranie živín presné.";
+    tag = "Priorita";
   } else if (obj.phase === "seedling"){
     title = "Zatiaľ iba voda";
-    desc = "Systém vyhodnotil, že rastlina je ešte v klíčení. Zatiaľ nepridávaj živiny.";
+    desc = "Rastlina je ešte v klíčení. Zatiaľ nepridávaj živiny.";
   } else if (obj.phase === "rooting"){
-    title = "Zakoreňovač podľa dávkovania";
-    desc = `${obj.doseText} Aktuálny stav živín: ${obj.stateText}.`;
+    title = "Pridaj zakoreňovač";
+    desc = `${obj.doseText}. Aktuálny stav živín: ${obj.stateText}.`;
   } else {
-    title = "Hnojivo A + B podľa dávkovania";
-    desc = `${obj.doseText} Aktuálny stav živín: ${obj.stateText}.`;
+    title = "Pridaj hnojivo A + B";
+    desc = `${obj.doseText}. Aktuálny stav živín: ${obj.stateText}.`;
   }
 
   box.innerHTML = `
-    <div class="title">${title}</div>
-    <div class="desc">${desc}</div>
+    <div class="action-tag"><i class="fa-solid fa-circle-info"></i> ${tag}</div>
+    <div class="action-title">${title}</div>
+    <div class="action-desc">${desc}</div>
   `;
+}
+
+function renderOverallState(obj){
+  let text = "Stav neznámy";
+  if (!obj.deviceConnected) text = "🔴 Zariadenie offline";
+  else if (!obj.wifiConnected) text = "🟠 Bez Wi-Fi";
+  else if (obj.waterLow || !obj.calibrated) text = "🟠 Vyžaduje zásah";
+  else text = "🟢 Stabilný";
+
+  $("overallStateBadge").innerText = text;
+}
+
+function renderMiniStats(obj){
+  $("deviceStatusMini").innerText = obj.deviceConnected ? "Pripojené ✅" : "Offline ⚠️";
+  $("pumpStatusMini").innerText = obj.pump ? "Aktívna ✅" : "Vypnutá";
+  $("lightStatusMini").innerText = obj.light ? "Zapnuté ✅" : "Vypnuté";
+  $("wifiStatusMini").innerText = obj.wifiConnected ? "Pripojené ✅" : "Nepripojené ⚠️";
+  $("waterLevelMini").innerText = obj.waterLow ? "Nízka ⚠️" : "OK ✅";
+}
+
+function renderStatusTones(obj){
+  setRowTone("rowDevice", obj.deviceConnected ? "good" : "bad");
+  setRowTone("rowWifi", obj.wifiConnected ? "good" : "warn");
+  setRowTone("rowPump", obj.pump ? "good" : "warn");
+  setRowTone("rowLight", obj.light ? "good" : "warn");
+  setRowTone("rowHumidity", obj.humOk ? "good" : "warn");
+  setRowTone("rowCalibration", obj.calibrated ? "good" : "warn");
 }
 
 // ==================== Write ====================
@@ -347,7 +415,7 @@ function sendPlant(){
   db.ref("tower/commands").update({
     plant: plantKey,
     resetPumpTimer: true
-  }).then(()=> alert("Rastlina odoslaná ✔"))
+  }).then(()=> alert("Rastlina bola nastavená ✔"))
     .catch(err => alert("Chyba: " + err.message));
 }
 window.sendPlant = sendPlant;
@@ -361,7 +429,7 @@ function saveSowDate(){
   db.ref("tower/meta").update({
     sowDate: d,
     sowPlant: plantKey
-  }).then(()=> alert("Dátum uložený ✔"))
+  }).then(()=> alert("Dátum výsevu bol uložený ✔"))
     .catch(err => alert("Chyba: " + err.message));
 }
 window.saveSowDate = saveSowDate;
@@ -370,7 +438,7 @@ function clearSowDate(){
   db.ref("tower/meta").update({
     sowDate: null,
     sowPlant: null
-  }).then(()=> alert("Dátum zmazaný ✔"))
+  }).then(()=> alert("Dátum výsevu bol zmazaný ✔"))
     .catch(err => alert("Chyba: " + err.message));
 }
 window.clearSowDate = clearSowDate;
@@ -382,7 +450,6 @@ let latestPlantKey = "";
 let sowDate = "";
 let computedPhase = "seedling";
 
-// fallback hneď po načítaní
 renderCalibration(false);
 renderNextAction({
   waterLow: false,
@@ -390,6 +457,12 @@ renderNextAction({
   phase: "seedling",
   doseText: "Iba voda",
   stateText: "čakám na dáta",
+  wifiConnected: false,
+  deviceConnected: false
+});
+renderOverallState({
+  waterLow: false,
+  calibrated: false,
   wifiConnected: false,
   deviceConnected: false
 });
@@ -423,6 +496,7 @@ db.ref("tower/meta").on("value", (snap)=>{
   computedPhase = days === null ? "seedling" : computePhase(days, plant);
 
   setSummary(plantKey, computedPhase, sowDate);
+  setHero(plantKey, computedPhase, sowDate);
   renderTimeline(plant, sowDate, computedPhase);
 });
 
@@ -430,24 +504,29 @@ db.ref("tower/status").on("value", (snap)=>{
   try {
     const s = snap.val() || {};
 
-    $("pumpStatus").innerText = s.pump ? "ON ✅" : "OFF";
-    $("lightStatus").innerText = s.light ? "ON ✅" : "OFF";
-    $("waterLevel").innerText = formatWaterStatus(!!s.waterLow);
+    const pumpOn = !!s.pump;
+    const lightOn = !!s.light;
+    const waterLow = !!s.waterLow;
+    const calibrated = !!s.baselineCalibrated;
+    const wifiConnected = !!s.wifiConnected;
+
+    $("pumpStatus").innerText = pumpOn ? "ON ✅" : "OFF";
+    $("lightStatus").innerText = lightOn ? "ON ✅" : "OFF";
+    $("waterLevel").innerText = formatWaterStatus(waterLow);
 
     const airTemp = isNum(s.temperature) ? s.temperature : 0;
     const humidity = isNum(s.humidity) ? s.humidity : 0;
     const waterTemp = isNum(s.waterTemp) ? s.waterTemp : 0;
 
-    const calibrated = !!s.baselineCalibrated;
     $("calibrationShort").innerText = formatCalibrationShort(calibrated);
     renderCalibration(calibrated);
 
-    const wifiConnected = !!s.wifiConnected;
     $("wifiStatus").innerText = wifiConnected ? "Pripojené ✅" : "Nepripojené ⚠️";
 
     const lastUpdate = isNum(s.lastUpdate) ? s.lastUpdate : 0;
     const ageSec = lastUpdate > 0 ? Math.floor(Date.now() / 1000) - lastUpdate : 999999;
     const deviceConnected = ageSec <= 30;
+
     $("deviceStatus").innerText = deviceConnected ? "Pripojený ✅" : "Nepripojený ⚠️";
     $("lastUpdateText").innerText = deviceConnected
       ? "Posledná aktualizácia prebehla v poriadku."
@@ -457,11 +536,14 @@ db.ref("tower/status").on("value", (snap)=>{
     if (isNum(s.concentrationPpm)) concPpm = s.concentrationPpm;
     else if (isNum(s.tdsPpm) && isNum(s.tdsBaselinePpm)) concPpm = Math.max(0, s.tdsPpm - s.tdsBaselinePpm);
 
-    const plantKey = latestPlantKey && PLANTS[latestPlantKey] ? latestPlantKey : (typeof s.plant === "string" && PLANTS[s.plant] ? s.plant : "arugula");
+    const plantKey = latestPlantKey && PLANTS[latestPlantKey]
+      ? latestPlantKey
+      : (typeof s.plant === "string" && PLANTS[s.plant] ? s.plant : "arugula");
+
     const plant = PLANTS[plantKey];
     const phase = computedPhase || "seedling";
-
     const target = plant.tds[phase];
+
     const nutrientOk = concPpm >= (target.min - 100) && concPpm <= (target.max + 150);
     const airOk = isNum(airTemp) && airTemp >= plant.temps.airMin && airTemp <= plant.temps.airMax;
     const waterOk = isNum(waterTemp) && waterTemp >= plant.temps.waterMin && waterTemp <= plant.temps.waterMax;
@@ -472,21 +554,62 @@ db.ref("tower/status").on("value", (snap)=>{
     $("waterTemp").innerText = `${waterTemp.toFixed(1)} °C ${okMark(waterOk)}`;
     $("nutrientsPct").innerText = `${ppmToPct(concPpm)} % ${okMark(nutrientOk)}`;
 
+    $("waterLevelDetail").innerText = waterLow ? "Treba doliať" : "Stav je stabilný";
+    $("nutrientsDetail").innerText = `${ppmToPct(concPpm)} %`;
+    $("temperatureDetail").innerText = `${airTemp.toFixed(1)} °C`;
+    $("waterTempDetail").innerText = `${waterTemp.toFixed(1)} °C`;
+
+    setBar("waterBar", waterLow ? 18 : 78);
+    setBar("nutrientBar", ppmToPct(concPpm));
+    setBar("tempBar", clamp(Math.round((airTemp / 35) * 100), 0, 100));
+    setBar("waterTempBar", clamp(Math.round((waterTemp / 30) * 100), 0, 100));
+
+    const waterFillAnim = $("waterFillAnim");
+    if (waterFillAnim) {
+      waterFillAnim.style.height = waterLow ? "18%" : "38%";
+    }
+
     setSummary(plantKey, phase, sowDate);
+    setHero(plantKey, phase, sowDate);
     renderTimeline(plant, sowDate, phase);
     renderNutrientAdvice(plant, phase, concPpm);
 
     const state = nutrientState(concPpm, target);
 
     renderNextAction({
-      waterLow: !!s.waterLow,
-      calibrated: calibrated,
-      phase: phase,
+      waterLow,
+      calibrated,
+      phase,
       doseText: target.dose,
       stateText: state.text,
-      wifiConnected: wifiConnected,
-      deviceConnected: deviceConnected
+      wifiConnected,
+      deviceConnected
     });
+
+    renderOverallState({
+      waterLow,
+      calibrated,
+      wifiConnected,
+      deviceConnected
+    });
+
+    renderMiniStats({
+      deviceConnected,
+      pump: pumpOn,
+      light: lightOn,
+      wifiConnected,
+      waterLow
+    });
+
+    renderStatusTones({
+      deviceConnected,
+      wifiConnected,
+      pump: pumpOn,
+      light: lightOn,
+      humOk,
+      calibrated
+    });
+
   } catch (err) {
     console.error("Status render error:", err);
     $("lastUpdateText").innerText = "Chyba pri vykreslení dát.";
