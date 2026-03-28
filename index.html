@@ -11,7 +11,6 @@
       --bg:#f3faf6;
       --bg2:#eef7ff;
       --panel:rgba(255,255,255,0.86);
-      --panel-strong:rgba(255,255,255,0.94);
       --stroke:rgba(20,82,61,0.08);
       --text:#163931;
       --muted:#6a857d;
@@ -19,7 +18,6 @@
       --green2:#57d59d;
       --green-soft:#e9faf1;
       --blue:#4ea7ff;
-      --blue-soft:#ebf5ff;
       --amber:#ef9d28;
       --red:#df6a6a;
       --shadow:0 18px 55px rgba(24,68,55,0.10);
@@ -90,7 +88,7 @@
     .mesh{
       position:absolute;
       inset:0;
-      opacity:.22;
+      opacity:.18;
       background-image:
         linear-gradient(rgba(33,92,69,0.05) 1px, transparent 1px),
         linear-gradient(90deg, rgba(33,92,69,0.05) 1px, transparent 1px);
@@ -104,55 +102,6 @@
       background:
         linear-gradient(180deg, rgba(255,255,255,0.24), rgba(255,255,255,0.04)),
         linear-gradient(90deg, rgba(255,255,255,0.22), rgba(255,255,255,0.06) 28%, rgba(255,255,255,0.06) 72%, rgba(255,255,255,0.18));
-    }
-
-    .ghost-tower{
-      position:absolute;
-      width:180px;
-      height:520px;
-      border-radius:100px;
-      background:
-        linear-gradient(180deg, rgba(255,255,255,0.38), rgba(255,255,255,0.12));
-      border:1px solid rgba(255,255,255,0.28);
-      box-shadow:inset 0 0 0 1px rgba(255,255,255,0.12);
-      opacity:.14;
-      filter:blur(.6px);
-    }
-
-    .ghost-tower.left{
-      left:-28px;
-      bottom:30px;
-      transform:scale(.82);
-    }
-
-    .ghost-tower.right{
-      right:-12px;
-      top:90px;
-      transform:scale(.9);
-    }
-
-    .ghost-tower::before{
-      content:"";
-      position:absolute;
-      top:20px;
-      left:50%;
-      transform:translateX(-50%);
-      width:112px;
-      height:22px;
-      border-radius:999px;
-      background:linear-gradient(180deg,#fff,#dfe9e6);
-    }
-
-    .ghost-tower::after{
-      content:"";
-      position:absolute;
-      bottom:16px;
-      left:50%;
-      transform:translateX(-50%);
-      width:132px;
-      height:34px;
-      border-radius:24px;
-      background:linear-gradient(180deg,#566268,#2a353a);
     }
 
     .lock-screen{
@@ -841,7 +790,7 @@
 
     .plants-grid{
       display:grid;
-      grid-template-columns:repeat(3, 1fr);
+      grid-template-columns:repeat(4, 1fr);
       gap:12px;
       margin-top:14px;
     }
@@ -918,9 +867,11 @@
       .tower-card{
         grid-template-columns:1fr;
       }
+    }
 
-      .ghost-tower{
-        opacity:.08;
+    @media (max-width: 980px){
+      .plants-grid{
+        grid-template-columns:repeat(3, 1fr);
       }
     }
 
@@ -949,10 +900,6 @@
         width:72px;
         height:72px;
       }
-
-      .ghost-tower{
-        display:none;
-      }
     }
   </style>
 </head>
@@ -964,8 +911,6 @@
     <div class="orb o3"></div>
     <div class="mesh"></div>
     <div class="veil"></div>
-    <div class="ghost-tower left"></div>
-    <div class="ghost-tower right"></div>
   </div>
 
   <div id="lockScreen" class="lock-screen">
