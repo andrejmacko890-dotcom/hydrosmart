@@ -472,17 +472,17 @@ function renderVisualState(obj){
   if (waterFill) {
     waterFill.style.height = obj.waterLow ? "18%" : "38%";
     waterFill.style.background = obj.waterLow
-      ? "linear-gradient(180deg, rgba(255,111,111,0.42), rgba(255,111,111,0.16))"
+      ? "linear-gradient(180deg, rgba(228,95,95,0.42), rgba(228,95,95,0.18))"
       : "linear-gradient(180deg, rgba(83,215,255,0.42), rgba(83,215,255,0.14))";
   }
 
   if (towerGlow) {
     if (!obj.deviceConnected) {
-      towerGlow.style.background = "radial-gradient(circle, rgba(255,111,111,0.30), rgba(255,111,111,0.06), transparent 72%)";
+      towerGlow.style.background = "radial-gradient(circle, rgba(228,95,95,0.26), rgba(228,95,95,0.06), transparent 72%)";
     } else if (obj.waterLow || !obj.calibrated) {
-      towerGlow.style.background = "radial-gradient(circle, rgba(255,181,71,0.28), rgba(255,181,71,0.06), transparent 72%)";
+      towerGlow.style.background = "radial-gradient(circle, rgba(238,154,34,0.24), rgba(238,154,34,0.06), transparent 72%)";
     } else {
-      towerGlow.style.background = "radial-gradient(circle, rgba(255,245,170,0.45), rgba(255,245,170,0.08), transparent 72%)";
+      towerGlow.style.background = "radial-gradient(circle, rgba(255,245,170,0.40), rgba(255,245,170,0.08), transparent 72%)";
     }
   }
 }
