@@ -3,315 +3,470 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>HydroSmart Dashboard</title>
+  <title>HydroSmart</title>
 
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
 
   <style>
     :root{
-      --bg-1:#0f172a;
-      --bg-2:#12263a;
-      --panel:#ffffff;
-      --panel-soft:rgba(255,255,255,0.9);
-      --text:#102027;
-      --muted:#5f6b76;
-      --green:#2e7d32;
-      --green-2:#43a047;
-      --green-soft:#e8f5e9;
-      --blue:#1565c0;
-      --blue-soft:#e3f2fd;
-      --amber:#ef6c00;
-      --amber-soft:#fff3e0;
-      --red:#c62828;
-      --red-soft:#ffebee;
-      --shadow:0 18px 50px rgba(0,0,0,0.16);
+      --bg1:#071c1b;
+      --bg2:#0e2f2d;
+      --glass:rgba(255,255,255,0.14);
+      --glass-2:rgba(255,255,255,0.09);
+      --line:rgba(255,255,255,0.14);
+      --text:#f4fffb;
+      --muted:rgba(244,255,251,0.72);
+      --green:#6cf08f;
+      --green-2:#2fd39c;
+      --blue:#53d7ff;
+      --amber:#ffb547;
+      --red:#ff6f6f;
+      --cardText:#11312d;
+      --white:#ffffff;
+      --shadow:0 24px 60px rgba(0,0,0,0.24);
       --radius:24px;
     }
 
-    * { box-sizing: border-box; }
+    *{ box-sizing:border-box; }
 
-    body {
-      margin: 0;
+    body{
+      margin:0;
       font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
-      color: var(--text);
+      color:var(--text);
       background:
-        radial-gradient(circle at top left, rgba(76,175,80,0.18), transparent 30%),
-        radial-gradient(circle at top right, rgba(33,150,243,0.14), transparent 28%),
-        linear-gradient(135deg, #effaf3 0%, #f5fbff 50%, #eef8ef 100%);
-      min-height: 100vh;
+        radial-gradient(circle at 10% 10%, rgba(47,211,156,0.18), transparent 24%),
+        radial-gradient(circle at 90% 15%, rgba(83,215,255,0.14), transparent 22%),
+        radial-gradient(circle at 50% 100%, rgba(108,240,143,0.10), transparent 30%),
+        linear-gradient(135deg, var(--bg1), var(--bg2));
+      min-height:100vh;
     }
 
-    .app-shell {
-      width: min(1240px, calc(100vw - 24px));
-      margin: 18px auto 40px;
-    }
-
-    .hero {
-      display: grid;
-      grid-template-columns: 1.35fr 0.95fr;
-      gap: 18px;
-      margin-bottom: 18px;
-    }
-
-    .hero-left, .hero-right, .card {
-      background: var(--panel-soft);
-      backdrop-filter: blur(8px);
-      border-radius: var(--radius);
-      box-shadow: var(--shadow);
-    }
-
-    .hero-left {
-      padding: 28px;
-      position: relative;
-      overflow: hidden;
-      background:
-        linear-gradient(135deg, rgba(46,125,50,0.96), rgba(102,187,106,0.94)),
-        #2e7d32;
-      color: #fff;
-      min-height: 330px;
-    }
-
-    .hero-left::after {
-      content: "";
-      position: absolute;
-      inset: auto -80px -80px auto;
-      width: 240px;
-      height: 240px;
-      border-radius: 50%;
-      background: rgba(255,255,255,0.08);
-    }
-
-    .brand-row {
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      gap:12px;
-      margin-bottom: 18px;
-      position: relative;
-      z-index: 2;
-    }
-
-    .brand {
-      display:flex;
-      align-items:center;
-      gap:12px;
-    }
-
-    .brand-icon {
-      width: 52px;
-      height: 52px;
-      border-radius: 18px;
-      background: rgba(255,255,255,0.18);
+    .lock-screen{
+      position:fixed;
+      inset:0;
+      background:rgba(3,16,15,0.88);
       display:flex;
       align-items:center;
       justify-content:center;
-      font-size: 22px;
+      padding:16px;
+      z-index:9999;
     }
 
-    .brand h1 {
+    .lock-box{
+      width:min(94vw, 420px);
+      border:1px solid var(--line);
+      background:rgba(255,255,255,0.08);
+      backdrop-filter:blur(18px);
+      border-radius:28px;
+      padding:24px;
+      box-shadow:var(--shadow);
+    }
+
+    .lock-box h2{
+      margin:0 0 10px 0;
+      font-size:1.5rem;
+    }
+
+    .lock-box p{
+      color:var(--muted);
+      line-height:1.55;
+    }
+
+    .hidden{ display:none !important; }
+
+    .app{
+      width:min(1320px, calc(100vw - 20px));
+      margin:18px auto 40px;
+    }
+
+    .glass{
+      background:var(--glass);
+      border:1px solid var(--line);
+      backdrop-filter:blur(16px);
+      box-shadow:var(--shadow);
+      border-radius:var(--radius);
+    }
+
+    .header{
+      padding:18px 20px;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:16px;
+      margin-bottom:18px;
+    }
+
+    .brand{
+      display:flex;
+      align-items:center;
+      gap:16px;
+      min-width:0;
+    }
+
+    .brand-logo{
+      width:64px;
+      height:64px;
+      object-fit:contain;
+      border-radius:18px;
+      background:rgba(255,255,255,0.08);
+      padding:8px;
+      box-shadow:inset 0 0 0 1px rgba(255,255,255,0.08);
+    }
+
+    .brand-text{
+      min-width:0;
+    }
+
+    .brand-text h1{
       margin:0;
-      font-size: clamp(1.7rem, 4vw, 2.35rem);
-      line-height: 1.05;
+      font-size:clamp(1.4rem, 3vw, 2rem);
+      line-height:1.05;
+      letter-spacing:0.3px;
     }
 
-    .brand p {
-      margin:4px 0 0 0;
-      opacity: 0.9;
-      font-size: 0.98rem;
+    .brand-text p{
+      margin:6px 0 0 0;
+      color:var(--muted);
+      font-size:0.97rem;
     }
 
-    .status-badge {
-      padding: 10px 14px;
-      border-radius: 999px;
-      font-weight: 800;
-      font-size: 0.95rem;
-      background: rgba(255,255,255,0.18);
-      color: #fff;
-      white-space: nowrap;
+    .header-right{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      flex-wrap:wrap;
+      justify-content:flex-end;
     }
 
-    .hero-main {
+    .badge{
+      padding:10px 14px;
+      border-radius:999px;
+      font-weight:800;
+      font-size:0.92rem;
+      border:1px solid rgba(255,255,255,0.12);
+      background:rgba(255,255,255,0.08);
+      white-space:nowrap;
+    }
+
+    .hero{
       display:grid;
-      grid-template-columns: 1fr 260px;
-      gap: 18px;
-      align-items: stretch;
-      position: relative;
-      z-index: 2;
+      grid-template-columns: 1.2fr 0.8fr;
+      gap:18px;
+      margin-bottom:18px;
     }
 
-    .hero-copy {
+    .hero-main{
+      padding:24px;
+      position:relative;
+      overflow:hidden;
+      background:
+        linear-gradient(135deg, rgba(255,255,255,0.13), rgba(255,255,255,0.06)),
+        rgba(255,255,255,0.08);
+    }
+
+    .hero-main::after{
+      content:"";
+      position:absolute;
+      right:-60px;
+      bottom:-60px;
+      width:220px;
+      height:220px;
+      border-radius:50%;
+      background:radial-gradient(circle, rgba(108,240,143,0.20), transparent 70%);
+      pointer-events:none;
+    }
+
+    .hero-title{
+      font-size:clamp(1.7rem, 4vw, 3rem);
+      line-height:1.05;
+      margin:0 0 12px 0;
+      max-width:700px;
+    }
+
+    .hero-sub{
+      color:var(--muted);
+      margin:0 0 18px 0;
+      line-height:1.6;
+      max-width:760px;
+    }
+
+    .hero-stats{
+      display:grid;
+      grid-template-columns:repeat(4, 1fr);
+      gap:12px;
+    }
+
+    .hero-stat{
+      border-radius:20px;
+      padding:16px;
+      background:rgba(255,255,255,0.08);
+      border:1px solid rgba(255,255,255,0.10);
+    }
+
+    .hero-stat .label{
+      color:var(--muted);
+      font-size:0.82rem;
+      margin-bottom:8px;
+    }
+
+    .hero-stat .value{
+      font-weight:900;
+      font-size:1.08rem;
+      line-height:1.2;
+    }
+
+    .action-panel{
+      padding:22px;
       display:flex;
       flex-direction:column;
-      justify-content:space-between;
       gap:16px;
     }
 
-    .hero-copy h2 {
+    .section-title{
       margin:0;
-      font-size: clamp(1.5rem, 3vw, 2.4rem);
-      line-height: 1.08;
-      max-width: 540px;
+      display:flex;
+      align-items:center;
+      gap:10px;
+      font-size:1.1rem;
     }
 
-    .hero-copy .sub {
-      margin:0;
-      font-size: 1rem;
-      line-height: 1.55;
-      opacity: 0.94;
-      max-width: 580px;
-    }
-
-    .hero-metrics {
-      display:grid;
-      grid-template-columns: repeat(2, minmax(120px, 1fr));
-      gap: 12px;
-    }
-
-    .hero-metric {
-      background: rgba(255,255,255,0.14);
-      border: 1px solid rgba(255,255,255,0.14);
-      border-radius: 18px;
-      padding: 14px;
-    }
-
-    .hero-metric .label {
-      opacity: 0.9;
-      font-size: 0.84rem;
-      margin-bottom: 6px;
-    }
-
-    .hero-metric .value {
-      font-size: 1.18rem;
-      font-weight: 800;
-      line-height: 1.2;
-    }
-
-    .hero-right {
-      padding: 18px;
-      min-height: 330px;
+    .smart-card{
+      border-radius:24px;
+      padding:20px;
+      background:
+        linear-gradient(180deg, rgba(255,255,255,0.95), rgba(246,255,251,0.92));
+      color:var(--cardText);
+      min-height:220px;
       display:flex;
       flex-direction:column;
       justify-content:space-between;
     }
 
-    .tower-card-title {
+    .smart-tag{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      padding:8px 12px;
+      border-radius:999px;
+      background:#e9fff1;
+      color:#11864f;
+      font-weight:800;
+      width:max-content;
+      margin-bottom:12px;
+    }
+
+    .smart-title{
+      font-size:1.65rem;
+      line-height:1.08;
+      font-weight:900;
+      margin-bottom:10px;
+    }
+
+    .smart-desc{
+      line-height:1.6;
+      color:#35514d;
+      font-size:1rem;
+    }
+
+    .dashboard{
+      display:grid;
+      grid-template-columns: 1.1fr 0.9fr;
+      gap:18px;
+    }
+
+    .col{
+      display:flex;
+      flex-direction:column;
+      gap:18px;
+    }
+
+    .card{
+      padding:20px;
+    }
+
+    .card-header{
       display:flex;
       align-items:center;
       justify-content:space-between;
-      gap:10px;
-      margin-bottom: 10px;
+      gap:12px;
+      margin-bottom:16px;
     }
 
-    .tower-card-title h3 {
+    .card-title{
       margin:0;
-      color: var(--green);
-      font-size: 1.1rem;
+      display:flex;
+      align-items:center;
+      gap:10px;
+      font-size:1.08rem;
     }
 
-    .tower-card-title .mini {
-      font-size: 0.85rem;
-      color: var(--muted);
-      font-weight: 700;
+    .muted{
+      color:var(--muted);
+      font-size:0.92rem;
+      line-height:1.55;
     }
 
-    .tower-wrap {
+    .kpi-grid{
+      display:grid;
+      grid-template-columns:repeat(2, 1fr);
+      gap:14px;
+    }
+
+    .kpi{
+      border-radius:22px;
+      padding:18px;
+      background:rgba(255,255,255,0.93);
+      color:#163632;
+      border:1px solid rgba(255,255,255,0.35);
+      box-shadow:0 12px 28px rgba(0,0,0,0.10);
+    }
+
+    .kpi-top{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:8px;
+      margin-bottom:8px;
+      font-size:0.9rem;
+      color:#54706b;
+      font-weight:700;
+    }
+
+    .kpi-value{
+      font-size:1.45rem;
+      font-weight:900;
+      line-height:1.15;
+      margin-bottom:10px;
+    }
+
+    .kpi-note{
+      font-size:0.9rem;
+      color:#5b716e;
+      margin-bottom:12px;
+    }
+
+    .bar{
+      width:100%;
+      height:10px;
+      border-radius:999px;
+      background:#e8f0ee;
+      overflow:hidden;
+    }
+
+    .bar > span{
+      display:block;
+      width:0%;
+      height:100%;
+      border-radius:999px;
+      transition:width .4s ease;
+      background:linear-gradient(90deg, #23d29b, #69ef8f);
+    }
+
+    .tower-card{
+      display:grid;
+      grid-template-columns: 230px 1fr;
+      gap:18px;
+      align-items:center;
+    }
+
+    .tower-wrap{
       display:flex;
       align-items:center;
       justify-content:center;
-      min-height: 250px;
-      position: relative;
+      padding:8px 0;
     }
 
-    .tower {
-      position: relative;
-      width: 180px;
-      height: 245px;
+    .tower{
+      width:180px;
+      height:270px;
+      position:relative;
     }
 
-    .tower-top {
+    .tower-glow{
       position:absolute;
       top:0;
       left:50%;
       transform:translateX(-50%);
-      width:120px;
-      height:24px;
-      border-radius: 999px;
-      background: linear-gradient(180deg, #fafafa, #d8dde2);
-      box-shadow: inset 0 2px 4px rgba(255,255,255,0.9), 0 8px 18px rgba(0,0,0,0.12);
-      z-index: 3;
+      width:130px;
+      height:120px;
+      border-radius:50%;
+      background:radial-gradient(circle, rgba(255,245,170,0.45), rgba(255,245,170,0.08), transparent 72%);
+      animation: glowPulse 2.7s ease-in-out infinite;
+      z-index:1;
     }
 
-    .tower-body {
+    .tower-top{
       position:absolute;
-      top:18px;
+      top:12px;
+      left:50%;
+      transform:translateX(-50%);
+      width:122px;
+      height:24px;
+      border-radius:999px;
+      background:linear-gradient(180deg,#ffffff,#dbe3ea);
+      z-index:3;
+      box-shadow:0 10px 18px rgba(0,0,0,0.10);
+    }
+
+    .tower-body{
+      position:absolute;
+      top:30px;
       left:50%;
       transform:translateX(-50%);
       width:86px;
-      height:170px;
-      border-radius: 40px;
-      background: linear-gradient(180deg, #ffffff, #eef4f7);
-      border: 2px solid #dbe3e8;
-      box-shadow: inset 0 0 0 4px rgba(240,245,247,0.9);
+      height:180px;
+      border-radius:42px;
+      background:linear-gradient(180deg,#ffffff,#edf3f5);
+      border:2px solid #d6e0e4;
+      z-index:2;
       overflow:hidden;
     }
 
-    .water-fill {
+    .water-fill{
       position:absolute;
       left:0;
       bottom:0;
       width:100%;
       height:38%;
-      background: linear-gradient(180deg, rgba(33,150,243,0.45), rgba(33,150,243,0.18));
+      background:linear-gradient(180deg, rgba(83,215,255,0.42), rgba(83,215,255,0.14));
       animation: waveMove 3.2s ease-in-out infinite;
     }
 
-    .water-fill::before {
+    .water-fill::before{
       content:"";
       position:absolute;
-      top:-10px;
+      top:-8px;
       left:-10%;
       width:120%;
       height:18px;
-      background: rgba(255,255,255,0.35);
-      border-radius: 50%;
-      filter: blur(2px);
+      border-radius:50%;
+      background:rgba(255,255,255,0.34);
+      filter:blur(2px);
     }
 
-    .tower-base {
+    .tower-base{
       position:absolute;
-      bottom:0;
       left:50%;
+      bottom:22px;
       transform:translateX(-50%);
-      width:132px;
+      width:136px;
       height:52px;
-      border-radius: 26px 26px 18px 18px;
-      background: linear-gradient(180deg, #37474f, #1f2b31);
-      box-shadow: inset 0 4px 10px rgba(255,255,255,0.08), 0 10px 20px rgba(0,0,0,0.15);
+      border-radius:28px 28px 20px 20px;
+      background:linear-gradient(180deg, #32444a, #17262a);
+      z-index:3;
+      box-shadow:0 14px 22px rgba(0,0,0,0.18);
     }
 
-    .tower-light {
-      position:absolute;
-      top:8px;
-      left:50%;
-      transform:translateX(-50%);
-      width:102px;
-      height:102px;
-      border-radius: 50%;
-      background: radial-gradient(circle, rgba(255,245,157,0.48), rgba(255,245,157,0.1), transparent 72%);
-      animation: glowPulse 2.4s ease-in-out infinite;
-      z-index: 1;
-    }
-
-    .plant-pocket {
+    .plant-pocket{
       position:absolute;
       width:34px;
       height:24px;
-      border-radius: 0 0 14px 14px;
-      background: #f7f9fb;
-      border: 1px solid #d8e1e6;
+      background:#fbfdfe;
+      border:1px solid #d9e3e7;
+      border-radius:0 0 14px 14px;
     }
 
-    .plant-pocket::before {
+    .plant-pocket::before{
       content:"";
       position:absolute;
       top:-10px;
@@ -319,362 +474,243 @@
       transform:translateX(-50%);
       width:18px;
       height:14px;
-      background: linear-gradient(180deg, #66bb6a, #2e7d32);
-      border-radius: 50% 50% 40% 40%;
-      box-shadow:
-        -8px 2px 0 -2px #5dbb63,
-         8px 2px 0 -2px #5dbb63;
-      animation: leafBreath 3.8s ease-in-out infinite;
-      transform-origin: center bottom;
+      background:linear-gradient(180deg, #8efb69, #1ecf8f);
+      border-radius:50% 50% 42% 42%;
+      box-shadow:-8px 2px 0 -2px #68e695, 8px 2px 0 -2px #68e695;
+      animation: leafBreath 3.6s ease-in-out infinite;
     }
 
-    .p1 { top:34px; left:14px; }
-    .p2 { top:58px; right:14px; }
-    .p3 { top:88px; left:14px; }
-    .p4 { top:112px; right:14px; }
-    .p5 { top:142px; left:14px; }
+    .p1{ top:42px; left:14px; }
+    .p2{ top:68px; right:14px; }
+    .p3{ top:98px; left:14px; }
+    .p4{ top:126px; right:14px; }
+    .p5{ top:154px; left:14px; }
 
-    .tower-indicators {
+    .tower-side{
       display:grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap:10px;
-      margin-top: 12px;
+      gap:12px;
     }
 
-    .tiny-stat {
-      border-radius: 16px;
-      padding: 12px;
-      background: #f8fbfc;
-      border: 1px solid #e8eef1;
-    }
-
-    .tiny-stat .k {
-      font-size: 0.78rem;
-      color: var(--muted);
-      margin-bottom: 6px;
-    }
-
-    .tiny-stat .v {
-      font-weight: 800;
-      font-size: 1rem;
-    }
-
-    .dashboard-grid {
+    .mini-stats{
       display:grid;
-      grid-template-columns: 1.1fr 0.9fr;
-      gap: 18px;
-      margin-bottom: 18px;
+      grid-template-columns:repeat(2, 1fr);
+      gap:12px;
     }
 
-    .col {
-      display:flex;
-      flex-direction:column;
-      gap:18px;
+    .mini{
+      border-radius:18px;
+      padding:14px;
+      background:rgba(255,255,255,0.08);
+      border:1px solid rgba(255,255,255,0.10);
     }
 
-    .card {
-      padding: 22px;
+    .mini .label{
+      font-size:0.8rem;
+      color:var(--muted);
+      margin-bottom:6px;
     }
 
-    .card h2 {
-      margin:0 0 16px 0;
-      color: var(--green);
-      font-size: 1.18rem;
-      display:flex;
-      align-items:center;
-      gap:10px;
-    }
-
-    .action-card {
-      background: linear-gradient(180deg, #fffdf5, #fff7e8);
-      border: 1px solid #ffe0b2;
-    }
-
-    .action-box {
-      border-radius: 22px;
-      padding: 20px;
-      background: #ffffff;
-      border: 1px solid #f4ead8;
-      box-shadow: inset 0 1px 0 rgba(255,255,255,0.8);
-    }
-
-    .action-tag {
-      display:inline-flex;
-      align-items:center;
-      gap:8px;
-      border-radius:999px;
-      padding:8px 12px;
-      background: var(--green-soft);
-      color: var(--green);
+    .mini .value{
+      font-size:1rem;
       font-weight:800;
-      margin-bottom:12px;
     }
 
-    .action-title {
-      font-size: 1.5rem;
-      font-weight: 900;
-      margin-bottom: 8px;
-      line-height: 1.12;
-    }
-
-    .action-desc {
-      color: #40505a;
-      line-height: 1.6;
-      font-size: 1rem;
-    }
-
-    .small-muted {
-      font-size: 0.93rem;
-      color: var(--muted);
-      line-height: 1.55;
-    }
-
-    .kpi-grid {
+    .status-list{
       display:grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 14px;
+      gap:12px;
     }
 
-    .kpi {
-      border-radius: 22px;
-      padding: 18px;
-      background: #fff;
-      border: 1px solid #edf2f4;
-      box-shadow: 0 8px 18px rgba(0,0,0,0.04);
-    }
-
-    .kpi-top {
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      gap:10px;
-      margin-bottom: 10px;
-      font-size: 0.92rem;
-      color: var(--muted);
-      font-weight:700;
-    }
-
-    .kpi-value {
-      font-size: 1.4rem;
-      font-weight: 900;
-      margin-bottom: 8px;
-    }
-
-    .kpi-bar {
-      height: 10px;
-      width: 100%;
-      background: #edf2f4;
-      border-radius: 999px;
-      overflow: hidden;
-    }
-
-    .kpi-bar > span {
-      display:block;
-      height:100%;
-      border-radius:999px;
-      width:0%;
-      transition: width 0.4s ease;
-      background: linear-gradient(90deg, #66bb6a, #2e7d32);
-    }
-
-    .status-list {
-      display:grid;
-      gap: 12px;
-    }
-
-    .status-row {
+    .status-row{
       display:flex;
       align-items:center;
       justify-content:space-between;
       gap:12px;
-      padding: 14px 16px;
-      border-radius: 18px;
-      background: #f8fbfc;
-      border: 1px solid #edf2f4;
+      border-radius:18px;
+      padding:14px 16px;
+      background:rgba(255,255,255,0.08);
+      border:1px solid rgba(255,255,255,0.10);
     }
 
-    .status-left {
+    .status-left{
       display:flex;
       align-items:center;
       gap:12px;
       font-weight:700;
     }
 
-    .status-value {
-      font-weight: 900;
+    .status-value{
+      font-weight:900;
       text-align:right;
     }
 
-    .status-row.good { background: #f1f8e9; }
-    .status-row.warn { background: #fff8e1; }
-    .status-row.bad  { background: #ffebee; }
+    .tone-good{ box-shadow: inset 0 0 0 1px rgba(108,240,143,0.22); }
+    .tone-warn{ box-shadow: inset 0 0 0 1px rgba(255,181,71,0.22); }
+    .tone-bad{ box-shadow: inset 0 0 0 1px rgba(255,111,111,0.22); }
 
-    .control-grid {
+    .control-grid{
       display:grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 14px;
+      grid-template-columns:1fr 1fr;
+      gap:14px;
     }
 
-    label {
+    label{
       display:block;
-      font-weight: 800;
-      margin-bottom: 8px;
-      color:#1f2b31;
+      margin-bottom:8px;
+      font-weight:800;
+      font-size:0.95rem;
     }
 
-    select, input[type="date"], button, input[type="password"] {
+    input[type="date"], input[type="password"], select, button{
       width:100%;
-      border-radius: 16px;
-      border: 1px solid #d9e3e7;
-      padding: 14px 15px;
-      font-size: 1rem;
-      outline: none;
+      padding:14px 15px;
+      border-radius:16px;
+      border:1px solid rgba(255,255,255,0.14);
+      outline:none;
+      font-size:1rem;
     }
 
-    select:focus, input[type="date"]:focus, input[type="password"]:focus {
-      border-color: #66bb6a;
-      box-shadow: 0 0 0 4px rgba(102,187,106,0.12);
+    select, input[type="date"], input[type="password"]{
+      background:rgba(255,255,255,0.92);
+      color:#143430;
     }
 
-    .btn {
+    button{
       border:none;
       cursor:pointer;
-      font-weight: 800;
-      transition: transform 0.18s ease, box-shadow 0.2s ease, background 0.2s ease;
+      font-weight:800;
+      transition:transform .16s ease, opacity .18s ease;
     }
 
-    .btn:hover {
-      transform: translateY(-1px);
+    button:hover{ transform:translateY(-1px); }
+
+    .btn-primary{
+      background:linear-gradient(135deg, #1fd19b, #74ef90);
+      color:#083128;
     }
 
-    .btn-primary {
-      background: linear-gradient(135deg, #2e7d32, #43a047);
-      color:#fff;
-      box-shadow: 0 12px 24px rgba(67,160,71,0.22);
+    .btn-secondary{
+      background:linear-gradient(135deg, #58d9ff, #70b9ff);
+      color:#07293b;
     }
 
-    .btn-secondary {
-      background: linear-gradient(135deg, #1565c0, #1e88e5);
-      color:#fff;
+    .btn-danger{
+      background:linear-gradient(135deg, #ff7a7a, #ff9d7a);
+      color:#4a1414;
     }
 
-    .btn-danger {
-      background: linear-gradient(135deg, #b71c1c, #d32f2f);
-      color:#fff;
-    }
-
-    .btn-row {
+    .btn-row{
       display:flex;
       gap:12px;
-      margin-top: 6px;
+      flex-wrap:wrap;
+      margin-top:8px;
     }
 
-    .mini-box {
-      background:#f8fbfc;
-      border:1px solid #edf2f4;
-      border-radius: 18px;
-      padding: 16px;
-      line-height:1.6;
-      color:#37474f;
+    .btn-row button{
+      flex:1 1 180px;
     }
 
-    .subgrid-2 {
+    .info-box{
+      border-radius:20px;
+      padding:16px;
+      background:rgba(255,255,255,0.92);
+      color:#173531;
+      line-height:1.62;
+    }
+
+    .plants-grid{
       display:grid;
-      grid-template-columns: 1fr 1fr;
-      gap:18px;
+      grid-template-columns:repeat(3, 1fr);
+      gap:12px;
+      margin-top:14px;
     }
 
-    .pill-ok { color:var(--green); font-weight:900; }
-    .pill-bad { color:var(--red); font-weight:900; }
-    .pill-warn { color:var(--amber); font-weight:900; }
+    .plant-chip{
+      border-radius:18px;
+      padding:14px;
+      background:rgba(255,255,255,0.08);
+      border:1px solid rgba(255,255,255,0.10);
+      cursor:pointer;
+      transition:transform .16s ease, border-color .16s ease, background .16s ease;
+    }
 
-    .footer {
+    .plant-chip:hover{
+      transform:translateY(-2px);
+      border-color:rgba(108,240,143,0.35);
+    }
+
+    .plant-chip.active{
+      background:rgba(108,240,143,0.14);
+      border-color:rgba(108,240,143,0.46);
+    }
+
+    .plant-chip .name{
+      font-weight:800;
+      margin-bottom:5px;
+    }
+
+    .plant-chip .desc{
+      font-size:0.86rem;
+      color:var(--muted);
+    }
+
+    .footer{
       text-align:center;
-      color:#66757f;
-      font-size: 0.86rem;
-      margin-top: 12px;
+      color:var(--muted);
+      font-size:0.86rem;
+      margin-top:18px;
     }
 
-    .lock-screen {
-      position: fixed;
-      inset: 0;
-      background: rgba(12, 35, 15, 0.92);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      z-index: 9999;
-      padding: 16px;
+    .small-note{
+      margin-top:12px;
+      color:var(--muted);
+      font-size:0.92rem;
+      line-height:1.55;
     }
 
-    .lock-box {
-      width: min(92vw, 430px);
-      background: #fff;
-      border-radius: 24px;
-      padding: 24px;
-      box-shadow: 0 20px 45px rgba(0,0,0,0.35);
+    @keyframes glowPulse{
+      0%,100%{ opacity:0.70; transform:translateX(-50%) scale(1); }
+      50%{ opacity:1; transform:translateX(-50%) scale(1.06); }
     }
 
-    .lock-box h2 {
-      margin-top: 0;
-      color:#2e7d32;
+    @keyframes leafBreath{
+      0%,100%{ transform:translateX(-50%) scale(1); }
+      50%{ transform:translateX(-50%) scale(1.08); }
     }
 
-    .hidden {
-      display:none !important;
+    @keyframes waveMove{
+      0%,100%{ filter:brightness(1); }
+      50%{ filter:brightness(1.08); }
     }
 
-    @keyframes glowPulse {
-      0%,100% { opacity: 0.7; transform: translateX(-50%) scale(1); }
-      50% { opacity: 1; transform: translateX(-50%) scale(1.06); }
-    }
-
-    @keyframes leafBreath {
-      0%,100% { transform: translateX(-50%) scale(1); }
-      50% { transform: translateX(-50%) scale(1.07); }
-    }
-
-    @keyframes waveMove {
-      0%,100% { height: 38%; }
-      50% { height: 40.5%; }
-    }
-
-    @media (max-width: 1080px){
-      .hero, .dashboard-grid {
-        grid-template-columns: 1fr;
+    @media (max-width: 1100px){
+      .hero, .dashboard{
+        grid-template-columns:1fr;
       }
 
-      .hero-main {
-        grid-template-columns: 1fr;
-      }
-
-      .hero-right {
-        min-height: auto;
+      .tower-card{
+        grid-template-columns:1fr;
       }
     }
 
-    @media (max-width: 760px){
-      .app-shell {
-        width: min(100vw - 14px, 100%);
+    @media (max-width: 820px){
+      .hero-stats,
+      .kpi-grid,
+      .control-grid,
+      .plants-grid{
+        grid-template-columns:1fr;
       }
 
-      .card, .hero-left, .hero-right {
-        border-radius: 20px;
+      .header{
+        flex-direction:column;
+        align-items:flex-start;
       }
 
-      .control-grid, .subgrid-2, .kpi-grid, .hero-metrics {
-        grid-template-columns: 1fr;
+      .header-right{
+        justify-content:flex-start;
       }
 
-      .btn-row {
-        flex-direction: column;
-      }
-
-      .hero-left {
-        padding: 22px;
-      }
-
-      .hero-copy h2 {
-        font-size: 1.7rem;
+      .app{
+        width:min(100vw - 12px, 100%);
       }
     }
   </style>
@@ -686,118 +722,82 @@
       <h2><i class="fa-solid fa-lock"></i> Testovací prístup</h2>
       <p>Zadaj prístupový kód pre otvorenie aplikácie.</p>
       <input id="accessCodeInput" type="password" placeholder="Prístupový kód" />
-      <button id="unlockBtn" class="btn btn-primary" type="button"><i class="fa-solid fa-key"></i> Odomknúť</button>
-      <div id="lockError" class="small-muted" style="color:#b71c1c; margin-top:10px;"></div>
-      <div class="small-muted" style="margin-top:10px;">
-        Toto je testovací zámok v aplikácii.
-      </div>
+      <button id="unlockBtn" class="btn-primary" type="button">
+        <i class="fa-solid fa-key"></i> Odomknúť
+      </button>
+      <div id="lockError" class="small-note" style="color:#ff9c9c;"></div>
     </div>
   </div>
 
-  <div class="app-shell hidden" id="appRoot">
+  <div id="appRoot" class="app hidden">
+
+    <div class="header glass">
+      <div class="brand">
+        <img src="./logo.png" alt="HydroSmart logo" class="brand-logo" />
+        <div class="brand-text">
+          <h1>HydroSmart</h1>
+          <p>Inteligentné riadenie hydroponickej veže v reálnom čase</p>
+        </div>
+      </div>
+
+      <div class="header-right">
+        <div class="badge" id="overallStateBadge">Načítavam stav…</div>
+        <div class="badge" id="deviceStatusMini">Zariadenie —</div>
+      </div>
+    </div>
+
     <section class="hero">
-      <div class="hero-left">
-        <div class="brand-row">
-          <div class="brand">
-            <div class="brand-icon"><i class="fa-solid fa-leaf"></i></div>
-            <div>
-              <h1>HydroSmart</h1>
-              <p>Inteligentné riadenie hydroponickej veže</p>
-            </div>
+      <div class="hero-main glass">
+        <h2 class="hero-title" id="heroHeadline">
+          Systém sleduje rastlinu, vodu, živiny a vždy ukáže ďalší krok.
+        </h2>
+        <p class="hero-sub" id="heroSubtext">
+          HydroSmart zjednodušuje pestovanie tým, že automaticky vyhodnocuje stav veže a používateľovi povie iba to, čo má urobiť.
+        </p>
+
+        <div class="hero-stats">
+          <div class="hero-stat">
+            <div class="label">Rastlina</div>
+            <div class="value" id="plantNameHero">—</div>
           </div>
-          <div class="status-badge" id="overallStateBadge">Načítavam stav…</div>
-        </div>
-
-        <div class="hero-main">
-          <div class="hero-copy">
-            <div>
-              <h2 id="heroHeadline">Systém sleduje rastlinu, vodu, živiny a povie ti, čo spraviť.</h2>
-              <p class="sub" id="heroSubtext">
-                Po načítaní údajov sa tu zobrazí rastlina, deň rastu a presný ďalší krok pre používateľa.
-              </p>
-            </div>
-
-            <div class="hero-metrics">
-              <div class="hero-metric">
-                <div class="label">Rastlina</div>
-                <div class="value" id="plantNameHero">—</div>
-              </div>
-              <div class="hero-metric">
-                <div class="label">Deň rastu</div>
-                <div class="value" id="growthDayHero">—</div>
-              </div>
-              <div class="hero-metric">
-                <div class="label">Fáza</div>
-                <div class="value" id="phaseHero">—</div>
-              </div>
-              <div class="hero-metric">
-                <div class="label">Dátum výsevu</div>
-                <div class="value" id="sowDateHero">—</div>
-              </div>
-            </div>
+          <div class="hero-stat">
+            <div class="label">Deň rastu</div>
+            <div class="value" id="growthDayHero">—</div>
           </div>
-
-          <div class="hero-right">
-            <div>
-              <div class="tower-card-title">
-                <h3><i class="fa-solid fa-tower-observation"></i> Live veža</h3>
-                <div class="mini" id="deviceStatusMini">—</div>
-              </div>
-
-              <div class="tower-wrap">
-                <div class="tower">
-                  <div class="tower-light"></div>
-                  <div class="tower-top"></div>
-                  <div class="tower-body">
-                    <div class="water-fill" id="waterFillAnim"></div>
-                    <div class="plant-pocket p1"></div>
-                    <div class="plant-pocket p2"></div>
-                    <div class="plant-pocket p3"></div>
-                    <div class="plant-pocket p4"></div>
-                    <div class="plant-pocket p5"></div>
-                  </div>
-                  <div class="tower-base"></div>
-                </div>
-              </div>
-            </div>
-
-            <div class="tower-indicators">
-              <div class="tiny-stat">
-                <div class="k">Pumpa</div>
-                <div class="v" id="pumpStatusMini">—</div>
-              </div>
-              <div class="tiny-stat">
-                <div class="k">Svetlo</div>
-                <div class="v" id="lightStatusMini">—</div>
-              </div>
-              <div class="tiny-stat">
-                <div class="k">Wi-Fi</div>
-                <div class="v" id="wifiStatusMini">—</div>
-              </div>
-              <div class="tiny-stat">
-                <div class="k">Voda</div>
-                <div class="v" id="waterLevelMini">—</div>
-              </div>
-            </div>
+          <div class="hero-stat">
+            <div class="label">Fáza</div>
+            <div class="value" id="phaseHero">—</div>
+          </div>
+          <div class="hero-stat">
+            <div class="label">Dátum výsevu</div>
+            <div class="value" id="sowDateHero">—</div>
           </div>
         </div>
       </div>
 
-      <div class="card action-card">
-        <h2><i class="fa-solid fa-compass"></i> Čo urobiť teraz</h2>
-        <div class="action-box" id="nextActionBox">
-          <div class="action-tag"><i class="fa-solid fa-circle-info"></i> Smart odporúčanie</div>
-          <div class="action-title">Načítavam stav…</div>
-          <div class="action-desc">Čakám na údaje zo systému.</div>
+      <aside class="action-panel glass">
+        <h3 class="section-title"><i class="fa-solid fa-compass"></i> Čo urobiť teraz</h3>
+
+        <div class="smart-card" id="nextActionBox">
+          <div>
+            <div class="smart-tag"><i class="fa-solid fa-wand-magic-sparkles"></i> Smart odporúčanie</div>
+            <div class="smart-title">Načítavam stav…</div>
+            <div class="smart-desc">Čakám na údaje zo systému.</div>
+          </div>
         </div>
-        <div class="small-muted" id="lastUpdateText" style="margin-top:12px;">—</div>
-      </div>
+
+        <div class="muted" id="lastUpdateText">—</div>
+      </aside>
     </section>
 
-    <section class="dashboard-grid">
+    <section class="dashboard">
       <div class="col">
-        <div class="card">
-          <h2><i class="fa-solid fa-chart-simple"></i> Hlavné ukazovatele</h2>
+
+        <div class="card glass">
+          <div class="card-header">
+            <h3 class="card-title"><i class="fa-solid fa-chart-simple"></i> Hlavné ukazovatele</h3>
+          </div>
+
           <div class="kpi-grid">
             <div class="kpi">
               <div class="kpi-top">
@@ -805,7 +805,8 @@
                 <span id="waterLevel">—</span>
               </div>
               <div class="kpi-value" id="waterLevelDetail">—</div>
-              <div class="kpi-bar"><span id="waterBar"></span></div>
+              <div class="kpi-note">Aktuálny stav nádrže</div>
+              <div class="bar"><span id="waterBar"></span></div>
             </div>
 
             <div class="kpi">
@@ -814,7 +815,8 @@
                 <span id="nutrientsPct">—</span>
               </div>
               <div class="kpi-value" id="nutrientsDetail">—</div>
-              <div class="kpi-bar"><span id="nutrientBar"></span></div>
+              <div class="kpi-note">Odhad podľa ppm</div>
+              <div class="bar"><span id="nutrientBar"></span></div>
             </div>
 
             <div class="kpi">
@@ -823,7 +825,8 @@
                 <span id="temperature">—</span>
               </div>
               <div class="kpi-value" id="temperatureDetail">—</div>
-              <div class="kpi-bar"><span id="tempBar"></span></div>
+              <div class="kpi-note">Okolie rastliny</div>
+              <div class="bar"><span id="tempBar"></span></div>
             </div>
 
             <div class="kpi">
@@ -832,19 +835,24 @@
                 <span id="waterTemp">—</span>
               </div>
               <div class="kpi-value" id="waterTempDetail">—</div>
-              <div class="kpi-bar"><span id="waterTempBar"></span></div>
+              <div class="kpi-note">Stav roztoku</div>
+              <div class="bar"><span id="waterTempBar"></span></div>
             </div>
           </div>
         </div>
 
-        <div class="card">
-          <h2><i class="fa-solid fa-sliders"></i> Nastavenie rastliny</h2>
+        <div class="card glass">
+          <div class="card-header">
+            <h3 class="card-title"><i class="fa-solid fa-seedling"></i> Rastlina a výsev</h3>
+            <div class="muted">Najprv vyber rastlinu, potom ulož dátum výsevu</div>
+          </div>
 
           <div class="control-grid">
             <div>
               <label for="plantSelect">Rastlina</label>
               <select id="plantSelect"></select>
             </div>
+
             <div>
               <label for="sowDate">Dátum výsevu</label>
               <input id="sowDate" type="date" />
@@ -852,36 +860,94 @@
           </div>
 
           <div class="btn-row">
-            <button class="btn btn-primary" onclick="sendPlant()">
-              <i class="fa-solid fa-seedling"></i> Použiť rastlinu
+            <button class="btn-primary" onclick="sendPlant()">
+              <i class="fa-solid fa-leaf"></i> Použiť rastlinu
             </button>
-            <button class="btn btn-secondary" onclick="saveSowDate()">
+            <button class="btn-secondary" onclick="saveSowDate()">
               <i class="fa-solid fa-floppy-disk"></i> Uložiť výsev
             </button>
-            <button class="btn btn-danger" onclick="clearSowDate()">
+            <button class="btn-danger" onclick="clearSowDate()">
               <i class="fa-solid fa-trash"></i> Vymazať výsev
             </button>
           </div>
 
-          <div class="mini-box" id="selectionSummary" style="margin-top:14px;">Načítavam…</div>
+          <div class="small-note" id="selectionSummary">Načítavam…</div>
+
+          <div class="plants-grid" id="plantCards"></div>
         </div>
 
-        <div class="subgrid-2">
-          <div class="card">
-            <h2><i class="fa-solid fa-clipboard-list"></i> Odporúčanie k živinám</h2>
-            <div class="mini-box" id="nutrientAdviceBox">Načítavam…</div>
+        <div class="card glass">
+          <div class="card-header">
+            <h3 class="card-title"><i class="fa-solid fa-clipboard-list"></i> Odporúčanie k živinám</h3>
           </div>
+          <div class="info-box" id="nutrientAdviceBox">Načítavam…</div>
+        </div>
 
-          <div class="card">
-            <h2><i class="fa-solid fa-calendar-days"></i> Rastová časová os</h2>
-            <div class="mini-box" id="timelineBox">Načítavam…</div>
+        <div class="card glass">
+          <div class="card-header">
+            <h3 class="card-title"><i class="fa-solid fa-calendar-days"></i> Časová os rastu</h3>
           </div>
+          <div class="info-box" id="timelineBox">Načítavam…</div>
         </div>
       </div>
 
       <div class="col">
-        <div class="card">
-          <h2><i class="fa-solid fa-satellite-dish"></i> Stav systému</h2>
+
+        <div class="card glass">
+          <div class="card-header">
+            <h3 class="card-title"><i class="fa-solid fa-tower-observation"></i> Live veža</h3>
+            <div class="muted">Vizualizácia stavu systému</div>
+          </div>
+
+          <div class="tower-card">
+            <div class="tower-wrap">
+              <div class="tower">
+                <div class="tower-glow" id="towerGlow"></div>
+                <div class="tower-top"></div>
+
+                <div class="tower-body">
+                  <div class="water-fill" id="waterFillAnim"></div>
+                  <div class="plant-pocket p1"></div>
+                  <div class="plant-pocket p2"></div>
+                  <div class="plant-pocket p3"></div>
+                  <div class="plant-pocket p4"></div>
+                  <div class="plant-pocket p5"></div>
+                </div>
+
+                <div class="tower-base"></div>
+              </div>
+            </div>
+
+            <div class="tower-side">
+              <div class="mini-stats">
+                <div class="mini">
+                  <div class="label">Pumpa</div>
+                  <div class="value" id="pumpStatusMini">—</div>
+                </div>
+                <div class="mini">
+                  <div class="label">Svetlo</div>
+                  <div class="value" id="lightStatusMini">—</div>
+                </div>
+                <div class="mini">
+                  <div class="label">Wi-Fi</div>
+                  <div class="value" id="wifiStatusMini">—</div>
+                </div>
+                <div class="mini">
+                  <div class="label">Voda</div>
+                  <div class="value" id="waterLevelMini">—</div>
+                </div>
+              </div>
+
+              <div class="info-box" id="calibrationBox">Načítavam…</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card glass">
+          <div class="card-header">
+            <h3 class="card-title"><i class="fa-solid fa-satellite-dish"></i> Stav systému</h3>
+          </div>
+
           <div class="status-list">
             <div class="status-row" id="rowDevice">
               <div class="status-left"><i class="fa-solid fa-link"></i> Zariadenie</div>
@@ -915,14 +981,12 @@
           </div>
         </div>
 
-        <div class="card">
-          <h2><i class="fa-solid fa-check-double"></i> Kalibrácia vody</h2>
-          <div class="mini-box" id="calibrationBox">Načítavam…</div>
-        </div>
+        <div class="card glass">
+          <div class="card-header">
+            <h3 class="card-title"><i class="fa-solid fa-wifi"></i> Pripojenie na Wi-Fi</h3>
+          </div>
 
-        <div class="card">
-          <h2><i class="fa-solid fa-wifi"></i> Pripojenie na Wi-Fi</h2>
-          <div class="mini-box">
+          <div class="info-box">
             <b>1.</b> Zapni HydroSmart vežu.<br>
             <b>2.</b> Pripoj sa na sieť <b>HydroSmart Connect</b>.<br>
             <b>3.</b> Otvor adresu <b>192.168.4.1</b>.<br>
@@ -931,6 +995,7 @@
             <b>Reset Wi-Fi:</b> podrž dotykové tlačidlo približne <b>10 sekúnd</b>.
           </div>
         </div>
+
       </div>
     </section>
 
@@ -952,9 +1017,7 @@
         const value = (input.value || "").trim();
 
         if (value === ACCESS_CODE) {
-          try {
-            localStorage.setItem("hydro_access_ok", "1");
-          } catch (e) {}
+          try { localStorage.setItem("hydro_access_ok", "1"); } catch(e){}
           lock.classList.add("hidden");
           app.classList.remove("hidden");
           error.innerText = "";
@@ -970,9 +1033,7 @@
         const input = document.getElementById("accessCodeInput");
 
         let unlocked = false;
-        try {
-          unlocked = localStorage.getItem("hydro_access_ok") === "1";
-        } catch (e) {}
+        try { unlocked = localStorage.getItem("hydro_access_ok") === "1"; } catch(e){}
 
         if (unlocked) {
           lock.classList.add("hidden");
@@ -984,7 +1045,7 @@
 
         if (btn) btn.addEventListener("click", doUnlock);
         if (input) {
-          input.addEventListener("keydown", function (e) {
+          input.addEventListener("keydown", function(e){
             if (e.key === "Enter") doUnlock();
           });
         }
