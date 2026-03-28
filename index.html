@@ -9,167 +9,190 @@
 
   <style>
     :root{
-      --bg1:#eefaf3;
-      --bg2:#f6fbff;
-      --bg3:#ecf8f2;
-      --glass:rgba(255,255,255,0.72);
-      --glass-strong:rgba(255,255,255,0.88);
-      --line:rgba(32,86,63,0.10);
-      --text:#17352f;
-      --muted:#5f7b74;
+      --bg1:#eef8f3;
+      --bg2:#f7fbff;
+      --bg3:#edf7f2;
+      --glass:rgba(255,255,255,0.76);
+      --glass-strong:rgba(255,255,255,0.9);
+      --line:rgba(24,77,60,0.08);
+      --text:#163730;
+      --muted:#68837b;
       --green:#1f9d69;
-      --green-2:#48c78e;
-      --green-soft:#e9fbf1;
-      --blue:#3ba7ff;
-      --blue-soft:#e9f5ff;
+      --green-2:#4dcc95;
+      --green-soft:#eaf8f1;
+      --blue:#49a9ff;
       --amber:#ee9a22;
-      --amber-soft:#fff5e7;
-      --red:#e45f5f;
-      --red-soft:#fff0f0;
-      --white:#ffffff;
-      --shadow:0 20px 50px rgba(24,63,53,0.10);
+      --red:#de6666;
+      --shadow:0 18px 50px rgba(23,67,54,0.10);
       --radius:26px;
     }
 
     *{ box-sizing:border-box; }
 
-    body{
+    html, body{
       margin:0;
+      padding:0;
       font-family:"Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
       color:var(--text);
+      min-height:100%;
+    }
+
+    body{
       min-height:100vh;
-      background:
-        radial-gradient(circle at 12% 12%, rgba(72,199,142,0.14), transparent 26%),
-        radial-gradient(circle at 88% 14%, rgba(59,167,255,0.12), transparent 24%),
-        linear-gradient(135deg, var(--bg1), var(--bg2) 55%, var(--bg3));
       overflow-x:hidden;
       position:relative;
+      background:
+        radial-gradient(circle at 12% 10%, rgba(76,204,149,0.18), transparent 24%),
+        radial-gradient(circle at 88% 14%, rgba(73,169,255,0.12), transparent 22%),
+        radial-gradient(circle at 50% 100%, rgba(76,204,149,0.10), transparent 34%),
+        linear-gradient(135deg, var(--bg1), var(--bg2) 54%, var(--bg3));
     }
 
-    /* Jemné hydroponické veže v pozadí */
-    body::before,
-    body::after{
-      content:"";
+    /* Cool pozadie – jemný tech greenhouse feeling */
+    .bg-scene{
       position:fixed;
-      inset:auto;
+      inset:0;
       z-index:0;
       pointer-events:none;
-      opacity:0.23;
-      filter:blur(2px);
+      overflow:hidden;
     }
 
-    body::before{
-      left:-40px;
-      bottom:40px;
-      width:320px;
-      height:620px;
-      background:
-        radial-gradient(circle at 50% 6%, rgba(255,245,180,0.55), transparent 26%),
-        linear-gradient(180deg, rgba(255,255,255,0.92), rgba(225,238,233,0.88));
-      border-radius:120px 120px 44px 44px;
-      box-shadow:
-        0 0 0 10px rgba(255,255,255,0.28) inset,
-        0 30px 80px rgba(43,102,84,0.12);
-      transform:scale(0.72);
+    .bg-glow{
+      position:absolute;
+      border-radius:50%;
+      filter:blur(60px);
+      opacity:.45;
     }
 
-    body::after{
-      right:-20px;
-      top:40px;
+    .glow-1{
+      width:420px;
+      height:420px;
+      left:-80px;
+      top:80px;
+      background:rgba(76, 204, 149, 0.18);
+    }
+
+    .glow-2{
       width:360px;
-      height:700px;
-      background:
-        radial-gradient(circle at 50% 7%, rgba(255,245,180,0.50), transparent 26%),
-        linear-gradient(180deg, rgba(255,255,255,0.95), rgba(224,237,232,0.88));
-      border-radius:130px 130px 50px 50px;
-      box-shadow:
-        0 0 0 10px rgba(255,255,255,0.26) inset,
-        0 30px 80px rgba(43,102,84,0.10);
-      transform:scale(0.78);
+      height:360px;
+      right:-40px;
+      top:120px;
+      background:rgba(73, 169, 255, 0.14);
     }
 
-    .bg-tower{
-      position:fixed;
-      z-index:0;
-      pointer-events:none;
-      opacity:0.16;
-      filter:blur(1px);
+    .glow-3{
+      width:460px;
+      height:460px;
+      left:22%;
+      bottom:-180px;
+      background:rgba(76, 204, 149, 0.14);
     }
 
-    .bg-tower .pocket{
+    .bg-grid{
       position:absolute;
-      width:44px;
-      height:28px;
-      border-radius:0 0 16px 16px;
-      background:rgba(255,255,255,0.94);
-      border:1px solid rgba(74,112,95,0.10);
+      inset:0;
+      opacity:.20;
+      background-image:
+        linear-gradient(rgba(40,90,70,0.05) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(40,90,70,0.05) 1px, transparent 1px);
+      background-size: 64px 64px;
+      mask-image: linear-gradient(to bottom, rgba(0,0,0,.35), rgba(0,0,0,.1), transparent 85%);
     }
 
-    .bg-tower .pocket::before{
+    .bg-veil{
+      position:absolute;
+      inset:0;
+      background:
+        linear-gradient(90deg, rgba(255,255,255,0.36), rgba(255,255,255,0.08) 30%, rgba(255,255,255,0.08) 70%, rgba(255,255,255,0.28)),
+        linear-gradient(180deg, rgba(255,255,255,0.16), rgba(255,255,255,0.02));
+    }
+
+    .bg-column{
+      position:absolute;
+      width:170px;
+      height:520px;
+      border-radius:80px;
+      background:
+        linear-gradient(180deg, rgba(255,255,255,.48), rgba(255,255,255,.18)),
+        rgba(255,255,255,.12);
+      border:1px solid rgba(255,255,255,.28);
+      box-shadow:
+        inset 0 0 0 1px rgba(255,255,255,.18),
+        0 20px 60px rgba(39,88,73,0.08);
+      opacity:.22;
+      filter:blur(.4px);
+    }
+
+    .bg-column.left{
+      left:-20px;
+      bottom:40px;
+      transform:scale(.78);
+    }
+
+    .bg-column.right{
+      right:10px;
+      top:90px;
+      transform:scale(.84);
+    }
+
+    .bg-column::before{
       content:"";
       position:absolute;
-      top:-12px;
+      top:22px;
       left:50%;
       transform:translateX(-50%);
-      width:22px;
+      width:108px;
+      height:22px;
+      border-radius:999px;
+      background:linear-gradient(180deg,#fff,#dfeae6);
+      opacity:.95;
+    }
+
+    .bg-column::after{
+      content:"";
+      position:absolute;
+      bottom:16px;
+      left:50%;
+      transform:translateX(-50%);
+      width:128px;
+      height:34px;
+      border-radius:22px;
+      background:linear-gradient(180deg,#4d5a60,#263338);
+      opacity:.8;
+    }
+
+    .bg-leaves{
+      position:absolute;
+      inset:0;
+    }
+
+    .bg-leaf{
+      position:absolute;
+      width:28px;
       height:16px;
       border-radius:50% 50% 40% 40%;
-      background:linear-gradient(180deg, #7be28d, #35b96f);
-      box-shadow:-10px 2px 0 -2px #7be28d, 10px 2px 0 -2px #7be28d;
+      background:linear-gradient(180deg, rgba(124,231,143,.7), rgba(42,181,115,.72));
+      box-shadow:-12px 2px 0 -3px rgba(124,231,143,.68), 12px 2px 0 -3px rgba(124,231,143,.68);
+      opacity:.65;
     }
 
-    .bg-left{
-      left:18px;
-      bottom:60px;
-      width:180px;
-      height:360px;
-    }
+    .bg-column.left .bg-leaf:nth-child(1){ left:54px; top:92px; }
+    .bg-column.left .bg-leaf:nth-child(2){ right:54px; top:136px; }
+    .bg-column.left .bg-leaf:nth-child(3){ left:54px; top:182px; }
+    .bg-column.left .bg-leaf:nth-child(4){ right:54px; top:228px; }
+    .bg-column.left .bg-leaf:nth-child(5){ left:54px; top:274px; }
 
-    .bg-right{
-      right:28px;
-      top:120px;
-      width:210px;
-      height:420px;
-    }
-
-    .bg-shell{
-      position:absolute;
-      left:50%;
-      transform:translateX(-50%);
-      width:92px;
-      height:240px;
-      top:26px;
-      border-radius:48px;
-      background:linear-gradient(180deg, rgba(255,255,255,0.96), rgba(233,240,237,0.92));
-      border:2px solid rgba(86,119,104,0.12);
-    }
-
-    .bg-cap{
-      position:absolute;
-      left:50%;
-      transform:translateX(-50%);
-      top:0;
-      width:126px;
-      height:24px;
-      border-radius:999px;
-      background:linear-gradient(180deg,#ffffff,#dce7e3);
-    }
-
-    .bg-base{
-      position:absolute;
-      left:50%;
-      transform:translateX(-50%);
-      bottom:0;
-      width:138px;
-      height:52px;
-      border-radius:28px 28px 18px 18px;
-      background:linear-gradient(180deg, #3c4a4e, #202d31);
-    }
+    .bg-column.right .bg-leaf:nth-child(1){ left:60px; top:98px; }
+    .bg-column.right .bg-leaf:nth-child(2){ right:60px; top:146px; }
+    .bg-column.right .bg-leaf:nth-child(3){ left:60px; top:194px; }
+    .bg-column.right .bg-leaf:nth-child(4){ right:60px; top:242px; }
+    .bg-column.right .bg-leaf:nth-child(5){ left:60px; top:290px; }
+    .bg-column.right .bg-leaf:nth-child(6){ right:60px; top:338px; }
 
     .lock-screen{
       position:fixed;
       inset:0;
-      background:rgba(240,250,245,0.90);
+      background:rgba(242,250,246,0.88);
       backdrop-filter:blur(8px);
       display:flex;
       align-items:center;
@@ -180,8 +203,8 @@
 
     .lock-box{
       width:min(94vw, 430px);
-      background:rgba(255,255,255,0.88);
-      border:1px solid rgba(23,53,47,0.08);
+      background:rgba(255,255,255,0.9);
+      border:1px solid rgba(24,77,60,0.08);
       backdrop-filter:blur(18px);
       border-radius:28px;
       padding:24px;
@@ -232,16 +255,20 @@
     }
 
     .brand-logo-wrap{
-      width:78px;
-      height:78px;
+      width:84px;
+      height:84px;
       border-radius:22px;
-      background:rgba(255,255,255,0.85);
+      background:
+        linear-gradient(180deg, rgba(255,255,255,0.96), rgba(244,251,248,0.94));
       display:flex;
       align-items:center;
       justify-content:center;
-      box-shadow: inset 0 0 0 1px rgba(25,89,63,0.06);
+      box-shadow:
+        inset 0 0 0 1px rgba(19,91,63,0.06),
+        0 10px 24px rgba(22,67,53,0.06);
       overflow:hidden;
       flex:0 0 auto;
+      position:relative;
     }
 
     .brand-logo{
@@ -251,6 +278,17 @@
       display:block;
       padding:8px;
       transform:none;
+    }
+
+    .brand-logo-fallback{
+      position:absolute;
+      inset:0;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      font-size:2rem;
+      color:#1f9d69;
+      background:linear-gradient(180deg, rgba(255,255,255,0.98), rgba(240,250,245,0.96));
     }
 
     .brand-text h1{
@@ -280,7 +318,7 @@
       font-weight:800;
       font-size:0.92rem;
       border:1px solid rgba(25,89,63,0.08);
-      background:rgba(255,255,255,0.86);
+      background:rgba(255,255,255,0.9);
       color:var(--text);
       white-space:nowrap;
     }
@@ -297,8 +335,8 @@
       position:relative;
       overflow:hidden;
       background:
-        linear-gradient(135deg, rgba(255,255,255,0.78), rgba(244,255,249,0.66)),
-        rgba(255,255,255,0.72);
+        linear-gradient(135deg, rgba(255,255,255,0.82), rgba(244,255,249,0.72)),
+        rgba(255,255,255,0.76);
     }
 
     .hero-main::after{
@@ -309,7 +347,7 @@
       width:260px;
       height:260px;
       border-radius:50%;
-      background:radial-gradient(circle, rgba(72,199,142,0.13), transparent 70%);
+      background:radial-gradient(circle, rgba(72,199,142,0.14), transparent 70%);
       pointer-events:none;
     }
 
@@ -338,8 +376,8 @@
     .hero-stat{
       border-radius:20px;
       padding:16px;
-      background:rgba(255,255,255,0.78);
-      border:1px solid rgba(25,89,63,0.08);
+      background:rgba(255,255,255,0.82);
+      border:1px solid rgba(25,89,63,0.07);
     }
 
     .hero-stat .label{
@@ -360,7 +398,7 @@
       display:flex;
       flex-direction:column;
       gap:16px;
-      background:rgba(245,255,249,0.76);
+      background:rgba(245,255,249,0.8);
     }
 
     .section-title{
@@ -382,9 +420,9 @@
       flex-direction:column;
       justify-content:space-between;
       box-shadow:
-        0 20px 40px rgba(0,0,0,0.08),
+        0 18px 34px rgba(0,0,0,0.06),
         0 0 0 1px rgba(47,211,156,0.08),
-        0 0 28px rgba(47,211,156,0.06);
+        0 0 26px rgba(47,211,156,0.05);
     }
 
     .smart-tag{
@@ -462,10 +500,10 @@
     .kpi{
       border-radius:22px;
       padding:18px;
-      background:rgba(255,255,255,0.92);
+      background:rgba(255,255,255,0.94);
       color:var(--text);
       border:1px solid rgba(25,89,63,0.07);
-      box-shadow:0 12px 28px rgba(0,0,0,0.06);
+      box-shadow:0 10px 24px rgba(0,0,0,0.05);
     }
 
     .kpi-top{
@@ -511,7 +549,7 @@
 
     .tower-card{
       display:grid;
-      grid-template-columns:260px 1fr;
+      grid-template-columns:280px 1fr;
       gap:18px;
       align-items:center;
     }
@@ -523,50 +561,72 @@
       padding:8px 0;
     }
 
+    /* Viac realistická hydro veža */
     .tower{
-      width:220px;
-      height:320px;
+      width:240px;
+      height:340px;
       position:relative;
+      filter:drop-shadow(0 22px 30px rgba(14,48,41,0.12));
     }
 
-    .tower-glow{
+    .tower-light{
       position:absolute;
       top:0;
       left:50%;
       transform:translateX(-50%);
-      width:150px;
-      height:130px;
+      width:170px;
+      height:145px;
       border-radius:50%;
-      background:radial-gradient(circle, rgba(255,245,170,0.42), rgba(255,245,170,0.08), transparent 72%);
-      animation:glowPulse 2.7s ease-in-out infinite;
+      background:radial-gradient(circle, rgba(255,243,173,0.42), rgba(255,243,173,0.10), transparent 72%);
+      animation:glowPulse 2.8s ease-in-out infinite;
       z-index:1;
     }
 
     .tower-top{
       position:absolute;
-      top:12px;
+      top:18px;
       left:50%;
       transform:translateX(-50%);
-      width:138px;
-      height:25px;
+      width:154px;
+      height:26px;
       border-radius:999px;
-      background:linear-gradient(180deg,#ffffff,#dbe3ea);
-      z-index:3;
-      box-shadow:0 10px 18px rgba(0,0,0,0.10);
+      background:
+        linear-gradient(180deg, #ffffff, #dfe8eb);
+      box-shadow:
+        inset 0 1px 1px rgba(255,255,255,0.8),
+        0 8px 18px rgba(0,0,0,0.10);
+      z-index:4;
     }
 
-    .tower-body{
+    .tower-column{
       position:absolute;
-      top:30px;
+      top:38px;
       left:50%;
       transform:translateX(-50%);
-      width:100px;
-      height:210px;
-      border-radius:48px;
-      background:linear-gradient(180deg,#ffffff,#edf3f5);
-      border:2px solid #d6e0e4;
-      z-index:2;
+      width:116px;
+      height:226px;
+      border-radius:58px;
+      background:
+        linear-gradient(180deg, rgba(255,255,255,0.82), rgba(235,244,246,0.74));
+      border:2px solid rgba(204,217,223,0.95);
+      box-shadow:
+        inset 10px 0 18px rgba(255,255,255,0.55),
+        inset -6px 0 10px rgba(184,204,210,0.22);
+      z-index:3;
       overflow:hidden;
+    }
+
+    .tower-reflection{
+      position:absolute;
+      top:14px;
+      left:18px;
+      width:22px;
+      height:180px;
+      border-radius:18px;
+      background:linear-gradient(180deg, rgba(255,255,255,0.55), rgba(255,255,255,0.02));
+      filter:blur(.4px);
+      z-index:4;
+      pointer-events:none;
     }
 
     .water-fill{
@@ -575,7 +635,8 @@
       bottom:0;
       width:100%;
       height:38%;
-      background:linear-gradient(180deg, rgba(83,215,255,0.42), rgba(83,215,255,0.14));
+      background:
+        linear-gradient(180deg, rgba(84,210,255,0.45), rgba(84,210,255,0.12));
       animation:waveMove 3.2s ease-in-out infinite;
     }
 
@@ -583,55 +644,85 @@
       content:"";
       position:absolute;
       top:-8px;
-      left:-10%;
-      width:120%;
+      left:-8%;
+      width:116%;
       height:18px;
       border-radius:50%;
-      background:rgba(255,255,255,0.34);
+      background:rgba(255,255,255,0.32);
       filter:blur(2px);
+    }
+
+    .tower-base-shadow{
+      position:absolute;
+      left:50%;
+      bottom:30px;
+      transform:translateX(-50%);
+      width:170px;
+      height:28px;
+      border-radius:999px;
+      background:radial-gradient(circle, rgba(22,52,49,0.18), rgba(22,52,49,0.02), transparent 72%);
+      z-index:1;
     }
 
     .tower-base{
       position:absolute;
       left:50%;
-      bottom:22px;
+      bottom:38px;
       transform:translateX(-50%);
-      width:160px;
+      width:172px;
       height:58px;
       border-radius:28px 28px 20px 20px;
-      background:linear-gradient(180deg, #32444a, #17262a);
-      z-index:3;
-      box-shadow:0 14px 22px rgba(0,0,0,0.18);
+      background:
+        linear-gradient(180deg, #3a4950, #18272c);
+      box-shadow:
+        inset 0 2px 8px rgba(255,255,255,0.08),
+        0 14px 26px rgba(0,0,0,0.18);
+      z-index:4;
+    }
+
+    .tower-base::before{
+      content:"";
+      position:absolute;
+      left:50%;
+      top:8px;
+      transform:translateX(-50%);
+      width:98px;
+      height:10px;
+      border-radius:999px;
+      background:rgba(255,255,255,0.06);
     }
 
     .plant-pocket{
       position:absolute;
-      width:38px;
-      height:26px;
-      background:#fbfdfe;
-      border:1px solid #d9e3e7;
-      border-radius:0 0 14px 14px;
+      width:42px;
+      height:28px;
+      background:linear-gradient(180deg, #ffffff, #f3f7f8);
+      border:1px solid #d8e3e7;
+      border-radius:0 0 16px 16px;
+      box-shadow:0 2px 8px rgba(0,0,0,0.04);
     }
 
     .plant-pocket::before{
       content:"";
       position:absolute;
-      top:-10px;
+      top:-11px;
       left:50%;
       transform:translateX(-50%);
-      width:18px;
+      width:20px;
       height:14px;
-      background:linear-gradient(180deg, #8efb69, #1ecf8f);
+      background:linear-gradient(180deg, #97f56f, #24cb8d);
       border-radius:50% 50% 42% 42%;
-      box-shadow:-8px 2px 0 -2px #68e695, 8px 2px 0 -2px #68e695;
+      box-shadow:
+        -10px 2px 0 -2px #71e69b,
+         10px 2px 0 -2px #71e69b;
       animation:leafBreath 3.6s ease-in-out infinite;
     }
 
-    .p1{ top:42px; left:16px; }
-    .p2{ top:72px; right:16px; }
-    .p3{ top:106px; left:16px; }
-    .p4{ top:136px; right:16px; }
-    .p5{ top:168px; left:16px; }
+    .p1{ top:46px; left:18px; }
+    .p2{ top:78px; right:18px; }
+    .p3{ top:116px; left:18px; }
+    .p4{ top:148px; right:18px; }
+    .p5{ top:184px; left:18px; }
 
     .tower-side{
       display:grid;
@@ -647,7 +738,7 @@
     .mini{
       border-radius:18px;
       padding:14px;
-      background:rgba(255,255,255,0.76);
+      background:rgba(255,255,255,0.84);
       border:1px solid rgba(25,89,63,0.08);
     }
 
@@ -675,7 +766,7 @@
       gap:12px;
       border-radius:18px;
       padding:14px 16px;
-      background:rgba(255,255,255,0.78);
+      background:rgba(255,255,255,0.84);
       border:1px solid rgba(25,89,63,0.08);
     }
 
@@ -721,7 +812,7 @@
 
     select, input[type="date"], input[type="password"]{
       border:1px solid rgba(25,89,63,0.12);
-      background:rgba(255,255,255,0.95);
+      background:rgba(255,255,255,0.96);
       color:var(--text);
     }
 
@@ -763,7 +854,7 @@
     .info-box{
       border-radius:20px;
       padding:16px;
-      background:rgba(255,255,255,0.92);
+      background:rgba(255,255,255,0.94);
       color:var(--text);
       line-height:1.62;
       border:1px solid rgba(25,89,63,0.07);
@@ -783,7 +874,7 @@
       display:flex;
       flex-direction:column;
       justify-content:center;
-      background:rgba(255,255,255,0.76);
+      background:rgba(255,255,255,0.84);
       border:1px solid rgba(25,89,63,0.08);
       cursor:pointer;
       transition:transform .16s ease, border-color .16s ease, background .16s ease;
@@ -795,7 +886,7 @@
     }
 
     .plant-chip.active{
-      background:rgba(233,251,241,0.96);
+      background:rgba(233,251,241,0.98);
       border-color:rgba(31,157,105,0.34);
       box-shadow:0 10px 24px rgba(31,157,105,0.08);
     }
@@ -826,7 +917,7 @@
     }
 
     @keyframes glowPulse{
-      0%,100%{ opacity:0.70; transform:translateX(-50%) scale(1); }
+      0%,100%{ opacity:0.72; transform:translateX(-50%) scale(1); }
       50%{ opacity:1; transform:translateX(-50%) scale(1.06); }
     }
 
@@ -847,6 +938,10 @@
 
       .tower-card{
         grid-template-columns:1fr;
+      }
+
+      .bg-column{
+        opacity:.14;
       }
     }
 
@@ -872,37 +967,45 @@
       }
 
       .brand-logo-wrap{
-        width:68px;
-        height:68px;
+        width:72px;
+        height:72px;
+      }
+
+      .bg-column{
+        display:none;
       }
     }
   </style>
 </head>
 <body>
 
-  <div class="bg-tower bg-left">
-    <div class="bg-cap"></div>
-    <div class="bg-shell">
-      <div class="pocket" style="top:30px;left:14px;"></div>
-      <div class="pocket" style="top:58px;right:14px;"></div>
-      <div class="pocket" style="top:88px;left:14px;"></div>
-      <div class="pocket" style="top:116px;right:14px;"></div>
-      <div class="pocket" style="top:146px;left:14px;"></div>
-    </div>
-    <div class="bg-base"></div>
-  </div>
+  <div class="bg-scene">
+    <div class="bg-glow glow-1"></div>
+    <div class="bg-glow glow-2"></div>
+    <div class="bg-glow glow-3"></div>
+    <div class="bg-grid"></div>
+    <div class="bg-veil"></div>
 
-  <div class="bg-tower bg-right">
-    <div class="bg-cap"></div>
-    <div class="bg-shell" style="height:280px;">
-      <div class="pocket" style="top:34px;left:16px;"></div>
-      <div class="pocket" style="top:66px;right:16px;"></div>
-      <div class="pocket" style="top:102px;left:16px;"></div>
-      <div class="pocket" style="top:136px;right:16px;"></div>
-      <div class="pocket" style="top:170px;left:16px;"></div>
-      <div class="pocket" style="top:204px;right:16px;"></div>
+    <div class="bg-column left">
+      <div class="bg-leaves">
+        <div class="bg-leaf"></div>
+        <div class="bg-leaf"></div>
+        <div class="bg-leaf"></div>
+        <div class="bg-leaf"></div>
+        <div class="bg-leaf"></div>
+      </div>
     </div>
-    <div class="bg-base" style="width:150px;"></div>
+
+    <div class="bg-column right">
+      <div class="bg-leaves">
+        <div class="bg-leaf"></div>
+        <div class="bg-leaf"></div>
+        <div class="bg-leaf"></div>
+        <div class="bg-leaf"></div>
+        <div class="bg-leaf"></div>
+        <div class="bg-leaf"></div>
+      </div>
+    </div>
   </div>
 
   <div id="lockScreen" class="lock-screen">
@@ -922,7 +1025,10 @@
     <div class="header glass">
       <div class="brand">
         <div class="brand-logo-wrap">
-          <img src="./logo.png" alt="HydroSmart logo" class="brand-logo" />
+          <img id="brandLogo" src="" alt="HydroSmart logo" class="brand-logo hidden" />
+          <div id="brandLogoFallback" class="brand-logo-fallback">
+            <i class="fa-solid fa-seedling"></i>
+          </div>
         </div>
         <div class="brand-text">
           <h1>HydroSmart</h1>
@@ -1092,11 +1198,14 @@
           <div class="tower-card">
             <div class="tower-wrap">
               <div class="tower">
-                <div class="tower-glow" id="towerGlow"></div>
+                <div class="tower-light" id="towerGlow"></div>
                 <div class="tower-top"></div>
+                <div class="tower-base-shadow"></div>
 
-                <div class="tower-body">
+                <div class="tower-column">
+                  <div class="tower-reflection"></div>
                   <div class="water-fill" id="waterFillAnim"></div>
+
                   <div class="plant-pocket p1"></div>
                   <div class="plant-pocket p2"></div>
                   <div class="plant-pocket p3"></div>
@@ -1241,10 +1350,53 @@
         }
       }
 
+      function initLogo() {
+        const img = document.getElementById("brandLogo");
+        const fallback = document.getElementById("brandLogoFallback");
+        if (!img || !fallback) return;
+
+        const candidates = [
+          "./logo.png",
+          "./logo.jpg",
+          "./logo.jpeg",
+          "./logo.webp",
+          "./Logo.png",
+          "./Logo.jpg",
+          "./Logo.jpeg",
+          "./Logo.webp"
+        ];
+
+        let idx = 0;
+
+        function tryNext() {
+          if (idx >= candidates.length) {
+            img.classList.add("hidden");
+            fallback.classList.remove("hidden");
+            return;
+          }
+
+          const src = candidates[idx++];
+          img.onload = function() {
+            img.classList.remove("hidden");
+            fallback.classList.add("hidden");
+          };
+          img.onerror = function() {
+            tryNext();
+          };
+          img.src = src;
+        }
+
+        tryNext();
+      }
+
       if (document.readyState === "loading") {
-        document.addEventListener("DOMContentLoaded", initLock);
+        document.addEventListener("DOMContentLoaded", function(){
+          initLock();
+          initLogo();
+        });
       } else {
         initLock();
+        initLogo();
       }
     })();
   </script>
