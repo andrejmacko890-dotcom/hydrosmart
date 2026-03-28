@@ -241,27 +241,16 @@ function renderPlantCards(selectedKey){
   const wrap = $("plantCards");
   if (!wrap) return;
 
-  const topPlants = [
-    "arugula",
-    "basil",
-    "lettuce_head",
-    "lettuce_leaf",
-    "mint",
-    "pakchoi"
-  ];
-
   wrap.innerHTML = "";
 
-  topPlants.forEach(key => {
-    const p = PLANTS[key];
-    if (!p) return;
-
+  Object.entries(PLANTS).forEach(([key, p]) => {
     const div = document.createElement("div");
     div.className = "plant-chip" + (selectedKey === key ? " active" : "");
     div.innerHTML = `
       <div class="name">${p.name}</div>
-      <div class="desc">${p.short}</div>
+      <div class="desc">${p.short || p.light || ""}</div>
     `;
+
     div.addEventListener("click", () => {
       $("plantSelect").value = key;
       latestPlantKey = key;
@@ -275,6 +264,7 @@ function renderPlantCards(selectedKey){
       setHero(key, phase, sowDate);
       renderTimeline(plant, sowDate, phase);
     });
+
     wrap.appendChild(div);
   });
 }
@@ -482,7 +472,7 @@ function renderVisualState(obj){
     } else if (obj.waterLow || !obj.calibrated) {
       towerGlow.style.background = "radial-gradient(circle, rgba(238,154,34,0.24), rgba(238,154,34,0.06), transparent 72%)";
     } else {
-      towerGlow.style.background = "radial-gradient(circle, rgba(255,245,170,0.40), rgba(255,245,170,0.08), transparent 72%)";
+      towerGlow.style.background = "radial-gradient(circle, rgba(255,241,164,0.44), rgba(255,241,164,0.10), transparent 72%)";
     }
   }
 }
