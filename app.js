@@ -255,7 +255,6 @@ function renderPlantCards(selectedKey){
   if (!wrap) return;
 
   wrap.innerHTML = "";
-
   Object.entries(PLANTS).forEach(([key, p]) => {
     const div = document.createElement("div");
     div.className = "plant-chip" + (selectedKey === key ? " active" : "");
@@ -468,8 +467,8 @@ function renderNextAction(obj){
       <div class="smart-desc">${desc}</div>
 
       <div class="next-meta">
-        <div class="meta"><b>Priorita:</b> ${priority}</div>
-        <div class="meta"><b>Dôvod:</b> ${reason}</div>
+        <div class="meta-chip"><b>Priorita:</b> ${priority}</div>
+        <div class="meta-chip"><b>Dôvod:</b> ${reason}</div>
       </div>
     </div>
   `;
@@ -481,7 +480,6 @@ function renderOverallState(obj){
   else if (!obj.wifiConnected) text = "🟠 Bez Wi-Fi";
   else if (obj.waterLow || !obj.calibrated) text = "🟠 Vyžaduje zásah";
   else text = "🟢 Stabilný";
-
   $("overallStateBadge").innerText = text;
 }
 
@@ -492,7 +490,6 @@ function renderHealth(score){
   const badge = $("healthBadge");
 
   if (!scoreText || !scoreBar || !note || !badge) return;
-
   scoreText.innerText = `${score} %`;
   scoreBar.style.width = `${score}%`;
 
