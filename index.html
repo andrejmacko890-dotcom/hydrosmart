@@ -10,13 +10,11 @@
     :root{
       --bg:#f4fbf7;
       --bg2:#eef8ff;
-      --panel:rgba(255,255,255,0.92);
-      --panel-strong:rgba(255,255,255,0.98);
+      --panel:rgba(255,255,255,0.94);
       --stroke:rgba(22,88,65,0.08);
       --text:#173a32;
       --muted:#69827b;
       --green:#1fa36f;
-      --green-2:#6be39a;
       --green-soft:#eafaf1;
       --blue:#4da8ff;
       --blue-soft:#eef7ff;
@@ -25,12 +23,12 @@
       --red:#df6767;
       --red-soft:#fff1f1;
       --shadow:0 20px 60px rgba(18,66,53,0.10);
-      --radius-xl:30px;
-      --radius-lg:22px;
-      --radius-md:16px;
+      --radius-xl:28px;
+      --radius-lg:20px;
+      --radius-md:14px;
     }
 
-    *{ box-sizing:border-box; }
+    * { box-sizing: border-box; }
 
     html, body{
       margin:0;
@@ -100,7 +98,7 @@
       mask-image:linear-gradient(to bottom, rgba(0,0,0,.22), rgba(0,0,0,.08), transparent 88%);
     }
 
-    .hidden{ display:none !important; }
+    .hidden { display:none !important; }
 
     .lock-screen{
       position:fixed;
@@ -123,17 +121,11 @@
       box-shadow:var(--shadow);
     }
 
-    .lock-box h2{
-      margin:0 0 10px 0;
-    }
-
-    .lock-box p{
-      color:var(--muted);
-      line-height:1.55;
-    }
+    .lock-box h2{ margin:0 0 10px 0; }
+    .lock-box p{ color:var(--muted); line-height:1.55; }
 
     .app{
-      width:min(1680px, calc(100vw - 24px));
+      width:min(1500px, calc(100vw - 24px));
       margin:18px auto 42px;
       position:relative;
       z-index:2;
@@ -152,21 +144,21 @@
       justify-content:space-between;
       align-items:center;
       gap:16px;
-      padding:18px 22px;
-      margin-bottom:18px;
+      padding:16px 20px;
+      margin-bottom:16px;
     }
 
     .brand{
       display:flex;
       align-items:center;
-      gap:16px;
+      gap:14px;
       min-width:0;
     }
 
     .logo-box{
-      width:84px;
-      height:84px;
-      border-radius:24px;
+      width:74px;
+      height:74px;
+      border-radius:20px;
       background:linear-gradient(180deg, #ffffff, #f3fbf6);
       border:1px solid rgba(18,86,61,0.06);
       display:flex;
@@ -199,27 +191,27 @@
 
     .brand-copy h1{
       margin:0;
-      font-size:clamp(1.5rem, 3vw, 2.2rem);
+      font-size:clamp(1.4rem, 3vw, 2rem);
       line-height:1.05;
     }
 
     .brand-copy p{
-      margin:6px 0 0 0;
+      margin:5px 0 0 0;
       color:var(--muted);
-      font-size:.98rem;
+      font-size:.94rem;
     }
 
     .header-right{
       display:flex;
       flex-wrap:wrap;
       justify-content:flex-end;
-      gap:10px;
+      gap:8px;
     }
 
     .badge{
-      padding:10px 14px;
+      padding:9px 12px;
       border-radius:999px;
-      font-size:.92rem;
+      font-size:.84rem;
       font-weight:800;
       white-space:nowrap;
       background:rgba(255,255,255,0.94);
@@ -229,14 +221,13 @@
 
     .hero{
       display:grid;
-      grid-template-columns:1.22fr .78fr;
-      gap:18px;
-      margin-bottom:18px;
+      grid-template-columns:1.18fr .82fr;
+      gap:16px;
+      margin-bottom:16px;
     }
 
     .hero-main{
-      padding:28px;
-      position:relative;
+      padding:24px;
       overflow:hidden;
       background:
         radial-gradient(circle at 85% 18%, rgba(107,227,154,0.16), transparent 22%),
@@ -253,64 +244,70 @@
       background:var(--green-soft);
       color:#14764c;
       font-weight:800;
-      margin-bottom:16px;
+      margin-bottom:14px;
+      font-size:.85rem;
     }
 
     .hero-title{
-      margin:0 0 12px 0;
-      font-size:clamp(2.1rem, 4.8vw, 4rem);
-      line-height:1.02;
+      margin:0 0 10px 0;
+      font-size:clamp(1.8rem, 4vw, 3.2rem);
+      line-height:1.04;
       max-width:760px;
     }
 
     .hero-sub{
-      margin:0 0 18px 0;
+      margin:0 0 16px 0;
       color:var(--muted);
-      line-height:1.65;
-      font-size:1.03rem;
+      line-height:1.6;
+      font-size:.98rem;
       max-width:760px;
     }
 
     .hero-layout{
       display:grid;
-      grid-template-columns:1fr 310px;
-      gap:16px;
-      align-items:stretch;
+      grid-template-columns:1fr 280px;
+      gap:14px;
+      align-items:start;
     }
 
     .hero-stats{
       display:grid;
       grid-template-columns:repeat(4, 1fr);
-      gap:12px;
+      gap:10px;
     }
 
     .hero-stat{
-      padding:16px;
-      border-radius:20px;
-      background:rgba(255,255,255,0.93);
+      min-height:120px;
+      padding:14px;
+      border-radius:18px;
+      background:rgba(255,255,255,0.94);
       border:1px solid rgba(18,86,61,0.07);
       box-shadow:0 8px 18px rgba(18,66,53,0.04);
+      display:flex;
+      flex-direction:column;
+      justify-content:flex-start;
     }
 
     .hero-stat .label{
       color:var(--muted);
       font-size:.82rem;
-      margin-bottom:6px;
+      margin-bottom:8px;
     }
 
     .hero-stat .value{
-      font-size:1.08rem;
+      font-size:1.04rem;
       font-weight:900;
+      line-height:1.25;
     }
 
     .score-stack{
       display:grid;
-      gap:12px;
+      gap:10px;
     }
 
     .score-card, .predict-card{
-      border-radius:22px;
-      padding:16px;
+      border-radius:18px;
+      padding:14px;
       background:rgba(255,255,255,0.96);
       border:1px solid rgba(18,86,61,0.07);
       box-shadow:0 10px 24px rgba(18,66,53,0.05);
@@ -326,27 +323,26 @@
     .score-card-top h3,
     .predict-card h3{
       margin:0;
-      font-size:1rem;
+      font-size:.96rem;
     }
 
     .score-big{
-      font-size:2.2rem;
+      font-size:2rem;
       font-weight:900;
       line-height:1;
       margin:10px 0 8px 0;
     }
 
-    .score-note,
-    .predict-card p{
+    .score-note{
       color:var(--muted);
-      font-size:.92rem;
-      line-height:1.55;
+      font-size:.9rem;
+      line-height:1.5;
       margin:0;
     }
 
     .score-bar{
       width:100%;
-      height:12px;
+      height:10px;
       background:#e6efeb;
       border-radius:999px;
       overflow:hidden;
@@ -364,24 +360,24 @@
 
     .predict-list{
       display:grid;
-      gap:10px;
-      margin-top:12px;
+      gap:8px;
+      margin-top:10px;
     }
 
     .predict-item{
       padding:10px 12px;
-      border-radius:14px;
+      border-radius:12px;
       background:rgba(238,247,255,0.78);
       border:1px solid rgba(77,168,255,0.10);
       color:#355860;
-      font-size:.9rem;
+      font-size:.88rem;
     }
 
     .action-panel{
-      padding:22px;
+      padding:18px;
       display:flex;
       flex-direction:column;
-      gap:14px;
+      gap:10px;
       background:linear-gradient(180deg, rgba(246,255,250,0.96), rgba(255,255,255,0.86));
     }
 
@@ -390,12 +386,12 @@
       display:flex;
       align-items:center;
       gap:10px;
-      font-size:1.08rem;
+      font-size:1rem;
     }
 
     .smart-card{
-      padding:22px;
-      border-radius:26px;
+      padding:18px;
+      border-radius:22px;
       background:linear-gradient(180deg, #ffffff, #f8fffb);
       border:1px solid rgba(31,163,111,0.08);
       box-shadow:
@@ -414,48 +410,49 @@
       background:var(--green-soft);
       color:#148051;
       font-weight:800;
-      margin-bottom:12px;
+      margin-bottom:10px;
+      font-size:.85rem;
     }
 
     .smart-title{
-      font-size:1.8rem;
-      line-height:1.05;
+      font-size:1.45rem;
+      line-height:1.08;
       font-weight:900;
       margin-bottom:10px;
     }
 
     .smart-desc{
       color:#45635c;
-      line-height:1.65;
-      font-size:1rem;
+      line-height:1.55;
+      font-size:.95rem;
     }
 
     .next-meta{
       display:grid;
       grid-template-columns:repeat(2, 1fr);
-      gap:10px;
-      margin-top:16px;
+      gap:8px;
+      margin-top:14px;
     }
 
     .meta-chip{
-      padding:10px 12px;
-      border-radius:16px;
+      padding:9px 11px;
+      border-radius:14px;
       background:rgba(234,250,241,0.75);
       border:1px solid rgba(18,86,61,0.06);
       color:#3a6358;
-      font-size:.88rem;
+      font-size:.84rem;
     }
 
     .micro-card{
-      padding:14px 16px;
-      border-radius:18px;
+      padding:12px 14px;
+      border-radius:16px;
       background:rgba(255,255,255,0.95);
       border:1px solid rgba(18,86,61,0.07);
     }
 
     .micro-card h4{
-      margin:0 0 10px 0;
-      font-size:.98rem;
+      margin:0 0 9px 0;
+      font-size:.92rem;
       display:flex;
       align-items:center;
       gap:8px;
@@ -463,32 +460,33 @@
 
     .micro-list{
       display:grid;
-      gap:8px;
+      gap:7px;
     }
 
     .micro-item{
-      padding:10px 12px;
-      border-radius:14px;
+      padding:9px 11px;
+      border-radius:12px;
       background:rgba(234,250,241,0.68);
       border:1px solid rgba(18,86,61,0.05);
       color:#355f54;
-      font-size:.9rem;
+      font-size:.87rem;
+      line-height:1.45;
     }
 
     .dashboard{
       display:grid;
       grid-template-columns:1.02fr .98fr;
-      gap:18px;
+      gap:16px;
     }
 
     .col{
       display:flex;
       flex-direction:column;
-      gap:18px;
+      gap:16px;
     }
 
     .card{
-      padding:20px;
+      padding:18px;
     }
 
     .card-header{
@@ -496,7 +494,7 @@
       justify-content:space-between;
       align-items:center;
       gap:12px;
-      margin-bottom:16px;
+      margin-bottom:14px;
     }
 
     .card-title{
@@ -504,24 +502,24 @@
       display:flex;
       align-items:center;
       gap:10px;
-      font-size:1.08rem;
+      font-size:1rem;
     }
 
     .muted{
       color:var(--muted);
-      font-size:.92rem;
-      line-height:1.55;
+      font-size:.88rem;
+      line-height:1.5;
     }
 
     .kpi-grid{
       display:grid;
       grid-template-columns:repeat(2, 1fr);
-      gap:14px;
+      gap:12px;
     }
 
     .kpi{
-      padding:18px;
-      border-radius:22px;
+      padding:16px;
+      border-radius:18px;
       background:rgba(255,255,255,0.97);
       border:1px solid rgba(18,86,61,0.07);
       box-shadow:0 10px 24px rgba(18,66,53,0.05);
@@ -534,26 +532,29 @@
       gap:8px;
       margin-bottom:8px;
       color:#607973;
-      font-size:.9rem;
+      font-size:.88rem;
       font-weight:700;
     }
 
     .kpi-value{
-      font-size:1.5rem;
+      font-size:1.25rem;
       font-weight:900;
       margin-bottom:8px;
-      line-height:1.12;
+      line-height:1.2;
+      white-space:pre-line;
     }
 
     .kpi-note{
       color:#607973;
-      font-size:.9rem;
-      margin-bottom:12px;
+      font-size:.88rem;
+      margin-bottom:10px;
+      line-height:1.45;
+      white-space:pre-line;
     }
 
     .bar{
       width:100%;
-      height:10px;
+      height:9px;
       background:#e5efeb;
       border-radius:999px;
       overflow:hidden;
@@ -571,21 +572,21 @@
     .control-grid{
       display:grid;
       grid-template-columns:1fr 1fr;
-      gap:14px;
+      gap:12px;
     }
 
     label{
       display:block;
       margin-bottom:8px;
       font-weight:800;
-      font-size:.95rem;
+      font-size:.92rem;
     }
 
     input[type="date"], input[type="password"], select, button{
       width:100%;
-      padding:14px 15px;
-      border-radius:16px;
-      font-size:1rem;
+      padding:13px 14px;
+      border-radius:14px;
+      font-size:.96rem;
       outline:none;
     }
 
@@ -625,25 +626,25 @@
     .btn-row{
       display:flex;
       flex-wrap:wrap;
-      gap:12px;
+      gap:10px;
       margin-top:8px;
     }
 
     .btn-row button{
-      flex:1 1 180px;
+      flex:1 1 160px;
     }
 
     .plants-grid{
       display:grid;
       grid-template-columns:repeat(5, 1fr);
-      gap:12px;
+      gap:10px;
       margin-top:14px;
     }
 
     .plant-chip{
-      min-height:88px;
-      padding:15px;
-      border-radius:18px;
+      min-height:74px;
+      padding:12px;
+      border-radius:16px;
       background:rgba(255,255,255,0.92);
       border:1px solid rgba(18,86,61,0.08);
       display:flex;
@@ -667,38 +668,41 @@
 
     .plant-chip .name{
       font-weight:800;
-      margin-bottom:5px;
+      margin-bottom:4px;
+      font-size:.9rem;
     }
 
     .plant-chip .desc{
-      font-size:.84rem;
+      font-size:.78rem;
       color:var(--muted);
+      line-height:1.35;
     }
 
     .info-box{
-      padding:16px;
-      border-radius:20px;
+      padding:14px;
+      border-radius:18px;
       background:rgba(255,255,255,0.96);
       border:1px solid rgba(18,86,61,0.07);
-      line-height:1.62;
+      line-height:1.6;
+      font-size:.92rem;
     }
 
     .profile-grid{
       display:grid;
       grid-template-columns:1fr 1fr;
-      gap:14px;
+      gap:12px;
     }
 
     .profile-box{
-      padding:16px;
-      border-radius:18px;
+      padding:14px;
+      border-radius:16px;
       background:rgba(255,255,255,0.95);
       border:1px solid rgba(18,86,61,0.07);
     }
 
     .profile-box h4{
       margin:0 0 10px 0;
-      font-size:.98rem;
+      font-size:.92rem;
     }
 
     .profile-pill{
@@ -711,18 +715,19 @@
       background:rgba(234,250,241,0.82);
       border:1px solid rgba(18,86,61,0.07);
       margin-bottom:10px;
+      font-size:.88rem;
     }
 
     .tower-showcase{
       display:grid;
       grid-template-columns:340px 1fr;
-      gap:18px;
+      gap:16px;
       align-items:center;
     }
 
     .tower-3d-card{
-      height:430px;
-      border-radius:24px;
+      height:400px;
+      border-radius:22px;
       background:
         radial-gradient(circle at 50% 18%, rgba(255,255,255,0.88), rgba(255,255,255,0.34) 38%, transparent 62%),
         linear-gradient(180deg, rgba(255,255,255,0.98), rgba(245,251,248,0.92));
@@ -739,36 +744,37 @@
 
     .tower-side{
       display:grid;
-      gap:12px;
+      gap:10px;
     }
 
     .mini-stats{
       display:grid;
       grid-template-columns:repeat(2, 1fr);
-      gap:12px;
+      gap:10px;
     }
 
     .mini{
-      padding:14px;
-      border-radius:18px;
+      padding:12px;
+      border-radius:16px;
       background:rgba(255,255,255,0.92);
       border:1px solid rgba(18,86,61,0.08);
     }
 
     .mini .label{
-      font-size:.8rem;
+      font-size:.78rem;
       color:var(--muted);
       margin-bottom:6px;
     }
 
     .mini .value{
-      font-size:1rem;
+      font-size:.95rem;
       font-weight:800;
+      line-height:1.35;
     }
 
     .status-list{
       display:grid;
-      gap:12px;
+      gap:10px;
     }
 
     .status-row{
@@ -776,8 +782,8 @@
       justify-content:space-between;
       align-items:center;
       gap:12px;
-      padding:14px 16px;
-      border-radius:18px;
+      padding:12px 14px;
+      border-radius:16px;
       background:rgba(255,255,255,0.92);
       border:1px solid rgba(18,86,61,0.08);
     }
@@ -787,11 +793,14 @@
       align-items:center;
       gap:12px;
       font-weight:700;
+      font-size:.92rem;
     }
 
     .status-value{
       font-weight:900;
       text-align:right;
+      font-size:.92rem;
+      line-height:1.35;
     }
 
     .tone-good{ box-shadow: inset 0 0 0 1px rgba(108,240,143,0.26); }
@@ -801,14 +810,14 @@
     .footer{
       text-align:center;
       color:var(--muted);
-      font-size:.86rem;
-      margin-top:18px;
+      font-size:.82rem;
+      margin-top:16px;
     }
 
     .small-note{
       margin-top:12px;
       color:var(--muted);
-      font-size:.92rem;
+      font-size:.88rem;
       line-height:1.55;
     }
 
@@ -870,12 +879,16 @@
       }
 
       .logo-box{
-        width:72px;
-        height:72px;
+        width:68px;
+        height:68px;
       }
 
       .tower-3d-card{
-        height:360px;
+        height:340px;
+      }
+
+      .hero-stat{
+        min-height:auto;
       }
     }
   </style>
@@ -1024,7 +1037,7 @@
                 <span id="waterLevel">—</span>
               </div>
               <div class="kpi-value" id="waterLevelDetail">—</div>
-              <div class="kpi-note">Stav nádrže</div>
+              <div class="kpi-note" id="waterLevelNote">Stav nádrže</div>
               <div class="bar"><span id="waterBar"></span></div>
             </div>
 
@@ -1034,7 +1047,7 @@
                 <span id="nutrientsPct">—</span>
               </div>
               <div class="kpi-value" id="nutrientsDetail">—</div>
-              <div class="kpi-note">Stav výživy pre rastlinu</div>
+              <div class="kpi-note" id="nutrientsNote">Stav výživy pre rastlinu</div>
               <div class="bar"><span id="nutrientBar"></span></div>
             </div>
 
@@ -1044,7 +1057,7 @@
                 <span id="temperature">—</span>
               </div>
               <div class="kpi-value" id="temperatureDetail">—</div>
-              <div class="kpi-note">Okolie rastliny</div>
+              <div class="kpi-note" id="temperatureNote">Okolie rastliny</div>
               <div class="bar"><span id="tempBar"></span></div>
             </div>
 
@@ -1054,7 +1067,7 @@
                 <span id="waterTemp">—</span>
               </div>
               <div class="kpi-value" id="waterTempDetail">—</div>
-              <div class="kpi-note">Stav vody vo veži</div>
+              <div class="kpi-note" id="waterTempNote">Stav vody vo veži</div>
               <div class="bar"><span id="waterTempBar"></span></div>
             </div>
           </div>
@@ -1097,7 +1110,7 @@
         <div class="card glass">
           <div class="card-header">
             <h3 class="card-title"><i class="fa-solid fa-leaf"></i> Profil rastliny</h3>
-            <div class="muted">Profil sa mení podľa vybratej rastliny</div>
+            <div class="muted">Aplikácia potvrdí, či sú podmienky vhodné</div>
           </div>
 
           <div class="profile-grid">
@@ -1108,7 +1121,7 @@
             </div>
 
             <div class="profile-box">
-              <h4>Odporúčaný profil</h4>
+              <h4>Potvrdenie podmienok</h4>
               <div class="muted" id="plantProfileText">—</div>
             </div>
           </div>
