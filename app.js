@@ -240,6 +240,7 @@ let sowDate = "";
 let computedPhase = "seedling";
 
 /* ==================== 3D TOWER ==================== */
+
 let tower3D = {
   root: null,
   scene: null,
@@ -247,7 +248,6 @@ let tower3D = {
   renderer: null,
   group: null,
   water: null,
-  topGlow: null,
   initialized: false
 };
 
@@ -264,7 +264,7 @@ function initTower3D(){
     0.1,
     100
   );
-  camera.position.set(0, 1.7, 7.2);
+  camera.position.set(0, 1.8, 7.2);
 
   const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
   renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
@@ -273,113 +273,102 @@ function initTower3D(){
   root.innerHTML = "";
   root.appendChild(renderer.domElement);
 
-  const ambient = new THREE.AmbientLight(0xffffff, 1.25);
+  const ambient = new THREE.AmbientLight(0xffffff, 1.4);
   scene.add(ambient);
 
-  const dir1 = new THREE.DirectionalLight(0xffffff, 1.7);
-  dir1.position.set(4, 8, 6);
+  const dir1 = new THREE.DirectionalLight(0xffffff, 2.2);
+  dir1.position.set(5, 10, 8);
   scene.add(dir1);
 
-  const dir2 = new THREE.DirectionalLight(0xb8f4d3, 1.0);
+  const dir2 = new THREE.DirectionalLight(0xffffff, 0.6);
   dir2.position.set(-5, 2, -3);
   scene.add(dir2);
 
   const group = new THREE.Group();
   scene.add(group);
 
-  const baseGeo = new THREE.CylinderGeometry(1.5, 1.7, 0.9, 48);
+  const baseGeo = new THREE.CylinderGeometry(1.45, 1.6, 0.95, 56);
   const baseMat = new THREE.MeshPhysicalMaterial({
     color: 0x24343a,
-    roughness: 0.45,
-    metalness: 0.35,
-    clearcoat: 0.5
+    roughness: 0.36,
+    metalness: 0.34,
+    clearcoat: 0.55
   });
   const base = new THREE.Mesh(baseGeo, baseMat);
-  base.position.y = -2.2;
+  base.position.y = -2.15;
   group.add(base);
 
-  const capGeo = new THREE.CylinderGeometry(1.25, 1.25, 0.22, 48);
+  const capGeo = new THREE.CylinderGeometry(1.3, 1.3, 0.18, 56);
   const capMat = new THREE.MeshPhysicalMaterial({
     color: 0xf5f8fa,
-    roughness: 0.25,
-    metalness: 0.05
+    roughness: 0.2,
+    metalness: 0.06
   });
   const cap = new THREE.Mesh(capGeo, capMat);
-  cap.position.y = 2.25;
+  cap.position.y = 2.32;
   group.add(cap);
 
-  const glassGeo = new THREE.CylinderGeometry(0.95, 0.95, 4.2, 64, 1, true);
+  const glassGeo = new THREE.CylinderGeometry(0.8, 0.8, 4.5, 64, 1, true);
   const glassMat = new THREE.MeshPhysicalMaterial({
-    color: 0xeefcff,
+    color: 0xecfbff,
     transparent: true,
-    opacity: 0.33,
+    opacity: 0.34,
     roughness: 0.02,
     metalness: 0,
-    transmission: 0.92,
-    thickness: 1.2,
+    transmission: 0.95,
+    thickness: 1.1,
     clearcoat: 1
   });
   const glass = new THREE.Mesh(glassGeo, glassMat);
-  glass.position.y = 0.15;
+  glass.position.y = 0.12;
   group.add(glass);
 
-  const waterGeo = new THREE.CylinderGeometry(0.83, 0.83, 1.45, 48);
+  const waterGeo = new THREE.CylinderGeometry(0.72, 0.72, 1.65, 52);
   const waterMat = new THREE.MeshPhysicalMaterial({
-    color: 0x7fe8ff,
+    color: 0x6fd3ff,
     transparent: true,
-    opacity: 0.42,
-    roughness: 0.05,
-    transmission: 0.6
+    opacity: 0.5,
+    roughness: 0,
+    transmission: 0.9
   });
   const water = new THREE.Mesh(waterGeo, waterMat);
-  water.position.y = -1.22;
+  water.position.y = -1.32;
   group.add(water);
 
-  const stemGeo = new THREE.CylinderGeometry(0.12, 0.12, 3.5, 32);
+  const stemGeo = new THREE.CylinderGeometry(0.09, 0.09, 3.9, 32);
   const stemMat = new THREE.MeshStandardMaterial({
-    color: 0xf4f7f8,
+    color: 0xf7f9fa,
     roughness: 0.5
   });
   const stem = new THREE.Mesh(stemGeo, stemMat);
-  stem.position.y = 0.1;
+  stem.position.y = 0.12;
   group.add(stem);
-
-  const topGlowGeo = new THREE.SphereGeometry(1.8, 24, 24);
-  const topGlowMat = new THREE.MeshBasicMaterial({
-    color: 0xfff0a8,
-    transparent: true,
-    opacity: 0.18
-  });
-  const topGlow = new THREE.Mesh(topGlowGeo, topGlowMat);
-  topGlow.scale.set(1.6, 0.6, 1.6);
-  topGlow.position.y = 2.4;
-  scene.add(topGlow);
 
   function createPod(y, side = 1, rot = 0) {
     const podGroup = new THREE.Group();
 
-    const cupGeo = new THREE.CylinderGeometry(0.32, 0.42, 0.42, 24);
+    const cupGeo = new THREE.CylinderGeometry(0.22, 0.34, 0.42, 26);
     const cupMat = new THREE.MeshStandardMaterial({
-      color: 0xfafcfc,
-      roughness: 0.45
+      color: 0xf9fbfc,
+      roughness: 0.4
     });
     const cup = new THREE.Mesh(cupGeo, cupMat);
-    cup.rotation.z = side * 0.95;
+    cup.rotation.z = side * 1.1;
     cup.position.x = side * 0.7;
     podGroup.add(cup);
 
     const leafMat = new THREE.MeshStandardMaterial({
-      color: 0x57d96f,
-      roughness: 0.7
+      color: 0x4fd46a,
+      roughness: 0.72
     });
 
-    const leaf1 = new THREE.Mesh(new THREE.SphereGeometry(0.17, 18, 18), leafMat);
-    leaf1.scale.set(1.45, 0.65, 1);
-    leaf1.position.set(side * 0.88, 0.16, 0.06);
+    const leaf1 = new THREE.Mesh(new THREE.SphereGeometry(0.14, 18, 18), leafMat);
+    leaf1.scale.set(1.6, 0.62, 1);
+    leaf1.position.set(side * 0.83, 0.18, 0.04);
     podGroup.add(leaf1);
 
     const leaf2 = leaf1.clone();
-    leaf2.position.set(side * 0.68, 0.19, -0.02);
+    leaf2.position.set(side * 0.64, 0.2, -0.03);
     leaf2.rotation.y = 0.6;
     podGroup.add(leaf2);
 
@@ -389,20 +378,20 @@ function initTower3D(){
   }
 
   createPod(1.45, -1, 0.2);
-  createPod(0.75, 1, -0.1);
-  createPod(0.05, -1, 0.3);
-  createPod(-0.65, 1, -0.15);
-  createPod(-1.35, -1, 0.18);
+  createPod(0.78, 1, -0.1);
+  createPod(0.1, -1, 0.32);
+  createPod(-0.6, 1, -0.14);
+  createPod(-1.28, -1, 0.18);
 
   const shadowGeo = new THREE.CircleGeometry(2.1, 48);
   const shadowMat = new THREE.MeshBasicMaterial({
     color: 0x9ab7b0,
     transparent: true,
-    opacity: 0.18
+    opacity: 0.16
   });
   const shadow = new THREE.Mesh(shadowGeo, shadowMat);
   shadow.rotation.x = -Math.PI / 2;
-  shadow.position.y = -2.68;
+  shadow.position.y = -2.72;
   scene.add(shadow);
 
   tower3D.root = root;
@@ -411,15 +400,16 @@ function initTower3D(){
   tower3D.renderer = renderer;
   tower3D.group = group;
   tower3D.water = water;
-  tower3D.topGlow = topGlow;
   tower3D.initialized = true;
 
   let t = 0;
   function animate(){
     if (!tower3D.initialized) return;
     t += 0.01;
-    group.rotation.y = Math.sin(t * 0.55) * 0.18 + 0.25;
-    if (tower3D.water) tower3D.water.position.y += Math.sin(t * 1.8) * 0.0008;
+    group.rotation.y = Math.sin(t * 0.45) * 0.14 + 0.22;
+    if (tower3D.water) {
+      tower3D.water.position.y += Math.sin(t * 1.8) * 0.0007;
+    }
     renderer.render(scene, camera);
     requestAnimationFrame(animate);
   }
@@ -441,33 +431,24 @@ function updateTower3D({ waterLow, deviceConnected, calibrated }){
   if (!tower3D.initialized) return;
 
   if (tower3D.water) {
-    const targetScale = waterLow ? 0.45 : 1.0;
+    const targetScale = waterLow ? 0.5 : 1.0;
     tower3D.water.scale.y = targetScale;
-    tower3D.water.position.y = waterLow ? -1.72 : -1.22;
+    tower3D.water.position.y = waterLow ? -1.8 : -1.32;
 
     if (!deviceConnected) {
-      tower3D.water.material.color.set(0xff9b9b);
-      tower3D.water.material.opacity = 0.26;
+      tower3D.water.material.color.set(0xdac7c7);
+      tower3D.water.material.opacity = 0.22;
     } else if (waterLow) {
-      tower3D.water.material.color.set(0xffa6a6);
-      tower3D.water.material.opacity = 0.34;
+      tower3D.water.material.color.set(0x89d7ff);
+      tower3D.water.material.opacity = 0.36;
     } else {
-      tower3D.water.material.color.set(0x7fe8ff);
-      tower3D.water.material.opacity = 0.42;
+      tower3D.water.material.color.set(0x6fd3ff);
+      tower3D.water.material.opacity = 0.5;
     }
   }
 
-  if (tower3D.topGlow) {
-    if (!deviceConnected) {
-      tower3D.topGlow.material.color.set(0xff8d8d);
-      tower3D.topGlow.material.opacity = 0.16;
-    } else if (!calibrated || waterLow) {
-      tower3D.topGlow.material.color.set(0xffd37b);
-      tower3D.topGlow.material.opacity = 0.18;
-    } else {
-      tower3D.topGlow.material.color.set(0xfff0a8);
-      tower3D.topGlow.material.opacity = 0.18;
-    }
+  if (tower3D.group) {
+    tower3D.group.rotation.x = calibrated ? 0 : -0.04;
   }
 }
 
@@ -512,7 +493,7 @@ function renderPlantCards(selectedKey){
       setHero(key, phase, sowDate, { urgentAction: false });
       renderTimeline(plant, sowDate, phase);
       renderDaysToHarvest(key, sowDate);
-      renderPlantProfile(key, phase);
+      renderPlantProfile(key, phase, null);
     });
 
     wrap.appendChild(div);
@@ -535,7 +516,7 @@ function setSummary(plantKey, phase, sowDateValue){
 }
 
 function getHeroTitle(plantName, phase, urgentAction) {
-  if (urgentAction) return `${plantName} potrebuje malý zásah`;
+  if (urgentAction) return `${plantName} potrebuje zásah`;
   if (phase === "seedling") return `${plantName} práve klíči`;
   if (phase === "rooting") return `${plantName} si vytvára korene`;
   return `${plantName} rastie správne`;
@@ -608,7 +589,7 @@ function renderPrediction(plantKey, phase, sowDateValue, healthScore){
   `;
 }
 
-function renderPlantProfile(plantKey, phase){
+function renderPlantProfile(plantKey, phase, confirmation){
   const p = PLANTS[plantKey];
   const modeBox = $("plantModeBox");
   const modeText = $("plantModeText");
@@ -616,27 +597,26 @@ function renderPlantProfile(plantKey, phase){
   if (!p || !modeBox || !modeText || !profileText) return;
 
   let modeLabel = "Režim: Rýchly rast 🚀";
-  let modeDesc = "Táto rastlina rastie rýchlejšie a potrebuje stabilnú vodu, svetlo a výživu.";
+  let modeDesc = "Táto rastlina rastie rýchlejšie a systém ju vedie v aktívnejšom režime.";
 
   if (p.harvest.min >= 40 || p.germ.max >= 10) {
-    modeLabel = "Režim: Úsporný 🌱";
-    modeDesc = "Táto rastlina rastie pokojnejšie a lepšie znáša stabilný, menej agresívny režim.";
+    modeLabel = "Režim: Stabilný rast 🌱";
+    modeDesc = "Táto rastlina rastie pokojnejšie a systém ju drží v jemnejšom režime.";
   }
 
   if (phase === "seedling") {
-    modeDesc = "Rastlina je v klíčení. Teraz potrebuje pokojný štart a čistú vodu.";
+    modeDesc = "Rastlina je v klíčení. Systém teraz potvrdzuje jemný štart a čistú vodu.";
   } else if (phase === "rooting") {
-    modeDesc = "Rastlina si vytvára korene. Teraz je dôležitý jemný prechod a stabilná voda.";
+    modeDesc = "Rastlina si vytvára korene. Systém teraz potvrdzuje vhodný prechod do ďalšej fázy.";
   }
 
   modeBox.innerText = modeLabel;
   modeText.innerText = modeDesc;
-  profileText.innerHTML = `
-    <b>Svetlo:</b> ${p.light}<br>
-    <b>Klíčenie:</b> ${p.germ.min}–${p.germ.max} dní<br>
-    <b>Zber:</b> ${p.harvest.min}–${p.harvest.max} dní<br>
-    <b>Odporúčaná teplota okolia:</b> ${p.temps.airMin}–${p.temps.airMax} °C
-  `;
+
+  let confirmationText = "Systém čaká na dáta, aby potvrdil vhodné podmienky.";
+  if (confirmation) confirmationText = confirmation;
+
+  profileText.innerHTML = confirmationText;
 }
 
 function renderCalibration(calibrated){
@@ -710,7 +690,9 @@ function renderNutrientAdvice(plant, phase, concPpm){
 
   $("nutrientAdviceBox").innerHTML = `
     <b>${title}</b><br><br>
-    ${rec}
+    ${rec}<br><br>
+    <b>Tvoje hodnoty:</b> ${Math.round(concPpm)}<br>
+    <b>Vhodné rozmedzie:</b> ${t.min} – ${t.max}
   `;
 }
 
@@ -828,7 +810,7 @@ function renderMiniStats(obj){
   $("pumpStatusMini").innerText = obj.pump ? "Beží ✅" : "Vypnutá";
   $("lightStatusMini").innerText = obj.light ? "Zapnuté ✅" : "Vypnuté";
   $("wifiStatusMini").innerText = obj.wifiConnected ? "Pripojené ✅" : "Nepripojené ⚠️";
-  $("waterLevelMini").innerText = obj.waterLow ? "Málo ⚠️" : "OK ✅";
+  $("waterLevelMini").innerText = obj.waterLow ? "Málo vody ⚠️" : "V poriadku ✅";
 }
 
 function setRowTone(id, tone){
@@ -934,7 +916,7 @@ function initPlantSelectSync(){
       setHero(latestPlantKey, phase, sowDate, { urgentAction: false });
       renderTimeline(p, sowDate, phase);
       renderDaysToHarvest(latestPlantKey, sowDate);
-      renderPlantProfile(latestPlantKey, phase);
+      renderPlantProfile(latestPlantKey, phase, null);
     }
   });
 }
@@ -1021,7 +1003,7 @@ db.ref("tower/meta").on("value", (snap) => {
   renderTimeline(plant, sowDate, computedPhase);
   renderPlantCards(plantKey);
   renderDaysToHarvest(plantKey, sowDate);
-  renderPlantProfile(plantKey, computedPhase);
+  renderPlantProfile(plantKey, computedPhase, null);
 });
 
 db.ref("tower/status").on("value", (snap) => {
@@ -1086,14 +1068,26 @@ db.ref("tower/status").on("value", (snap) => {
           : "Príliš silné ⚠️";
 
     $("waterLevelDetail").innerText = waterLow ? "Treba doplniť" : "V poriadku";
+    $("waterLevelNote").innerText = waterLow
+      ? "Doplň nádrž čistou vodou."
+      : "Hladina vody je dostatočná.";
+
     $("nutrientsDetail").innerText =
       nutrientStateObj.tone === "ok"
         ? "Výživa je správna"
         : nutrientStateObj.tone === "warn"
           ? "Treba pridať výživu"
           : "Treba zriediť roztok";
-    $("temperatureDetail").innerText = airOk ? "Teplota je vhodná" : "Treba upraviť teplotu";
-    $("waterTempDetail").innerText = waterOk ? "Voda má vhodnú teplotu" : "Voda je mimo ideálu";
+    $("nutrientsNote").innerText =
+      `Aktuálne: ${Math.round(concPpm)} | Vhodné: ${target.min} – ${target.max}`;
+
+    $("temperatureDetail").innerText = airOk ? "Vhodná teplota" : "Treba upraviť teplotu";
+    $("temperatureNote").innerText =
+      `Aktuálne: ${airTemp.toFixed(1)} °C | Vhodné: ${plant.temps.airMin} – ${plant.temps.airMax} °C`;
+
+    $("waterTempDetail").innerText = waterOk ? "Voda je v poriadku" : "Voda je mimo ideálu";
+    $("waterTempNote").innerText =
+      `Aktuálne: ${waterTemp.toFixed(1)} °C | Vhodné: ${plant.temps.waterMin} – ${plant.temps.waterMax} °C`;
 
     setBar("waterBar", waterLow ? 18 : 78);
     setBar("nutrientBar", nutrientStateObj.tone === "ok" ? 78 : nutrientStateObj.tone === "warn" ? 42 : 92);
@@ -1113,7 +1107,14 @@ db.ref("tower/status").on("value", (snap) => {
     renderTimeline(plant, sowDate, phase);
     renderNutrientAdvice(plant, phase, concPpm);
     renderDaysToHarvest(plantKey, sowDate);
-    renderPlantProfile(plantKey, phase);
+
+    const profileConfirmation = `
+      <b>Svetlo:</b> ${plant.light}<br>
+      <b>Teplota okolia:</b> ${plant.temps.airMin} – ${plant.temps.airMax} °C ${airOk ? "✅ splnené" : "⚠️ treba upraviť"}<br>
+      <b>Teplota vody:</b> ${plant.temps.waterMin} – ${plant.temps.waterMax} °C ${waterOk ? "✅ splnené" : "⚠️ treba upraviť"}<br>
+      <b>Výživa:</b> ${target.min} – ${target.max} ${nutrientOk ? "✅ splnené" : "⚠️ treba upraviť"}
+    `;
+    renderPlantProfile(plantKey, phase, profileConfirmation);
 
     renderNextAction({
       waterLow,
@@ -1171,23 +1172,20 @@ db.ref("tower/status").on("value", (snap) => {
 
     const doing = [];
     if (!deviceConnected) {
-      doing.push("📡 Čakám na spojenie s vežou");
+      doing.push("📡 Veža je offline");
     } else {
       doing.push("💧 Kontrolujem hladinu vody");
+      doing.push("🌡 Sledujem teplotu a svetlo");
+      if (nutrientStateObj.tone === "warn") doing.push("🧪 Pripravujem odporúčanie na výživu");
+      else if (nutrientStateObj.tone === "bad") doing.push("🧪 Upozorňujem na silný roztok");
+      else doing.push("🌿 Držím podmienky pre stabilný rast");
     }
-
-    if (waterLow) doing.push("🚰 Pripravujem upozornenie na doplnenie vody");
-    else doing.push("🌡 Sledujem teplotu a svetlo");
-
-    if (nutrientStateObj.tone === "warn") doing.push("🧪 Pripravujem odporúčanie na výživu");
-    else if (nutrientStateObj.tone === "bad") doing.push("🧪 Upozorňujem na silný roztok");
-    else doing.push("🌿 Držím podmienky pre stabilný rast");
 
     renderSystemDoing(doing.slice(0, 3));
 
     let why = "Podmienky sú stabilné, preto zatiaľ netreba veľký zásah.";
     if (!deviceConnected) {
-      why = "Veža neposlala údaje dlhšie než 30 sekúnd, preto treba skontrolovať napájanie alebo Wi-Fi.";
+      why = "Veža neposlala údaje dlhšie než 30 sekúnd.";
     } else if (!wifiConnected) {
       why = "Chýba Wi-Fi spojenie, preto aplikácia upozorňuje na pripojenie.";
     } else if (waterLow) {
@@ -1199,7 +1197,7 @@ db.ref("tower/status").on("value", (snap) => {
     } else if (nutrientStateObj.tone === "bad") {
       why = "Roztok je príliš silný, preto je vhodné pridať čistú vodu.";
     } else if (!airOk || !waterOk) {
-      why = "Teplota je mimo odporúčaného rozsahu pre túto rastlinu.";
+      why = "Teplota je mimo vhodného rozsahu pre túto rastlinu.";
     }
 
     renderSystemWhy(why);
