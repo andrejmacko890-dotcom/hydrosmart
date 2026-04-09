@@ -237,219 +237,42 @@ function calculateHealthScore(obj){
 
 let latestPlantKey = "";
 let sowDate = "";
-let computedPhase = "seedling";
 
-/* ==================== 3D TOWER ==================== */
+/* ==================== VISUAL TOWER ==================== */
 
-let tower3D = {
-  root: null,
-  scene: null,
-  camera: null,
-  renderer: null,
-  group: null,
-  water: null,
-  initialized: false
-};
+function updateTowerVisual({ deviceConnected, waterLow, calibrated, lightOn }){
+  const badge = $("towerLiveBadge");
+  const img = $("towerRender");
+  if (!badge || !img) return;
 
-function initTower3D(){
-  if (tower3D.initialized || typeof THREE === "undefined") return;
-  const root = $("tower3d");
-  if (!root) return;
+  let text = "Vizualizácia pripravená";
+  let icon = "fa-circle";
+  let color = "#1fa36f";
 
-  const scene = new THREE.Scene();
-
-  const camera = new THREE.PerspectiveCamera(
-    35,
-    root.clientWidth / root.clientHeight,
-    0.1,
-    100
-  );
-  camera.position.set(0, 1.8, 7.2);
-
-  const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
-  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-  renderer.setSize(root.clientWidth, root.clientHeight);
-  renderer.outputColorSpace = THREE.SRGBColorSpace;
-  root.innerHTML = "";
-  root.appendChild(renderer.domElement);
-
-  const ambient = new THREE.AmbientLight(0xffffff, 1.4);
-  scene.add(ambient);
-
-  const dir1 = new THREE.DirectionalLight(0xffffff, 2.2);
-  dir1.position.set(5, 10, 8);
-  scene.add(dir1);
-
-  const dir2 = new THREE.DirectionalLight(0xffffff, 0.6);
-  dir2.position.set(-5, 2, -3);
-  scene.add(dir2);
-
-  const group = new THREE.Group();
-  scene.add(group);
-
-  const baseGeo = new THREE.CylinderGeometry(1.45, 1.6, 0.95, 56);
-  const baseMat = new THREE.MeshPhysicalMaterial({
-    color: 0x24343a,
-    roughness: 0.36,
-    metalness: 0.34,
-    clearcoat: 0.55
-  });
-  const base = new THREE.Mesh(baseGeo, baseMat);
-  base.position.y = -2.15;
-  group.add(base);
-
-  const capGeo = new THREE.CylinderGeometry(1.3, 1.3, 0.18, 56);
-  const capMat = new THREE.MeshPhysicalMaterial({
-    color: 0xf5f8fa,
-    roughness: 0.2,
-    metalness: 0.06
-  });
-  const cap = new THREE.Mesh(capGeo, capMat);
-  cap.position.y = 2.32;
-  group.add(cap);
-
-  const glassGeo = new THREE.CylinderGeometry(0.8, 0.8, 4.5, 64, 1, true);
-  const glassMat = new THREE.MeshPhysicalMaterial({
-    color: 0xecfbff,
-    transparent: true,
-    opacity: 0.34,
-    roughness: 0.02,
-    metalness: 0,
-    transmission: 0.95,
-    thickness: 1.1,
-    clearcoat: 1
-  });
-  const glass = new THREE.Mesh(glassGeo, glassMat);
-  glass.position.y = 0.12;
-  group.add(glass);
-
-  const waterGeo = new THREE.CylinderGeometry(0.72, 0.72, 1.65, 52);
-  const waterMat = new THREE.MeshPhysicalMaterial({
-    color: 0x6fd3ff,
-    transparent: true,
-    opacity: 0.5,
-    roughness: 0,
-    transmission: 0.9
-  });
-  const water = new THREE.Mesh(waterGeo, waterMat);
-  water.position.y = -1.32;
-  group.add(water);
-
-  const stemGeo = new THREE.CylinderGeometry(0.09, 0.09, 3.9, 32);
-  const stemMat = new THREE.MeshStandardMaterial({
-    color: 0xf7f9fa,
-    roughness: 0.5
-  });
-  const stem = new THREE.Mesh(stemGeo, stemMat);
-  stem.position.y = 0.12;
-  group.add(stem);
-
-  function createPod(y, side = 1, rot = 0) {
-    const podGroup = new THREE.Group();
-
-    const cupGeo = new THREE.CylinderGeometry(0.22, 0.34, 0.42, 26);
-    const cupMat = new THREE.MeshStandardMaterial({
-      color: 0xf9fbfc,
-      roughness: 0.4
-    });
-    const cup = new THREE.Mesh(cupGeo, cupMat);
-    cup.rotation.z = side * 1.1;
-    cup.position.x = side * 0.7;
-    podGroup.add(cup);
-
-    const leafMat = new THREE.MeshStandardMaterial({
-      color: 0x4fd46a,
-      roughness: 0.72
-    });
-
-    const leaf1 = new THREE.Mesh(new THREE.SphereGeometry(0.14, 18, 18), leafMat);
-    leaf1.scale.set(1.6, 0.62, 1);
-    leaf1.position.set(side * 0.83, 0.18, 0.04);
-    podGroup.add(leaf1);
-
-    const leaf2 = leaf1.clone();
-    leaf2.position.set(side * 0.64, 0.2, -0.03);
-    leaf2.rotation.y = 0.6;
-    podGroup.add(leaf2);
-
-    podGroup.position.y = y;
-    podGroup.rotation.y = rot;
-    group.add(podGroup);
+  if (!deviceConnected) {
+    text = "Veža je offline";
+    color = "#df6767";
+  } else if (waterLow) {
+    text = "Treba doplniť vodu";
+    color = "#ef9f2f";
+  } else if (!calibrated) {
+    text = "Treba kalibráciu";
+    color = "#ef9f2f";
+  } else if (!lightOn) {
+    text = "Svetlo je vypnuté";
+    color = "#69827b";
+  } else {
+    text = "Veža je v poriadku";
+    color = "#1fa36f";
   }
 
-  createPod(1.45, -1, 0.2);
-  createPod(0.78, 1, -0.1);
-  createPod(0.1, -1, 0.32);
-  createPod(-0.6, 1, -0.14);
-  createPod(-1.28, -1, 0.18);
+  badge.innerHTML = `<i class="fa-solid ${icon}" style="color:${color};"></i><span>${text}</span>`;
 
-  const shadowGeo = new THREE.CircleGeometry(2.1, 48);
-  const shadowMat = new THREE.MeshBasicMaterial({
-    color: 0x9ab7b0,
-    transparent: true,
-    opacity: 0.16
-  });
-  const shadow = new THREE.Mesh(shadowGeo, shadowMat);
-  shadow.rotation.x = -Math.PI / 2;
-  shadow.position.y = -2.72;
-  scene.add(shadow);
-
-  tower3D.root = root;
-  tower3D.scene = scene;
-  tower3D.camera = camera;
-  tower3D.renderer = renderer;
-  tower3D.group = group;
-  tower3D.water = water;
-  tower3D.initialized = true;
-
-  let t = 0;
-  function animate(){
-    if (!tower3D.initialized) return;
-    t += 0.01;
-    group.rotation.y = Math.sin(t * 0.45) * 0.14 + 0.22;
-    if (tower3D.water) {
-      tower3D.water.position.y += Math.sin(t * 1.8) * 0.0007;
-    }
-    renderer.render(scene, camera);
-    requestAnimationFrame(animate);
-  }
-  animate();
-
-  window.addEventListener("resize", resizeTower3D);
-}
-
-function resizeTower3D(){
-  if (!tower3D.initialized || !tower3D.root) return;
-  const w = tower3D.root.clientWidth;
-  const h = tower3D.root.clientHeight;
-  tower3D.camera.aspect = w / h;
-  tower3D.camera.updateProjectionMatrix();
-  tower3D.renderer.setSize(w, h);
-}
-
-function updateTower3D({ waterLow, deviceConnected, calibrated }){
-  if (!tower3D.initialized) return;
-
-  if (tower3D.water) {
-    const targetScale = waterLow ? 0.5 : 1.0;
-    tower3D.water.scale.y = targetScale;
-    tower3D.water.position.y = waterLow ? -1.8 : -1.32;
-
-    if (!deviceConnected) {
-      tower3D.water.material.color.set(0xdac7c7);
-      tower3D.water.material.opacity = 0.22;
-    } else if (waterLow) {
-      tower3D.water.material.color.set(0x89d7ff);
-      tower3D.water.material.opacity = 0.36;
-    } else {
-      tower3D.water.material.color.set(0x6fd3ff);
-      tower3D.water.material.opacity = 0.5;
-    }
-  }
-
-  if (tower3D.group) {
-    tower3D.group.rotation.x = calibrated ? 0 : -0.04;
-  }
+  img.style.filter = !deviceConnected
+    ? "grayscale(0.15) brightness(0.97) drop-shadow(0 20px 30px rgba(20,58,50,0.10))"
+    : waterLow
+      ? "saturate(0.96) contrast(1.01) drop-shadow(0 20px 30px rgba(20,58,50,0.12))"
+      : "drop-shadow(0 20px 30px rgba(20,58,50,0.12)) saturate(1.03) contrast(1.02)";
 }
 
 /* ==================== UI ==================== */
@@ -566,7 +389,7 @@ function renderDaysToHarvest(plantKey, sowDateValue){
   else el.innerText = `Zber o ${remaining} dní`;
 }
 
-function renderPrediction(plantKey, phase, sowDateValue, healthScore){
+function renderPrediction(plantKey, sowDateValue, healthScore){
   const p = PLANTS[plantKey];
   const box = $("predictionBox");
   if (!box || !p) return;
@@ -924,7 +747,6 @@ function initPlantSelectSync(){
 setPlantDropdown();
 renderPlantCards("");
 initPlantSelectSync();
-initTower3D();
 
 renderCalibration(false);
 renderHealth(0);
@@ -963,10 +785,11 @@ renderMiniStats({
   wifiConnected: false,
   waterLow: false
 });
-updateTower3D({
-  waterLow: false,
+updateTowerVisual({
   deviceConnected: false,
-  calibrated: false
+  waterLow: false,
+  calibrated: false,
+  lightOn: false
 });
 
 db.ref("tower/commands").on("value", (snap) => {
@@ -996,7 +819,7 @@ db.ref("tower/meta").on("value", (snap) => {
   const plantKey = latestPlantKey && PLANTS[latestPlantKey] ? latestPlantKey : "arugula";
   const plant = PLANTS[plantKey];
   const days = daysBetween(sowDate);
-  computedPhase = days === null ? "seedling" : computePhase(days, plant);
+  const computedPhase = days === null ? "seedling" : computePhase(days, plant);
 
   setSummary(plantKey, computedPhase, sowDate);
   setHero(plantKey, computedPhase, sowDate, { urgentAction: false });
@@ -1048,7 +871,8 @@ db.ref("tower/status").on("value", (snap) => {
       : (typeof s.plant === "string" && PLANTS[s.plant] ? s.plant : "arugula");
 
     const plant = PLANTS[plantKey];
-    const phase = computedPhase || "seedling";
+    const days = daysBetween(sowDate);
+    const phase = days === null ? "seedling" : computePhase(days, plant);
     const target = plant.tds[phase];
 
     const nutrientStateObj = nutrientState(concPpm, target);
@@ -1162,12 +986,13 @@ db.ref("tower/status").on("value", (snap) => {
       nutrientOk
     });
     renderHealth(healthScore);
-    renderPrediction(plantKey, phase, sowDate, healthScore);
+    renderPrediction(plantKey, sowDate, healthScore);
 
-    updateTower3D({
-      waterLow,
+    updateTowerVisual({
       deviceConnected,
-      calibrated
+      waterLow,
+      calibrated,
+      lightOn
     });
 
     const doing = [];
