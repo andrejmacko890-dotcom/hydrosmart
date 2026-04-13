@@ -236,9 +236,9 @@ let sowDate = "";
 function updateTowerVisual({ deviceConnected, waterLow, calibrated, lightOn }){
   const badge = $("towerLiveBadge");
   const glow = $("towerLightGlow");
-  const waterFill = $("towerWaterFill");
-  const waterLine = $("towerWaterLine");
-  if (!badge || !glow || !waterFill || !waterLine) return;
+  const towerLevel = $("towerTankLevel");
+  const bubbles = $("towerBubbles");
+  if (!badge || !glow || !towerLevel) return;
 
   let text = "Veža je v poriadku";
   let color = "#1fa36f";
@@ -260,31 +260,28 @@ function updateTowerVisual({ deviceConnected, waterLow, calibrated, lightOn }){
   badge.innerHTML = `<i class="fa-solid fa-circle" style="color:${color};"></i><span>${text}</span>`;
 
   if (!deviceConnected) {
-    glow.style.opacity = "0.30";
-    glow.style.background = "radial-gradient(circle, rgba(223,103,103,0.20), rgba(223,103,103,0.05), transparent 72%)";
-    waterFill.setAttribute("y", "368");
-    waterFill.setAttribute("height", "28");
-    waterFill.setAttribute("fill", "#d9d9d9");
-    waterLine.setAttribute("y", "364");
-    waterLine.setAttribute("fill", "#e5e5e5");
+    glow.style.opacity = "0.25";
+    glow.style.background = "radial-gradient(circle, rgba(223,103,103,0.18), rgba(223,103,103,0.05), transparent 72%)";
+    towerLevel.setAttribute("y", "430");
+    towerLevel.setAttribute("height", "16");
+    towerLevel.setAttribute("fill", "#d9d9d9");
+    if (bubbles) bubbles.style.opacity = "0";
   } else if (waterLow) {
-    glow.style.opacity = "0.50";
+    glow.style.opacity = "0.45";
     glow.style.background = "radial-gradient(circle, rgba(239,159,47,0.18), rgba(239,159,47,0.04), transparent 72%)";
-    waterFill.setAttribute("y", "350");
-    waterFill.setAttribute("height", "46");
-    waterFill.setAttribute("fill", "#a8def2");
-    waterLine.setAttribute("y", "346");
-    waterLine.setAttribute("fill", "#d6f6ff");
+    towerLevel.setAttribute("y", "424");
+    towerLevel.setAttribute("height", "22");
+    towerLevel.setAttribute("fill", "#a8def2");
+    if (bubbles) bubbles.style.opacity = "0.22";
   } else {
-    glow.style.opacity = lightOn ? "0.85" : "0.40";
+    glow.style.opacity = lightOn ? "0.82" : "0.35";
     glow.style.background = lightOn
       ? "radial-gradient(circle, rgba(31,163,111,0.16), rgba(31,163,111,0.04), transparent 72%)"
-      : "radial-gradient(circle, rgba(130,148,140,0.14), rgba(130,148,140,0.03), transparent 72%)";
-    waterFill.setAttribute("y", "296");
-    waterFill.setAttribute("height", "100");
-    waterFill.setAttribute("fill", "#85dbff");
-    waterLine.setAttribute("y", "292");
-    waterLine.setAttribute("fill", "#d6f6ff");
+      : "radial-gradient(circle, rgba(130,148,140,0.12), rgba(130,148,140,0.03), transparent 72%)";
+    towerLevel.setAttribute("y", "404");
+    towerLevel.setAttribute("height", "42");
+    towerLevel.setAttribute("fill", "#7fd7ff");
+    if (bubbles) bubbles.style.opacity = "0.55";
   }
 }
 
