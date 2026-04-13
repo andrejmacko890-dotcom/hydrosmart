@@ -236,8 +236,9 @@ let sowDate = "";
 function updateTowerVisual({ deviceConnected, waterLow, calibrated, lightOn }){
   const badge = $("towerLiveBadge");
   const glow = $("towerLightGlow");
-  const img = $("towerRender");
-  if (!badge || !glow || !img) return;
+  const waterFill = $("towerWaterFill");
+  const waterLine = $("towerWaterLine");
+  if (!badge || !glow || !waterFill || !waterLine) return;
 
   let text = "Veža je v poriadku";
   let color = "#1fa36f";
@@ -259,19 +260,31 @@ function updateTowerVisual({ deviceConnected, waterLow, calibrated, lightOn }){
   badge.innerHTML = `<i class="fa-solid fa-circle" style="color:${color};"></i><span>${text}</span>`;
 
   if (!deviceConnected) {
-    glow.style.opacity = "0.28";
+    glow.style.opacity = "0.30";
     glow.style.background = "radial-gradient(circle, rgba(223,103,103,0.20), rgba(223,103,103,0.05), transparent 72%)";
-    img.style.filter = "grayscale(0.2) brightness(0.97) drop-shadow(0 20px 28px rgba(20,58,50,0.10))";
+    waterFill.setAttribute("y", "368");
+    waterFill.setAttribute("height", "28");
+    waterFill.setAttribute("fill", "#d9d9d9");
+    waterLine.setAttribute("y", "364");
+    waterLine.setAttribute("fill", "#e5e5e5");
   } else if (waterLow) {
-    glow.style.opacity = "0.5";
+    glow.style.opacity = "0.50";
     glow.style.background = "radial-gradient(circle, rgba(239,159,47,0.18), rgba(239,159,47,0.04), transparent 72%)";
-    img.style.filter = "saturate(0.96) contrast(1.01) drop-shadow(0 20px 28px rgba(20,58,50,0.12))";
+    waterFill.setAttribute("y", "350");
+    waterFill.setAttribute("height", "46");
+    waterFill.setAttribute("fill", "#a8def2");
+    waterLine.setAttribute("y", "346");
+    waterLine.setAttribute("fill", "#d6f6ff");
   } else {
-    glow.style.opacity = lightOn ? "0.85" : "0.36";
+    glow.style.opacity = lightOn ? "0.85" : "0.40";
     glow.style.background = lightOn
-      ? "radial-gradient(circle, rgba(31,163,111,0.18), rgba(31,163,111,0.04), transparent 72%)"
+      ? "radial-gradient(circle, rgba(31,163,111,0.16), rgba(31,163,111,0.04), transparent 72%)"
       : "radial-gradient(circle, rgba(130,148,140,0.14), rgba(130,148,140,0.03), transparent 72%)";
-    img.style.filter = "drop-shadow(0 20px 28px rgba(20,58,50,0.14))";
+    waterFill.setAttribute("y", "296");
+    waterFill.setAttribute("height", "100");
+    waterFill.setAttribute("fill", "#85dbff");
+    waterLine.setAttribute("y", "292");
+    waterLine.setAttribute("fill", "#d6f6ff");
   }
 }
 
