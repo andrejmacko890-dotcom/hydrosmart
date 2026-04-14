@@ -715,119 +715,103 @@
     }
 
     .live-tower-layout{
-      display:grid;
-      grid-template-columns:360px 1fr;
-      gap:18px;
-      align-items:start;
-    }
+  display:grid;
+  grid-template-columns:360px 1fr;
+  gap:18px;
+  align-items:start;
+}
 
-    .tower-stage{
-      position:relative;
-      height:500px;
-      border-radius:24px;
-      overflow:hidden;
-      border:1px solid rgba(18,86,61,0.07);
-      background:
-        radial-gradient(circle at 18% 18%, rgba(118,228,158,0.10), transparent 26%),
-        radial-gradient(circle at 86% 18%, rgba(77,168,255,0.08), transparent 24%),
-        linear-gradient(135deg, rgba(255,255,255,0.99), rgba(243,250,246,0.95));
-    }
+.tower-stage{
+  position:relative;
+  height:500px;
+  border-radius:24px;
+  overflow:hidden;
+  border:1px solid rgba(18,86,61,0.07);
+  background:
+    radial-gradient(circle at 18% 18%, rgba(118,228,158,0.10), transparent 26%),
+    radial-gradient(circle at 86% 18%, rgba(77,168,255,0.08), transparent 24%),
+    linear-gradient(135deg, rgba(255,255,255,0.99), rgba(243,250,246,0.95));
+}
 
-    .tower-live-badge{
-      position:absolute;
-      top:16px;
-      left:16px;
-      z-index:3;
-      display:inline-flex;
-      align-items:center;
-      gap:8px;
-      padding:9px 14px;
-      border-radius:999px;
-      background:rgba(255,255,255,0.95);
-      border:1px solid rgba(18,86,61,0.08);
-      font-size:.84rem;
-      font-weight:800;
-      box-shadow:0 8px 20px rgba(18,66,53,0.08);
-    }
+.tower-live-badge{
+  position:absolute;
+  top:16px;
+  left:16px;
+  z-index:3;
+  display:inline-flex;
+  align-items:center;
+  gap:8px;
+  padding:9px 14px;
+  border-radius:999px;
+  background:rgba(255,255,255,0.95);
+  border:1px solid rgba(18,86,61,0.08);
+  font-size:.84rem;
+  font-weight:800;
+  box-shadow:0 8px 20px rgba(18,66,53,0.08);
+}
 
-    .tower-scene{
-      position:absolute;
-      inset:0;
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      padding:10px 8px 18px;
-    }
+.tower-scene{
+  position:absolute;
+  inset:0;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:8px 8px 18px;
+}
 
-    .tower-svg{
-      width:100%;
-      height:100%;
-      max-width:300px;
-      display:block;
-    }
+.tower-svg{
+  width:100%;
+  height:100%;
+  max-width:300px;
+  display:block;
+}
 
-    .tower-light-glow{
-      position:absolute;
-      left:14%;
-      right:14%;
-      bottom:7%;
-      height:22px;
-      border-radius:999px;
-      background:radial-gradient(circle, rgba(31,163,111,0.11), rgba(31,163,111,0.03), transparent 72%);
-      filter:blur(14px);
-      z-index:1;
-      opacity:.8;
-      transition:opacity .25s ease, background .25s ease;
-    }
+.tower-light-glow{
+  position:absolute;
+  left:14%;
+  right:14%;
+  bottom:7%;
+  height:22px;
+  border-radius:999px;
+  background:radial-gradient(circle, rgba(31,163,111,0.11), rgba(31,163,111,0.03), transparent 72%);
+  filter:blur(14px);
+  z-index:1;
+  opacity:.8;
+  transition:opacity .25s ease, background .25s ease;
+}
 
-    .tower-main-group{
-      animation:towerFloatSvg 6s ease-in-out infinite;
-      transform-origin:210px 280px;
-    }
+.tower-main-group{
+  animation:towerFloatSvg 6s ease-in-out infinite;
+  transform-origin:210px 280px;
+}
 
-    .leaf-bob{
-      transform-origin:center;
-    }
+.leaf-bob{
+  transform-origin:center;
+}
 
-    .leaf-a{ animation:leafBob 4.2s ease-in-out infinite; }
-    .leaf-b{ animation:leafBob 4.6s ease-in-out infinite .2s; }
-    .leaf-c{ animation:leafBob 4.4s ease-in-out infinite .4s; }
-    .leaf-d{ animation:leafBob 4.8s ease-in-out infinite .1s; }
-    .leaf-e{ animation:leafBob 4.5s ease-in-out infinite .3s; }
+.leaf-a{ animation:leafBob 4.2s ease-in-out infinite; }
+.leaf-b{ animation:leafBob 4.6s ease-in-out infinite .2s; }
+.leaf-c{ animation:leafBob 4.4s ease-in-out infinite .4s; }
 
-    .bubble{
-      animation:bubbleRise 4.8s linear infinite;
-    }
+.bubble{
+  animation:bubbleRise 4.8s linear infinite;
+}
 
-    .bubble1{ animation-delay:0s; }
-    .bubble2{ animation-delay:1s; }
-    .bubble3{ animation-delay:2s; }
-    .bubble4{ animation-delay:1.5s; }
-    .bubble5{ animation-delay:2.6s; }
+.bubble1{ animation-delay:0s; }
+.bubble2{ animation-delay:1s; }
+.bubble3{ animation-delay:2s; }
+.bubble4{ animation-delay:1.5s; }
+.bubble5{ animation-delay:2.6s; }
 
-    @keyframes towerFloatSvg{
-      0%,100%{ transform:translateY(0px); }
-      50%{ transform:translateY(-6px); }
-    }
+@media (max-width: 760px){
+  .tower-stage{
+    height:400px;
+  }
 
-    @keyframes leafBob{
-      0%,100%{ transform:translateY(0px) rotate(0deg); }
-      50%{ transform:translateY(-1px) rotate(1.2deg); }
-    }
-
-    @keyframes bubbleRise{
-      0%{
-        transform:translateY(8px);
-        opacity:0;
-      }
-      20%{
-        opacity:.55;
-      }
-      100%{
-        transform:translateY(-42px);
-        opacity:0;
-      }
-    }
+  .tower-svg{
+    max-width:240px;
+  }
+}
 
     .tower-panel{
       display:grid;
@@ -1236,214 +1220,227 @@
           </div>
 
           <div class="live-tower-layout">
-            <div class="tower-stage">
-              <div class="tower-live-badge" id="towerLiveBadge">
-                <i class="fa-solid fa-circle" style="color:#1fa36f;"></i>
-                <span>Veža je v poriadku</span>
-              </div>
+  <div class="tower-stage">
+    <div class="tower-live-badge" id="towerLiveBadge">
+      <i class="fa-solid fa-circle" style="color:#1fa36f;"></i>
+      <span>Veža je v poriadku</span>
+    </div>
 
-              <div class="tower-scene">
-                <svg class="tower-svg" viewBox="0 0 420 520" xmlns="http://www.w3.org/2000/svg" aria-label="HydroSmart veža">
-                  <defs>
-                    <linearGradient id="frameGrad" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="0%" stop-color="#f3eadb"/>
-                      <stop offset="100%" stop-color="#e3d8c5"/>
-                    </linearGradient>
+    <div class="tower-scene">
+      <svg class="tower-svg" viewBox="0 0 420 520" xmlns="http://www.w3.org/2000/svg" aria-label="HydroSmart veža">
+        <defs>
+          <linearGradient id="frameGrad" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#f3eadb"/>
+            <stop offset="100%" stop-color="#e3d8c5"/>
+          </linearGradient>
 
-                    <linearGradient id="towerBodyGrad" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="0%" stop-color="#fffefb"/>
-                      <stop offset="100%" stop-color="#efe7db"/>
-                    </linearGradient>
+          <linearGradient id="towerBodyGrad" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#fffefb"/>
+            <stop offset="100%" stop-color="#efe7db"/>
+          </linearGradient>
 
-                    <linearGradient id="tankGrad" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="0%" stop-color="#fffdfa"/>
-                      <stop offset="100%" stop-color="#efe6d9"/>
-                    </linearGradient>
+          <linearGradient id="tankGrad" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#fffdfa"/>
+            <stop offset="100%" stop-color="#efe6d9"/>
+          </linearGradient>
 
-                    <linearGradient id="glassGrad" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="0%" stop-color="#ffffff"/>
-                      <stop offset="100%" stop-color="#edfafd"/>
-                    </linearGradient>
+          <linearGradient id="glassGrad" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#ffffff"/>
+            <stop offset="100%" stop-color="#edfafd"/>
+          </linearGradient>
 
-                    <linearGradient id="waterGrad" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="0%" stop-color="#c8f2ff"/>
-                      <stop offset="100%" stop-color="#7fd7ff"/>
-                    </linearGradient>
+          <linearGradient id="waterGrad" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#c8f2ff"/>
+            <stop offset="100%" stop-color="#7fd7ff"/>
+          </linearGradient>
 
-                    <linearGradient id="leafGrad" x1="0" y1="0" x2="1" y2="1">
-                      <stop offset="0%" stop-color="#90f06f"/>
-                      <stop offset="100%" stop-color="#2fa957"/>
-                    </linearGradient>
+          <linearGradient id="leafGrad" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0%" stop-color="#90f06f"/>
+            <stop offset="100%" stop-color="#2fa957"/>
+          </linearGradient>
 
-                    <linearGradient id="lightGrad" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="0%" stop-color="#fffef5"/>
-                      <stop offset="100%" stop-color="#efe8d8"/>
-                    </linearGradient>
+          <linearGradient id="lightGrad" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#fffef5"/>
+            <stop offset="100%" stop-color="#efe8d8"/>
+          </linearGradient>
 
-                    <filter id="towerShadow" x="-30%" y="-30%" width="180%" height="200%">
-                      <feDropShadow dx="0" dy="16" stdDeviation="16" flood-color="#173a32" flood-opacity="0.12"/>
-                    </filter>
+          <filter id="towerShadow" x="-30%" y="-30%" width="180%" height="200%">
+            <feDropShadow dx="0" dy="16" stdDeviation="16" flood-color="#173a32" flood-opacity="0.12"/>
+          </filter>
 
-                    <filter id="leafShadow" x="-30%" y="-30%" width="180%" height="180%">
-                      <feDropShadow dx="0" dy="5" stdDeviation="5" flood-color="#2a9650" flood-opacity="0.16"/>
-                    </filter>
+          <filter id="leafShadow" x="-30%" y="-30%" width="180%" height="180%">
+            <feDropShadow dx="0" dy="5" stdDeviation="5" flood-color="#2a9650" flood-opacity="0.16"/>
+          </filter>
 
-                    <clipPath id="towerGlassClip">
-                      <rect x="170" y="112" width="120" height="244" rx="56"/>
-                    </clipPath>
+          <clipPath id="towerGlassClip">
+            <rect x="164" y="100" width="92" height="252" rx="46"/>
+          </clipPath>
 
-                    <clipPath id="levelClip">
-                      <rect x="212" y="382" width="34" height="70" rx="10"/>
-                    </clipPath>
-                  </defs>
+          <clipPath id="levelClip">
+            <rect x="198" y="388" width="24" height="58" rx="10"/>
+          </clipPath>
+        </defs>
 
-                  <ellipse cx="210" cy="492" rx="110" ry="14" fill="#dfe9e3"/>
+        <ellipse cx="210" cy="492" rx="112" ry="14" fill="#dfe9e3"/>
 
-                  <g class="tower-main-group" filter="url(#towerShadow)">
-                    <rect x="116" y="74" width="14" height="246" rx="7" fill="url(#lightGrad)" opacity="0.96"/>
-                    <rect x="290" y="74" width="14" height="246" rx="7" fill="url(#lightGrad)" opacity="0.96"/>
+        <g class="tower-main-group" filter="url(#towerShadow)">
+          <!-- svetlá úplne symetricky -->
+          <rect x="124" y="72" width="12" height="236" rx="6" fill="url(#lightGrad)" opacity="0.96"/>
+          <rect x="284" y="72" width="12" height="236" rx="6" fill="url(#lightGrad)" opacity="0.96"/>
 
-                    <rect x="108" y="60" width="204" height="12" rx="6" fill="url(#frameGrad)"/>
+          <!-- horný rám -->
+          <rect x="116" y="58" width="188" height="10" rx="5" fill="url(#frameGrad)"/>
 
-                    <ellipse cx="123" cy="196" rx="14" ry="112" fill="rgba(255,245,200,0.10)"/>
-                    <ellipse cx="297" cy="196" rx="14" ry="112" fill="rgba(255,245,200,0.10)"/>
+          <!-- telo veže -->
+          <rect x="172" y="92" width="76" height="274" rx="38" fill="url(#towerBodyGrad)" stroke="#ddd1c0"/>
+          <rect x="164" y="100" width="92" height="252" rx="46" fill="url(#glassGrad)" opacity="0.55" stroke="#c6dbe1" stroke-width="2"/>
 
-                    <rect x="190" y="96" width="80" height="274" rx="40" fill="url(#towerBodyGrad)" stroke="#ddd1c0"/>
+          <!-- voda vo veži -->
+          <g clip-path="url(#towerGlassClip)">
+            <rect x="164" y="286" width="92" height="66" fill="url(#waterGrad)" opacity="0.82"/>
+            <rect x="164" y="282" width="92" height="7" fill="#ddf8ff" opacity="0.72"/>
 
-                    <rect x="166" y="108" width="128" height="254" rx="60" fill="url(#glassGrad)" opacity="0.60" stroke="#c6dbe1" stroke-width="2"/>
+            <g id="towerBubbles" opacity="0.55" fill="#ecfbff">
+              <circle class="bubble bubble1" cx="184" cy="330" r="3.2"/>
+              <circle class="bubble bubble2" cx="205" cy="314" r="2.5"/>
+              <circle class="bubble bubble3" cx="226" cy="336" r="3.2"/>
+              <circle class="bubble bubble4" cx="216" cy="300" r="2.6"/>
+              <circle class="bubble bubble5" cx="194" cy="294" r="2.2"/>
+            </g>
+          </g>
 
-                    <g clip-path="url(#towerGlassClip)">
-                      <rect x="170" y="286" width="120" height="70" fill="url(#waterGrad)" opacity="0.82"/>
-                      <rect x="170" y="282" width="120" height="7" fill="#ddf8ff" opacity="0.72"/>
+          <!-- košíky úplne zrkadlovo -->
+          <g fill="#f7fafc" stroke="#d5dde0" stroke-width="1.4">
+            <rect x="154" y="146" width="34" height="32" rx="10"/>
+            <rect x="232" y="146" width="34" height="32" rx="10"/>
 
-                      <g id="towerBubbles" opacity="0.55" fill="#ecfbff">
-                        <circle class="bubble bubble1" cx="194" cy="332" r="3.8"/>
-                        <circle class="bubble bubble2" cx="220" cy="316" r="2.8"/>
-                        <circle class="bubble bubble3" cx="246" cy="338" r="3.8"/>
-                        <circle class="bubble bubble4" cx="262" cy="312" r="2.8"/>
-                        <circle class="bubble bubble5" cx="232" cy="298" r="2.6"/>
-                      </g>
-                    </g>
+            <rect x="148" y="228" width="36" height="34" rx="10"/>
+            <rect x="236" y="228" width="36" height="34" rx="10"/>
 
-                    <g fill="#f7fafc" stroke="#d5dde0" stroke-width="1.4">
-                      <rect x="174" y="150" width="42" height="34" rx="11"/>
-                      <rect x="246" y="192" width="44" height="36" rx="12"/>
-                      <rect x="170" y="244" width="46" height="36" rx="12"/>
-                      <rect x="244" y="294" width="46" height="36" rx="12"/>
-                      <rect x="178" y="346" width="42" height="34" rx="11"/>
-                    </g>
+            <rect x="154" y="312" width="34" height="32" rx="10"/>
+            <rect x="232" y="312" width="34" height="32" rx="10"/>
+          </g>
 
-                    <g filter="url(#leafShadow)">
-                      <g class="leaf-bob leaf-a">
-                        <ellipse cx="190" cy="150" rx="14" ry="8.5" fill="url(#leafGrad)"/>
-                        <ellipse cx="207" cy="152" rx="12" ry="8" fill="url(#leafGrad)"/>
-                      </g>
+          <!-- listy úplne zrkadlovo -->
+          <g filter="url(#leafShadow)">
+            <!-- horný pár -->
+            <g class="leaf-bob leaf-a">
+              <ellipse cx="160" cy="148" rx="12" ry="7.5" fill="url(#leafGrad)"/>
+              <ellipse cx="176" cy="150" rx="11" ry="7" fill="url(#leafGrad)"/>
+            </g>
+            <g class="leaf-bob leaf-a">
+              <ellipse cx="244" cy="148" rx="12" ry="7.5" fill="url(#leafGrad)"/>
+              <ellipse cx="228" cy="150" rx="11" ry="7" fill="url(#leafGrad)"/>
+            </g>
 
-                      <g class="leaf-bob leaf-b">
-                        <ellipse cx="260" cy="190" rx="15" ry="9" fill="url(#leafGrad)"/>
-                        <ellipse cx="278" cy="192" rx="13" ry="8.2" fill="url(#leafGrad)"/>
-                      </g>
+            <!-- stredný pár -->
+            <g class="leaf-bob leaf-b">
+              <ellipse cx="154" cy="230" rx="13" ry="8" fill="url(#leafGrad)"/>
+              <ellipse cx="172" cy="232" rx="12" ry="7.2" fill="url(#leafGrad)"/>
+            </g>
+            <g class="leaf-bob leaf-b">
+              <ellipse cx="250" cy="230" rx="13" ry="8" fill="url(#leafGrad)"/>
+              <ellipse cx="232" cy="232" rx="12" ry="7.2" fill="url(#leafGrad)"/>
+            </g>
 
-                      <g class="leaf-bob leaf-c">
-                        <ellipse cx="186" cy="242" rx="15" ry="9" fill="url(#leafGrad)"/>
-                        <ellipse cx="204" cy="244" rx="13" ry="8.2" fill="url(#leafGrad)"/>
-                      </g>
+            <!-- spodný pár -->
+            <g class="leaf-bob leaf-c">
+              <ellipse cx="160" cy="314" rx="12" ry="7.5" fill="url(#leafGrad)"/>
+              <ellipse cx="176" cy="316" rx="11" ry="7" fill="url(#leafGrad)"/>
+            </g>
+            <g class="leaf-bob leaf-c">
+              <ellipse cx="244" cy="314" rx="12" ry="7.5" fill="url(#leafGrad)"/>
+              <ellipse cx="228" cy="316" rx="11" ry="7" fill="url(#leafGrad)"/>
+            </g>
+          </g>
 
-                      <g class="leaf-bob leaf-d">
-                        <ellipse cx="260" cy="292" rx="15" ry="9" fill="url(#leafGrad)"/>
-                        <ellipse cx="278" cy="294" rx="13" ry="8.2" fill="url(#leafGrad)"/>
-                      </g>
+          <!-- spodná nádoba -->
+          <rect x="150" y="376" width="120" height="108" rx="24" fill="url(#tankGrad)" stroke="#ddd2c2"/>
 
-                      <g class="leaf-bob leaf-e">
-                        <ellipse cx="194" cy="344" rx="15" ry="9" fill="url(#leafGrad)"/>
-                        <ellipse cx="212" cy="346" rx="13" ry="8.2" fill="url(#leafGrad)"/>
-                      </g>
-                    </g>
+          <!-- indikátor vody v nádobe -->
+          <rect x="194" y="386" width="32" height="62" rx="10" fill="#eef7fb" stroke="#c7d7dd"/>
+          <g clip-path="url(#levelClip)">
+            <rect id="towerTankLevel" x="198" y="404" width="24" height="42" rx="10" fill="url(#waterGrad)" opacity="0.95"/>
+          </g>
+          <rect x="198" y="388" width="24" height="58" rx="10" fill="none" stroke="#c7d7dd"/>
 
-                    <rect x="144" y="378" width="172" height="112" rx="26" fill="url(#tankGrad)" stroke="#ddd2c2"/>
+          <rect x="170" y="414" width="80" height="20" rx="10" fill="#dfe8ea" opacity="0.55"/>
 
-                    <rect x="206" y="392" width="44" height="70" rx="11" fill="#eef7fb" stroke="#c7d7dd"/>
-                    <g clip-path="url(#levelClip)">
-                      <rect id="towerTankLevel" x="212" y="404" width="34" height="42" rx="10" fill="url(#waterGrad)" opacity="0.95"/>
-                    </g>
-                    <rect x="212" y="392" width="34" height="70" rx="10" fill="none" stroke="#c7d7dd"/>
+          <!-- logo -->
+          <g transform="translate(210 446)" opacity="0.60">
+            <path d="M0-9 C-6-5 -7 2 -5 10 C-1 6 1 1 0-9Z" fill="none" stroke="#8a7f70" stroke-width="1.5"/>
+            <path d="M0-9 C6-5 7 2 5 10 C1 6 -1 1 0-9Z" fill="none" stroke="#8a7f70" stroke-width="1.5"/>
+            <path d="M0-3 L0 10" stroke="#8a7f70" stroke-width="1.5"/>
+            <text x="0" y="22" text-anchor="middle" font-size="10.5" fill="#7d7468">HydroSmart</text>
+          </g>
+        </g>
+      </svg>
+    </div>
 
-                    <rect x="170" y="426" width="120" height="24" rx="12" fill="#dfe8ea" opacity="0.55"/>
+    <div class="tower-light-glow" id="towerLightGlow"></div>
+  </div>
 
-                    <g transform="translate(229 454)" opacity="0.60">
-                      <path d="M0-9 C-6-5 -7 2 -5 10 C-1 6 1 1 0-9Z" fill="none" stroke="#8a7f70" stroke-width="1.5"/>
-                      <path d="M0-9 C6-5 7 2 5 10 C1 6 -1 1 0-9Z" fill="none" stroke="#8a7f70" stroke-width="1.5"/>
-                      <path d="M0-3 L0 10" stroke="#8a7f70" stroke-width="1.5"/>
-                      <text x="0" y="22" text-anchor="middle" font-size="10.5" fill="#7d7468">HydroSmart</text>
-                    </g>
-                  </g>
-                </svg>
-              </div>
+  <div class="tower-panel">
+    <div class="mini-grid">
+      <div class="mini">
+        <div class="label">Pumpa</div>
+        <div class="value" id="pumpStatusMini">—</div>
+      </div>
+      <div class="mini">
+        <div class="label">Svetlo</div>
+        <div class="value" id="lightStatusMini">—</div>
+      </div>
+      <div class="mini">
+        <div class="label">Wi-Fi</div>
+        <div class="value" id="wifiStatusMini">—</div>
+      </div>
+      <div class="mini">
+        <div class="label">Voda</div>
+        <div class="value" id="waterLevelMini">—</div>
+      </div>
+    </div>
 
-              <div class="tower-light-glow" id="towerLightGlow"></div>
-            </div>
+    <div class="info-box" id="calibrationBox">Načítavam…</div>
 
-            <div class="tower-panel">
-              <div class="mini-grid">
-                <div class="mini">
-                  <div class="label">Pumpa</div>
-                  <div class="value" id="pumpStatusMini">—</div>
-                </div>
-                <div class="mini">
-                  <div class="label">Svetlo</div>
-                  <div class="value" id="lightStatusMini">—</div>
-                </div>
-                <div class="mini">
-                  <div class="label">Wi-Fi</div>
-                  <div class="value" id="wifiStatusMini">—</div>
-                </div>
-                <div class="mini">
-                  <div class="label">Voda</div>
-                  <div class="value" id="waterLevelMini">—</div>
-                </div>
-              </div>
+    <div class="card glass" style="padding:16px;">
+      <div class="card-header" style="margin-bottom:10px;">
+        <h3 class="card-title"><i class="fa-solid fa-satellite-dish"></i> Stav veže</h3>
+      </div>
 
-              <div class="info-box" id="calibrationBox">Načítavam…</div>
+      <div class="status-list">
+        <div class="status-row" id="rowDevice">
+          <div class="status-left"><i class="fa-solid fa-link"></i> Zariadenie</div>
+          <div class="status-value" id="deviceStatus">—</div>
+        </div>
 
-              <div class="card glass" style="padding:16px;">
-                <div class="card-header" style="margin-bottom:10px;">
-                  <h3 class="card-title"><i class="fa-solid fa-satellite-dish"></i> Stav veže</h3>
-                </div>
+        <div class="status-row" id="rowWifi">
+          <div class="status-left"><i class="fa-solid fa-wifi"></i> Wi-Fi</div>
+          <div class="status-value" id="wifiStatus">—</div>
+        </div>
 
-                <div class="status-list">
-                  <div class="status-row" id="rowDevice">
-                    <div class="status-left"><i class="fa-solid fa-link"></i> Zariadenie</div>
-                    <div class="status-value" id="deviceStatus">—</div>
-                  </div>
+        <div class="status-row" id="rowPump">
+          <div class="status-left"><i class="fa-solid fa-droplet"></i> Pumpa</div>
+          <div class="status-value" id="pumpStatus">—</div>
+        </div>
 
-                  <div class="status-row" id="rowWifi">
-                    <div class="status-left"><i class="fa-solid fa-wifi"></i> Wi-Fi</div>
-                    <div class="status-value" id="wifiStatus">—</div>
-                  </div>
+        <div class="status-row" id="rowLight">
+          <div class="status-left"><i class="fa-solid fa-lightbulb"></i> Svetlo</div>
+          <div class="status-value" id="lightStatus">—</div>
+        </div>
 
-                  <div class="status-row" id="rowPump">
-                    <div class="status-left"><i class="fa-solid fa-droplet"></i> Pumpa</div>
-                    <div class="status-value" id="pumpStatus">—</div>
-                  </div>
+        <div class="status-row" id="rowHumidity">
+          <div class="status-left"><i class="fa-solid fa-cloud"></i> Vlhkosť</div>
+          <div class="status-value" id="humidity">—</div>
+        </div>
 
-                  <div class="status-row" id="rowLight">
-                    <div class="status-left"><i class="fa-solid fa-lightbulb"></i> Svetlo</div>
-                    <div class="status-value" id="lightStatus">—</div>
-                  </div>
-
-                  <div class="status-row" id="rowHumidity">
-                    <div class="status-left"><i class="fa-solid fa-cloud"></i> Vlhkosť</div>
-                    <div class="status-value" id="humidity">—</div>
-                  </div>
-
-                  <div class="status-row" id="rowCalibration">
-                    <div class="status-left"><i class="fa-solid fa-check-double"></i> Kalibrácia</div>
-                    <div class="status-value" id="calibrationShort">—</div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
+        <div class="status-row" id="rowCalibration">
+          <div class="status-left"><i class="fa-solid fa-check-double"></i> Kalibrácia</div>
+          <div class="status-value" id="calibrationShort">—</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
         </div>
 
         <div class="card glass">
