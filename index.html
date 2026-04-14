@@ -716,36 +716,36 @@
 
     .live-tower-layout{
       display:grid;
-      grid-template-columns:320px 1fr;
+      grid-template-columns:360px 1fr;
       gap:18px;
       align-items:start;
     }
 
     .tower-stage{
       position:relative;
-      height:420px;
+      height:500px;
       border-radius:24px;
       overflow:hidden;
       border:1px solid rgba(18,86,61,0.07);
       background:
-        radial-gradient(circle at 20% 18%, rgba(118,228,158,0.10), transparent 24%),
-        radial-gradient(circle at 85% 20%, rgba(77,168,255,0.07), transparent 24%),
-        linear-gradient(135deg, rgba(255,255,255,0.98), rgba(245,251,248,0.94));
+        radial-gradient(circle at 18% 18%, rgba(118,228,158,0.10), transparent 26%),
+        radial-gradient(circle at 86% 18%, rgba(77,168,255,0.08), transparent 24%),
+        linear-gradient(135deg, rgba(255,255,255,0.99), rgba(243,250,246,0.95));
     }
 
     .tower-live-badge{
       position:absolute;
-      top:14px;
-      left:14px;
+      top:16px;
+      left:16px;
       z-index:3;
       display:inline-flex;
       align-items:center;
       gap:8px;
-      padding:8px 12px;
+      padding:9px 14px;
       border-radius:999px;
-      background:rgba(255,255,255,0.92);
+      background:rgba(255,255,255,0.95);
       border:1px solid rgba(18,86,61,0.08);
-      font-size:.82rem;
+      font-size:.84rem;
       font-weight:800;
       box-shadow:0 8px 20px rgba(18,66,53,0.08);
     }
@@ -756,25 +756,25 @@
       display:flex;
       align-items:center;
       justify-content:center;
-      padding:20px;
+      padding:10px 8px 18px;
     }
 
     .tower-svg{
       width:100%;
       height:100%;
-      max-width:230px;
+      max-width:300px;
       display:block;
     }
 
     .tower-light-glow{
       position:absolute;
-      left:18%;
-      right:18%;
-      bottom:6%;
-      height:18px;
+      left:14%;
+      right:14%;
+      bottom:7%;
+      height:22px;
       border-radius:999px;
-      background:radial-gradient(circle, rgba(31,163,111,0.10), rgba(31,163,111,0.03), transparent 72%);
-      filter:blur(12px);
+      background:radial-gradient(circle, rgba(31,163,111,0.11), rgba(31,163,111,0.03), transparent 72%);
+      filter:blur(14px);
       z-index:1;
       opacity:.8;
       transition:opacity .25s ease, background .25s ease;
@@ -969,11 +969,11 @@
       }
 
       .tower-stage{
-        height:340px;
+        height:400px;
       }
 
       .tower-svg{
-        max-width:190px;
+        max-width:240px;
       }
     }
   </style>
@@ -1297,20 +1297,20 @@
                     </clipPath>
                   </defs>
 
-                  <ellipse cx="210" cy="492" rx="96" ry="13" fill="#dfe9e3"/>
+                  <ellipse cx="210" cy="492" rx="110" ry="14" fill="#dfe9e3"/>
 
                   <g class="tower-main-group" filter="url(#towerShadow)">
-                    <rect x="136" y="86" width="14" height="228" rx="7" fill="url(#lightGrad)" opacity="0.96"/>
-                    <rect x="270" y="86" width="14" height="228" rx="7" fill="url(#lightGrad)" opacity="0.96"/>
+                    <rect x="116" y="74" width="14" height="246" rx="7" fill="url(#lightGrad)" opacity="0.96"/>
+                    <rect x="290" y="74" width="14" height="246" rx="7" fill="url(#lightGrad)" opacity="0.96"/>
 
-                    <rect x="128" y="72" width="164" height="12" rx="6" fill="url(#frameGrad)"/>
+                    <rect x="108" y="60" width="204" height="12" rx="6" fill="url(#frameGrad)"/>
 
-                    <ellipse cx="143" cy="196" rx="12" ry="104" fill="rgba(255,245,200,0.10)"/>
-                    <ellipse cx="277" cy="196" rx="12" ry="104" fill="rgba(255,245,200,0.10)"/>
+                    <ellipse cx="123" cy="196" rx="14" ry="112" fill="rgba(255,245,200,0.10)"/>
+                    <ellipse cx="297" cy="196" rx="14" ry="112" fill="rgba(255,245,200,0.10)"/>
 
-                    <rect x="194" y="100" width="72" height="262" rx="36" fill="url(#towerBodyGrad)" stroke="#ddd1c0"/>
+                    <rect x="190" y="96" width="80" height="274" rx="40" fill="url(#towerBodyGrad)" stroke="#ddd1c0"/>
 
-                    <rect x="170" y="112" width="120" height="244" rx="56" fill="url(#glassGrad)" opacity="0.60" stroke="#c6dbe1" stroke-width="2"/>
+                    <rect x="166" y="108" width="128" height="254" rx="60" fill="url(#glassGrad)" opacity="0.60" stroke="#c6dbe1" stroke-width="2"/>
 
                     <g clip-path="url(#towerGlassClip)">
                       <rect x="170" y="286" width="120" height="70" fill="url(#waterGrad)" opacity="0.82"/>
@@ -1326,51 +1326,51 @@
                     </g>
 
                     <g fill="#f7fafc" stroke="#d5dde0" stroke-width="1.4">
-                      <rect x="176" y="154" width="40" height="32" rx="11"/>
-                      <rect x="244" y="194" width="42" height="34" rx="12"/>
-                      <rect x="172" y="244" width="44" height="34" rx="12"/>
-                      <rect x="242" y="294" width="44" height="34" rx="12"/>
-                      <rect x="180" y="344" width="40" height="32" rx="11"/>
+                      <rect x="174" y="150" width="42" height="34" rx="11"/>
+                      <rect x="246" y="192" width="44" height="36" rx="12"/>
+                      <rect x="170" y="244" width="46" height="36" rx="12"/>
+                      <rect x="244" y="294" width="46" height="36" rx="12"/>
+                      <rect x="178" y="346" width="42" height="34" rx="11"/>
                     </g>
 
                     <g filter="url(#leafShadow)">
                       <g class="leaf-bob leaf-a">
-                        <ellipse cx="191" cy="152" rx="13" ry="8" fill="url(#leafGrad)"/>
-                        <ellipse cx="206" cy="154" rx="11" ry="7.5" fill="url(#leafGrad)"/>
+                        <ellipse cx="190" cy="150" rx="14" ry="8.5" fill="url(#leafGrad)"/>
+                        <ellipse cx="207" cy="152" rx="12" ry="8" fill="url(#leafGrad)"/>
                       </g>
 
                       <g class="leaf-bob leaf-b">
-                        <ellipse cx="258" cy="192" rx="14" ry="8.5" fill="url(#leafGrad)"/>
-                        <ellipse cx="275" cy="194" rx="12" ry="8" fill="url(#leafGrad)"/>
+                        <ellipse cx="260" cy="190" rx="15" ry="9" fill="url(#leafGrad)"/>
+                        <ellipse cx="278" cy="192" rx="13" ry="8.2" fill="url(#leafGrad)"/>
                       </g>
 
                       <g class="leaf-bob leaf-c">
-                        <ellipse cx="187" cy="242" rx="14" ry="8.5" fill="url(#leafGrad)"/>
-                        <ellipse cx="204" cy="244" rx="12" ry="8" fill="url(#leafGrad)"/>
+                        <ellipse cx="186" cy="242" rx="15" ry="9" fill="url(#leafGrad)"/>
+                        <ellipse cx="204" cy="244" rx="13" ry="8.2" fill="url(#leafGrad)"/>
                       </g>
 
                       <g class="leaf-bob leaf-d">
-                        <ellipse cx="258" cy="292" rx="14" ry="8.5" fill="url(#leafGrad)"/>
-                        <ellipse cx="275" cy="294" rx="12" ry="8" fill="url(#leafGrad)"/>
+                        <ellipse cx="260" cy="292" rx="15" ry="9" fill="url(#leafGrad)"/>
+                        <ellipse cx="278" cy="294" rx="13" ry="8.2" fill="url(#leafGrad)"/>
                       </g>
 
                       <g class="leaf-bob leaf-e">
-                        <ellipse cx="195" cy="342" rx="14" ry="8.5" fill="url(#leafGrad)"/>
-                        <ellipse cx="211" cy="344" rx="12" ry="8" fill="url(#leafGrad)"/>
+                        <ellipse cx="194" cy="344" rx="15" ry="9" fill="url(#leafGrad)"/>
+                        <ellipse cx="212" cy="346" rx="13" ry="8.2" fill="url(#leafGrad)"/>
                       </g>
                     </g>
 
-                    <rect x="148" y="372" width="164" height="108" rx="24" fill="url(#tankGrad)" stroke="#ddd2c2"/>
+                    <rect x="144" y="378" width="172" height="112" rx="26" fill="url(#tankGrad)" stroke="#ddd2c2"/>
 
-                    <rect x="208" y="386" width="42" height="66" rx="11" fill="#eef7fb" stroke="#c7d7dd"/>
+                    <rect x="206" y="392" width="44" height="70" rx="11" fill="#eef7fb" stroke="#c7d7dd"/>
                     <g clip-path="url(#levelClip)">
                       <rect id="towerTankLevel" x="212" y="404" width="34" height="42" rx="10" fill="url(#waterGrad)" opacity="0.95"/>
                     </g>
-                    <rect x="212" y="386" width="34" height="66" rx="10" fill="none" stroke="#c7d7dd"/>
+                    <rect x="212" y="392" width="34" height="70" rx="10" fill="none" stroke="#c7d7dd"/>
 
-                    <rect x="172" y="420" width="116" height="24" rx="12" fill="#dfe8ea" opacity="0.55"/>
+                    <rect x="170" y="426" width="120" height="24" rx="12" fill="#dfe8ea" opacity="0.55"/>
 
-                    <g transform="translate(229 448)" opacity="0.60">
+                    <g transform="translate(229 454)" opacity="0.60">
                       <path d="M0-9 C-6-5 -7 2 -5 10 C-1 6 1 1 0-9Z" fill="none" stroke="#8a7f70" stroke-width="1.5"/>
                       <path d="M0-9 C6-5 7 2 5 10 C1 6 -1 1 0-9Z" fill="none" stroke="#8a7f70" stroke-width="1.5"/>
                       <path d="M0-3 L0 10" stroke="#8a7f70" stroke-width="1.5"/>
