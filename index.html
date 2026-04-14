@@ -1219,7 +1219,7 @@
             <div class="muted">Vizualizácia stavu systému</div>
           </div>
 
-          <div class="live-tower-layout">
+    <div class="live-tower-layout">
   <div class="tower-stage">
     <div class="tower-live-badge" id="towerLiveBadge">
       <i class="fa-solid fa-circle" style="color:#1fa36f;"></i>
@@ -1272,44 +1272,33 @@
             <feDropShadow dx="0" dy="5" stdDeviation="5" flood-color="#2a9650" flood-opacity="0.16"/>
           </filter>
 
-          <clipPath id="towerGlassClip">
-            <rect x="164" y="100" width="92" height="252" rx="46"/>
+          <clipPath id="bottomTankClip">
+            <rect x="150" y="376" width="120" height="108" rx="24"/>
           </clipPath>
 
-          <clipPath id="levelClip">
-            <rect x="198" y="388" width="24" height="58" rx="10"/>
+          <clipPath id="levelClipNew">
+            <rect x="194" y="388" width="32" height="62" rx="10"/>
           </clipPath>
         </defs>
 
         <ellipse cx="210" cy="492" rx="112" ry="14" fill="#dfe9e3"/>
 
         <g class="tower-main-group" filter="url(#towerShadow)">
-          <!-- svetlá úplne symetricky -->
+          <!-- svetlá -->
           <rect x="124" y="72" width="12" height="236" rx="6" fill="url(#lightGrad)" opacity="0.96"/>
           <rect x="284" y="72" width="12" height="236" rx="6" fill="url(#lightGrad)" opacity="0.96"/>
 
           <!-- horný rám -->
           <rect x="116" y="58" width="188" height="10" rx="5" fill="url(#frameGrad)"/>
 
-          <!-- telo veže -->
+          <!-- horná pestovacia rúra BEZ vody -->
           <rect x="172" y="92" width="76" height="274" rx="38" fill="url(#towerBodyGrad)" stroke="#ddd1c0"/>
-          <rect x="164" y="100" width="92" height="252" rx="46" fill="url(#glassGrad)" opacity="0.55" stroke="#c6dbe1" stroke-width="2"/>
+          <rect x="164" y="100" width="92" height="252" rx="46" fill="url(#glassGrad)" opacity="0.35" stroke="#c6dbe1" stroke-width="2"/>
 
-          <!-- voda vo veži -->
-          <g clip-path="url(#towerGlassClip)">
-            <rect x="164" y="286" width="92" height="66" fill="url(#waterGrad)" opacity="0.82"/>
-            <rect x="164" y="282" width="92" height="7" fill="#ddf8ff" opacity="0.72"/>
+          <!-- jemný spodný náznak len ako tvar, nie voda -->
+          <ellipse cx="210" cy="334" rx="38" ry="18" fill="rgba(180,215,228,0.18)"/>
 
-            <g id="towerBubbles" opacity="0.55" fill="#ecfbff">
-              <circle class="bubble bubble1" cx="184" cy="330" r="3.2"/>
-              <circle class="bubble bubble2" cx="205" cy="314" r="2.5"/>
-              <circle class="bubble bubble3" cx="226" cy="336" r="3.2"/>
-              <circle class="bubble bubble4" cx="216" cy="300" r="2.6"/>
-              <circle class="bubble bubble5" cx="194" cy="294" r="2.2"/>
-            </g>
-          </g>
-
-          <!-- košíky úplne zrkadlovo -->
+          <!-- košíky symetricky -->
           <g fill="#f7fafc" stroke="#d5dde0" stroke-width="1.4">
             <rect x="154" y="146" width="34" height="32" rx="10"/>
             <rect x="232" y="146" width="34" height="32" rx="10"/>
@@ -1321,9 +1310,8 @@
             <rect x="232" y="312" width="34" height="32" rx="10"/>
           </g>
 
-          <!-- listy úplne zrkadlovo -->
+          <!-- listy -->
           <g filter="url(#leafShadow)">
-            <!-- horný pár -->
             <g class="leaf-bob leaf-a">
               <ellipse cx="160" cy="148" rx="12" ry="7.5" fill="url(#leafGrad)"/>
               <ellipse cx="176" cy="150" rx="11" ry="7" fill="url(#leafGrad)"/>
@@ -1333,7 +1321,6 @@
               <ellipse cx="228" cy="150" rx="11" ry="7" fill="url(#leafGrad)"/>
             </g>
 
-            <!-- stredný pár -->
             <g class="leaf-bob leaf-b">
               <ellipse cx="154" cy="230" rx="13" ry="8" fill="url(#leafGrad)"/>
               <ellipse cx="172" cy="232" rx="12" ry="7.2" fill="url(#leafGrad)"/>
@@ -1343,7 +1330,6 @@
               <ellipse cx="232" cy="232" rx="12" ry="7.2" fill="url(#leafGrad)"/>
             </g>
 
-            <!-- spodný pár -->
             <g class="leaf-bob leaf-c">
               <ellipse cx="160" cy="314" rx="12" ry="7.5" fill="url(#leafGrad)"/>
               <ellipse cx="176" cy="316" rx="11" ry="7" fill="url(#leafGrad)"/>
@@ -1354,20 +1340,24 @@
             </g>
           </g>
 
-          <!-- spodná nádoba -->
+          <!-- spodný box -->
           <rect x="150" y="376" width="120" height="108" rx="24" fill="url(#tankGrad)" stroke="#ddd2c2"/>
 
-          <!-- indikátor vody v nádobe -->
-          <rect x="194" y="386" width="32" height="62" rx="10" fill="#eef7fb" stroke="#c7d7dd"/>
-          <g clip-path="url(#levelClip)">
+          <!-- voda LEN dole v boxe -->
+          <g clip-path="url(#bottomTankClip)">
+            <rect x="150" y="430" width="120" height="54" fill="url(#waterGrad)" opacity="0.75"/>
+            <rect x="150" y="426" width="120" height="6" fill="#ddf8ff" opacity="0.65"/>
+          </g>
+
+          <!-- priehľadné stredové okno v boxe -->
+          <rect x="194" y="388" width="32" height="62" rx="10" fill="#eef7fb" stroke="#c7d7dd"/>
+          <g clip-path="url(#levelClipNew)">
             <rect id="towerTankLevel" x="198" y="404" width="24" height="42" rx="10" fill="url(#waterGrad)" opacity="0.95"/>
           </g>
-          <rect x="198" y="388" width="24" height="58" rx="10" fill="none" stroke="#c7d7dd"/>
+          <rect x="198" y="388" width="24" height="62" rx="10" fill="none" stroke="#c7d7dd"/>
 
-          <rect x="170" y="414" width="80" height="20" rx="10" fill="#dfe8ea" opacity="0.55"/>
-
-          <!-- logo -->
-          <g transform="translate(210 446)" opacity="0.60">
+          <!-- logo posunuté nižšie, mimo priehľadného okna -->
+          <g transform="translate(210 454)" opacity="0.60">
             <path d="M0-9 C-6-5 -7 2 -5 10 C-1 6 1 1 0-9Z" fill="none" stroke="#8a7f70" stroke-width="1.5"/>
             <path d="M0-9 C6-5 7 2 5 10 C1 6 -1 1 0-9Z" fill="none" stroke="#8a7f70" stroke-width="1.5"/>
             <path d="M0-3 L0 10" stroke="#8a7f70" stroke-width="1.5"/>
@@ -1441,128 +1431,3 @@
     </div>
   </div>
 </div>
-        </div>
-
-        <div class="card glass">
-          <div class="card-header">
-            <h3 class="card-title"><i class="fa-solid fa-wifi"></i> Pripojenie na Wi-Fi</h3>
-          </div>
-
-          <div class="info-box">
-            <b>1.</b> Zapni HydroSmart vežu.<br>
-            <b>2.</b> Pripoj sa na sieť <b>HydroSmart Connect</b>.<br>
-            <b>3.</b> Otvor adresu <b>192.168.4.1</b>.<br>
-            <b>4.</b> Zadaj názov a heslo tvojej Wi-Fi.<br>
-            <b>5.</b> Po uložení sa zariadenie reštartuje.<br><br>
-            <b>Reset Wi-Fi:</b> podrž dotykové tlačidlo približne <b>10 sekúnd</b>.
-          </div>
-        </div>
-
-      </div>
-    </section>
-
-    <div class="footer">HydroSmart © 2026</div>
-  </div>
-
-  <script>
-    (function () {
-      const ACCESS_CODE = "hydro2026";
-
-      function doUnlock() {
-        const input = document.getElementById("accessCodeInput");
-        const error = document.getElementById("lockError");
-        const lock = document.getElementById("lockScreen");
-        const app = document.getElementById("appRoot");
-        if (!input || !error || !lock || !app) return;
-
-        const value = (input.value || "").trim();
-
-        if (value === ACCESS_CODE) {
-          try { localStorage.setItem("hydro_access_ok", "1"); } catch (e) {}
-          lock.classList.add("hidden");
-          app.classList.remove("hidden");
-          error.innerText = "";
-        } else {
-          error.innerText = "Nesprávny prístupový kód.";
-        }
-      }
-
-      function initLock() {
-        const lock = document.getElementById("lockScreen");
-        const app = document.getElementById("appRoot");
-        const btn = document.getElementById("unlockBtn");
-        const input = document.getElementById("accessCodeInput");
-
-        let unlocked = false;
-        try { unlocked = localStorage.getItem("hydro_access_ok") === "1"; } catch (e) {}
-
-        if (unlocked) {
-          lock.classList.add("hidden");
-          app.classList.remove("hidden");
-        } else {
-          lock.classList.remove("hidden");
-          app.classList.add("hidden");
-        }
-
-        if (btn) btn.addEventListener("click", doUnlock);
-        if (input) {
-          input.addEventListener("keydown", function (e) {
-            if (e.key === "Enter") doUnlock();
-          });
-        }
-      }
-
-      function initLogo() {
-        const img = document.getElementById("brandLogo");
-        const fallback = document.getElementById("brandLogoFallback");
-        if (!img || !fallback) return;
-
-        const stamp = Date.now();
-        const candidates = [
-          "./logo.png?v=" + stamp,
-          "./logo.jpg?v=" + stamp,
-          "./logo.jpeg?v=" + stamp,
-          "./logo.webp?v=" + stamp,
-          "./Logo.png?v=" + stamp,
-          "./Logo.jpg?v=" + stamp,
-          "./Logo.jpeg?v=" + stamp,
-          "./Logo.webp?v=" + stamp
-        ];
-
-        let idx = 0;
-        function tryNext() {
-          if (idx >= candidates.length) {
-            img.classList.add("hidden");
-            fallback.classList.remove("hidden");
-            return;
-          }
-          const src = candidates[idx++];
-          img.onload = function () {
-            img.classList.remove("hidden");
-            fallback.classList.add("hidden");
-          };
-          img.onerror = function () {
-            tryNext();
-          };
-          img.src = src;
-        }
-        tryNext();
-      }
-
-      if (document.readyState === "loading") {
-        document.addEventListener("DOMContentLoaded", function () {
-          initLock();
-          initLogo();
-        });
-      } else {
-        initLock();
-        initLogo();
-      }
-    })();
-  </script>
-
-  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
-  <script src="./app.js"></script>
-</body>
-</html>
