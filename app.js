@@ -534,63 +534,55 @@ function renderNextAction(obj){
   let title = "Dnes netreba veľký zásah";
   let desc = "Veža je v poriadku. Stačí ju priebežne kontrolovať.";
   let tag = "Odporúčanie";
-  let priority = "Nízka";
-  let reason = "Všetko dôležité je stabilné.";
 
   if (!obj.deviceConnected){
     title = "Skontroluj zariadenie";
     desc = "Veža neposlala údaje dlhšie než 30 sekúnd. Skontroluj napájanie alebo Wi-Fi.";
     tag = "Potrebný zásah";
-    priority = "Vysoká";
-    reason = "Veža sa neozýva.";
   } else if (!obj.wifiConnected){
     title = "Pripoj vežu na Wi-Fi";
     desc = "Zariadenie momentálne nie je pripojené na Wi-Fi.";
     tag = "Potrebný zásah";
-    priority = "Vysoká";
-    reason = "Chýba spojenie.";
   } else if (obj.waterLow){
     title = "Doplň vodu";
     desc = "Hladina vody je nízka. Dolej vodu do nádrže.";
     tag = "Dôležité";
-    priority = "Vysoká";
-    reason = "Málo vody.";
   } else if (!obj.calibrated){
     title = "Sprav kalibráciu";
     desc = "Pred presným meraním treba spraviť kalibráciu čistej vody.";
     tag = "Dôležité";
-    priority = "Stredná";
-    reason = "Kalibrácia chýba.";
   } else if (obj.phase === "seedling"){
     title = "Zatiaľ nechaj čistú vodu";
     desc = "Rastlina je ešte v klíčení. Výživu zatiaľ nepridávaj.";
-    priority = "Nízka";
-    reason = "Začiatok rastu.";
   } else if (obj.phase === "rooting"){
     title = obj.stateTone === "warn" ? "Podpor korene" : "Korene sa vyvíjajú správne";
     desc = obj.stateTone === "warn"
       ? obj.doseText
       : "Rastlina si vytvára korene. Systém zatiaľ drží vhodné podmienky.";
-    priority = obj.stateTone === "warn" ? "Stredná" : "Nízka";
-    reason = obj.stateTone === "warn" ? "Rastlina potrebuje jemnú podporu." : "Zakoreňovanie prebieha správne.";
   } else {
     if (obj.stateTone === "warn") {
       title = "Pridaj výživu";
       desc = obj.doseText;
-      priority = "Stredná";
-      reason = "Rastlina potrebuje viac výživy.";
     } else if (obj.stateTone === "bad") {
       title = "Zrieď roztok";
       desc = "Pridaj čistú vodu, aby bola výživa jemnejšia pre korene.";
-      priority = "Stredná";
-      reason = "Roztok je príliš silný.";
     } else {
       title = "Rast pokračuje správne";
       desc = "Rastlina má vhodné podmienky. Zatiaľ stačí len bežná kontrola.";
-      priority = "Nízka";
-      reason = "Podmienky sú stabilné.";
     }
   }
+
+  let priority = "Nízka";
+  if (!obj.deviceConnected || !obj.wifiConnected || obj.waterLow) priority = "Vysoká";
+  else if (!obj.calibrated || obj.stateTone === "warn" || obj.stateTone === "bad") priority = "Stredná";
+
+  let reason = "Podmienky sú stabilné.";
+  if (!obj.deviceConnected) reason = "Veža sa neozýva.";
+  else if (!obj.wifiConnected) reason = "Chýba spojenie.";
+  else if (obj.waterLow) reason = "Málo vody.";
+  else if (!obj.calibrated) reason = "Kalibrácia chýba.";
+  else if (obj.stateTone === "warn") reason = "Rastlina potrebuje úpravu výživy.";
+  else if (obj.stateTone === "bad") reason = "Roztok je príliš silný.";
 
   box.innerHTML = `
     <div>
@@ -599,8 +591,8 @@ function renderNextAction(obj){
       <div class="smart-desc">${desc}</div>
 
       <div class="next-meta">
-        <div class="meta-chip"><b>Priorita:</b> ${priority}</div>
-        <div class="meta-chip"><b>Dôvod:</b> ${reason}</div>
+        <div class="meta-chip"><b>Priorita:</b> <span id="nextPriority">${priority}</span></div>
+        <div class="meta-chip"><b>Dôvod:</b> <span id="nextReason">${reason}</span></div>
       </div>
     </div>
   `;
